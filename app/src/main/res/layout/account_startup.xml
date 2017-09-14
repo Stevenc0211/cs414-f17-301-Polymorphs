@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- This is the fancy X image here -->
+    <ImageView
+        android:id="@+id/xIcon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        android:layout_alignParentLeft="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp"
+        android:layout_marginLeft="75dp"
+        android:src="@drawable/xlarge"
+        />
+
+    <TextView
+        android:id="@+id/gameText"
+        android:layout_width="150dp"
+        android:layout_height="65dp"
+        android:layout_toRightOf="@+id/xIcon"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="70dp"
+        android:textSize="45sp"
+        android:textColor="@color/Black"
+        android:textStyle="bold"
+        android:text="GAME"
+        />
+
+    <TextView
+        android:layout_width="150dp"
+        android:layout_height="65dp"
+        android:layout_toRightOf="@+id/xIcon"
+        android:layout_centerInParent="true"
+        android:layout_above="@+id/gameText"
+        android:layout_marginTop="40dp"
+        android:translationY="75dp"
+        android:textSize="45sp"
+        android:textColor="@color/Black"
+        android:textStyle="bold"
+        android:text="THE"
+        />
+
+
+    <Button
+        android:id="@+id/createAccountButton"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_above="@+id/loginButton"
+        android:text="Create account"
+
+        />
+
+    <Button
+        android:id="@+id/loginButton"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
+        android:text="Login" />
+
+</RelativeLayout>
