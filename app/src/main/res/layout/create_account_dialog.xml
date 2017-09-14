@@ -6,7 +6,7 @@
     android:background="@color/CornflowerBlue"
     >
 
-
+    <!-- text fields for entering info -->
     <EditText
         android:id="@+id/createEmail"
         android:layout_width="match_parent"
