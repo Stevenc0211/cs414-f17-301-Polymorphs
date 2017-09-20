@@ -2,12 +2,26 @@ package polymorphs.a301.f17.cs414.thexgame;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 
 /**
  * Created by Roger Hannagan on 9/13/17.
@@ -16,16 +30,15 @@ import android.widget.Toast;
  *** Note: Logging in will be automatic once the database is started. ***
  */
 
-public class StartupScreen extends Activity {
+public class StartupScreen extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
-    private Button loginButton; // holds the login button.
-    private Button createAccountButton; // holds the create account button.
+    private View googleSignInButton; // holds the google sign-in button.
 
-    private String email = ""; // holds a user's email.
-    private String username = ""; // holds a user's username.
-    private String password = ""; // holds a user's password
+    private GoogleApiClient googleClient; // a GoogleApiClient used to allow users to sign in with their credentials.
+    private ProgressDialog progressDialog; // TODO: deprecated, change this to something that is more recent!!!
 
-    // NOTE: these will be set once we save the current user's data on the phone itself, this will grabbed by the intent itself.
+    private static final int RC_SIGN_IN = 9001;
+
 
     // This is the first thing called when this class is called and will create the startup screen UI.
     @Override
@@ -34,97 +47,177 @@ public class StartupScreen extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account_startup); // sets our startup screen as the main content view.
 
-        Intent mainActivityIntent = getIntent(); // grabs the intent sent in by our MainActivity. This is what will hold the user's current login info, as of right now there is nothing so ignore it.
+        googleSignInButton = (View) findViewById(R.id.googlebutton); // sign in with the google button here for us to be able to sign_in and register with the game!
+        googleSignInButton.setOnClickListener(new View.OnClickListener() {
 
-        loginButton = (Button) findViewById(R.id.loginButton); // grab our login button here.
-        loginButton.setOnClickListener(new View.OnClickListener() {
-
-            // This action will control what happens when a user clicks one of the buttons.
+            // start the sign in process when the button is clicked.
             @Override
             public void onClick(View view)
             {
-                final Dialog loginDialog = new Dialog(view.getContext()); // create a dialog message for allowing users to login.
-                loginDialog.setContentView(R.layout.login_dialog); // set the main ui for the dialog for the user to interact with.
-                loginDialog.setTitle("Login");
-                loginDialog.show(); // show the dialog display.
-
-                Button loginButton = (Button) loginDialog.findViewById(R.id.loginDialogButton); // grabs the button the confirm button!
-                final EditText emailField = (EditText) loginDialog.findViewById(R.id.loginEmail); // text field for email
-                final EditText usernameField = (EditText) loginDialog.findViewById(R.id.loginUsername); // text field for username
-                final EditText passwordField = (EditText) loginDialog.findViewById(R.id.loginPassword); // text field for password.
-
-                // create a click listener for the login button now.
-                loginButton.setOnClickListener(new View.OnClickListener() {
-
-                    // controls the behavior for when the login button is clicked.
-                    @Override
-                    public void onClick(View view)
-                    {
-                        email = emailField.getText().toString(); // grabs the data out of the email field
-                        username = usernameField.getText().toString(); // grabs the data out of the username field.
-                        password = passwordField.getText().toString(); // grabs the data out of the password field.
-
-                        if(!email.isEmpty() && !username.isEmpty() && !password.isEmpty()) // make sure none of the fields are empty!
-                        {
-                            // TODO: take the three fields and send off to check with our database to login the player into the game, we also want to build the main UI now.
-
-                            // TODO: we also want to check that the email and username is unique for this game. Very important!
-
-                            loginDialog.dismiss(); // close the dialog now.
-                        }
-                        else // user left one of the fields blank we must now
-                        {
-                            Toast.makeText(getApplicationContext(), "All fields must be filled out!", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
+                signIn(); // start the sign in behavior.
             }
         });
 
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
 
-        createAccountButton = (Button) findViewById(R.id.createAccountButton); // grab our create account button here.
-        createAccountButton.setOnClickListener(new View.OnClickListener() {
+        // Build a GoogleApiClient with access to the Google Sign-In API and the
+        // options specified by gso.
+        googleClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+    }
 
-            // sets the behavior for when the create account is created.
-            @Override
-            public void onClick(View view)
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(googleClient);
+        if (opr.isDone()) {
+            // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
+            // and the GoogleSignInResult will be available instantly.
+            // Log.d(TAG, "Got cached sign-in");
+            GoogleSignInResult result = opr.get();
+            handleSignInResult(result);
+        } else {
+            // If the user has not previously signed in on this device or the sign-in has expired,
+            // this asynchronous branch will attempt to sign in the user silently.  Cross-device
+            // single sign-on will occur in this branch.
+            showProgressDialog();
+            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+                @Override
+                public void onResult(GoogleSignInResult googleSignInResult) {
+                    hideProgressDialog();
+                    handleSignInResult(googleSignInResult);
+                }
+            });
+        }
+    }
+
+    // When the app is reopened
+    @Override
+    protected void onResume() {
+        super.onResume();
+        hideProgressDialog();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+
+            if(result.isSuccess())
             {
-                final Dialog createAccountDialog = new Dialog(view.getContext()); // create a dialog message for allowing users to login.
-                createAccountDialog.setContentView(R.layout.create_account_dialog); // set the main ui for the dialog for the user to interact with.
-                createAccountDialog.setTitle("Create Account");
-                createAccountDialog.show(); // show the dialog.
+                System.out.println("We have successfully added this account to the app!");
+            }
 
-                Button createAccountButton = (Button) createAccountDialog.findViewById(R.id.createAccountDialogButton); // grabs the button the confirm button!
-                final EditText emailField = (EditText) createAccountDialog.findViewById(R.id.createEmail); // text field for email
-                final EditText usernameField = (EditText) createAccountDialog.findViewById(R.id.createUsername); // text field for username
-                final EditText passwordField = (EditText) createAccountDialog.findViewById(R.id.createPassword); // text field for password.
+            handleSignInResult(result);
+        }
+    }
 
-                // create a click listener for the login button now.
-                createAccountButton.setOnClickListener(new View.OnClickListener() {
+    // TODO: look here for when we want to implement users to invite another user to play a game.
+    private void handleSignInResult(GoogleSignInResult result) {
+        //Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+            GoogleSignInAccount acct = result.getSignInAccount(); // grabs this users account which can be used to assign the name to accounts in our game!!
+            String userGoogleDisplayName = acct.getDisplayName(); // get this user's display name, pretty awesome!
+            // TODO: TEAM, play around with some of the things GoogleSignInAccount can do for example, type in acct. (like literally type the dot ('.') and see some of the methods that show up!
 
-                    // controls the behavior for when the login button is clicked.
+            Toast.makeText(getApplicationContext(), "Welcome to Chad Chess, " + userGoogleDisplayName, Toast.LENGTH_LONG).show(); // this message may be too long at first, also we want to change it to mix things up.
+
+            // TODO: start the main game activity here!!!
+            Intent mainGameUIIntent = new Intent(StartupScreen.this, MainGameUI.class); // main game ui intent that is sent when the app is started.
+            startActivity(mainGameUIIntent);
+        }
+        else // Signed out, show unauthenticated UI.
+        {
+            // TODO: look into whether this case needs to be handled or not.
+        }
+    }
+
+    private void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+        System.out.println("Found the user's sign in account here");
+    }
+
+    // [START signOut] // TODO: implement this somewhere in our code to be used for users to be able to sign out if they wish.
+    private void signOut() {
+        Auth.GoogleSignInApi.signOut(googleClient).setResultCallback(
+                new ResultCallback<Status>() {
                     @Override
-                    public void onClick(View view)
-                    {
-                        email = emailField.getText().toString(); // grabs the data out of the email field
-                        username = usernameField.getText().toString(); // grabs the data out of the username field.
-                        password = passwordField.getText().toString(); // grabs the data out of the password field.
-
-                        if(!email.isEmpty() && !username.isEmpty() && !password.isEmpty()) // make sure none of the fields are empty!
-                        {
-                            // TODO: take the three fields and send off to check with our database to login the player into the game, we also want to build the main UI now.
-                            System.out.println("testing the click notification");
-                            // TODO: we also want to check that the email and username is unique for this game. Very important!
-
-                            createAccountDialog.dismiss(); // close the dialog now.
-                        }
-                        else // user left one of the fields blank we must now
-                        {
-                            Toast.makeText(getApplicationContext(), "All fields must be filled out!", Toast.LENGTH_LONG).show();
-                        }
+                    public void onResult(Status status) {
+                        // [START_EXCLUDE]
+                        updateUI(false);
+                        // [END_EXCLUDE]
                     }
                 });
-            }
-        });
+    }
+
+     // TODO: this came with the design, there are cases for needing to revoke access, but probably not for the scope of our application.
+    private void revokeAccess() {
+        Auth.GoogleSignInApi.revokeAccess(googleClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        // [START_EXCLUDE]
+                        updateUI(false);
+                        // [END_EXCLUDE]
+                    }
+                });
+    }
+
+    // when a connection fails or gets interrupted for some reason.
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult)
+    {
+        // An unresolvable error has occurred and Google APIs (including Sign-In) will not
+        // be available.
+        //Log.d(TAG, "onConnectionFailed:" + connectionResult);
+        // TODO: should start a log for this to figure out what exactly is going on, also display a user name.
+    }
+
+    // TODO: the progress dialog is not working, I need to change this into something that is not deprecated.
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+    private void showProgressDialog() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage(getString(R.string.loading));
+            progressDialog.setIndeterminate(true);
+        }
+
+        progressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.hide();
+        }
+    }
+
+    private void updateUI(boolean signedIn) {
+        if (signedIn)
+        {
+            googleSignInButton.setVisibility(View.GONE); // make the sign in button go away if they are already signed in, if signed, in an new activity should arise though.
+        }
+        else // user has not signed it yet.
+        {
+            googleSignInButton.setVisibility(View.VISIBLE); // make the sign in button visible.
+        }
     }
 }

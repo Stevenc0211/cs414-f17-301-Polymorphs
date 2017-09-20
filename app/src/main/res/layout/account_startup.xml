@@ -1,48 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/SlateGray"
+    >
 
-    <!-- This is the fancy X image here -->
-    <ImageView
-        android:id="@+id/xIcon"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_centerInParent="true"
-        android:layout_alignParentLeft="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="45dp"
-        android:layout_marginLeft="75dp"
-        android:src="@drawable/xlarge"
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Please sign in to play!"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:textAlignment="center"
+        android:layout_marginTop="25dp"
         />
 
     <TextView
-        android:id="@+id/gameText"
-        android:layout_width="150dp"
+        android:id="@+id/chess"
+        android:layout_width="match_parent"
         android:layout_height="65dp"
-        android:layout_toRightOf="@+id/xIcon"
         android:layout_centerInParent="true"
-        android:layout_marginTop="70dp"
         android:textSize="45sp"
-        android:textColor="@color/Black"
-        android:textStyle="bold"
-        android:text="GAME"
+        android:textColor="@color/white"
+        android:text="CHAD CHESS"
+        android:textAlignment="center"
         />
 
-    <TextView
-        android:layout_width="150dp"
-        android:layout_height="65dp"
-        android:layout_toRightOf="@+id/xIcon"
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/googlebutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_above="@+id/gameText"
-        android:layout_marginTop="40dp"
-        android:translationY="75dp"
-        android:textSize="45sp"
-        android:textColor="@color/Black"
-        android:textStyle="bold"
-        android:text="THE"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
+        android:visibility="visible"
         />
 
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/LightSlateGray">
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="visible"
+            tools:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/sign_out_and_disconnect"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <Button
+                android:id="@+id/sign_out_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/common_signin_button_text"
+                android:theme="@style/ThemeOverlay.MyDarkButton" />
+
+            <Button
+                android:id="@+id/disconnect_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="disconnect"
+                android:theme="@style/ThemeOverlay.MyDarkButton" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <!-- Removed because we have figured out the signing in options that is best used by the application itself.
+    <Button
+        android:id="@+id/googleSigninButton"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_above="@+id/createAccountButton"
+        android:text="Sign-in with Google"
+
+        />
 
     <Button
         android:id="@+id/createAccountButton"
@@ -63,5 +113,6 @@
         android:layout_centerInParent="true"
         android:layout_alignParentBottom="true"
         android:text="Login" />
+        -->
 
 </RelativeLayout>
