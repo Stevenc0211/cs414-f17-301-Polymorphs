@@ -31,6 +31,7 @@ public class StartupScreen extends AppCompatActivity implements GoogleApiClient.
 
     private GoogleApiClient googleClient; // a GoogleApiClient used to allow users to sign in with their credentials.
     private ProgressDialog progressDialog; // TODO: deprecated, change this to something that is more recent!!!
+
     private static final int RC_SIGN_IN = 9001;
 
 
