@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="45dp"
+    android:layout_height="45dp"
+    android:background="@color/SlateGray"
+    >
+
+    <!-- The background for the square -->
+    <ImageView
+        android:id="@+id/squareBackground"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:padding="0dp"
+        />
+
+    <!-- holds our chess piece so far, may want different ones to hold the different pieces -->
+    <ImageView
+        android:id="@+id/chessPiece"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="0dp"
+        />
+
+</FrameLayout>
