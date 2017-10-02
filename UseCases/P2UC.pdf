@@ -1,0 +1,8 @@
+ReferenceError: Can't find variable: Editor
+
+  http://www.draw.io/export2.html:26 in global code
+ReferenceError: Can't find variable: Graph
+
+  http://www.draw.io/export2.html:59 in render
+  phantomjs://webpage.evaluate():2
+  phantomjs://webpage.evaluate():3
