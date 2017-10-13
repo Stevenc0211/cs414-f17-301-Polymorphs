@@ -18,7 +18,7 @@
 
       <!-- Details the main activity so Android knows to look for this activity. -->
       <activity android:name=".MainActivity"
-          android:screenOrientation="portrait"
+          android:screenOrientation="landscape"
           android:launchMode="singleInstance">
 
           <!-- Used to define the default activity, DO NOT MODIFY -->
@@ -33,7 +33,7 @@
             android:screenOrientation="portrait" />
 
       <activity android:name=".MainGameUI"
-          android:screenOrientation="portrait" />
+          android:screenOrientation="landscape" />
 
     </application>
 
