@@ -52,7 +52,24 @@ public class DBIOCore {
         myRef.setValue(invite);
     }
 
-    public Invitation runExperimentGetData() {
-        return outputInvite;
+    public void runExperimentGetData() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("testInvite1");
+
+        ValueEventListener inviteListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get Post object and use the values to update the UI
+                outputInvite = dataSnapshot.getValue(Invitation.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+            }
+        };
+
+        myRef.addListenerForSingleValueEvent(inviteListener);
     }
 }
