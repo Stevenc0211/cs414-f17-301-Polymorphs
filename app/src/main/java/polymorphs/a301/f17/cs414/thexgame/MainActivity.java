@@ -26,8 +26,6 @@ public class MainActivity extends Activity {
     {
         super.onCreate(savedInstanceState);
 
-        // TODO: @Roger Hannagan, set up the SharedPreferences that will allow the app to automatically log in when the user starts the app.
-
         // Check if the permission to read the internal memory has been granted have been granted by the user.
         if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
         {
@@ -57,7 +55,6 @@ public class MainActivity extends Activity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     Intent startupActivity = new Intent(MainActivity.this, StartupScreen.class); // create the intent that will be needed for the starting the login activity!
-                    // TODO: send in the user's current login information that is saved in main memory from the app itself so the user doesn't have to manually type everything in.
                     startActivity(startupActivity); // start the activity now.
 
                 } else {
@@ -66,7 +63,6 @@ public class MainActivity extends Activity {
                     // app will gracefully start, but the user will have to manually reenter all of their login info each time, how lame!
 
                     Intent startupActivity = new Intent(MainActivity.this, StartupScreen.class); // create the intent that will be needed for the starting the login activity!
-                    // TODO: send in empty data sets from the intent to the startup activity, this will force users to have to reenter their stuff manually. Very important!
                     startActivity(startupActivity); // start the activity now.
                 }
 
@@ -81,7 +77,6 @@ public class MainActivity extends Activity {
         super.onResume();
 
         Intent startupActivity = new Intent(MainActivity.this, StartupScreen.class); // create the intent that will be needed for the starting the login activity!
-        // TODO: read from main memory if any exists and send to the activity.
         startActivity(startupActivity); // start the activity now.
     }
 }
