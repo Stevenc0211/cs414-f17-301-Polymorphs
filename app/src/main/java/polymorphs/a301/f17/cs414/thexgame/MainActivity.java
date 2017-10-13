@@ -43,6 +43,16 @@ public class MainActivity extends Activity {
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_STORAGE_PERMISSION);
             }
         }
+
+        // Test code for data IO
+        DBIOCore testListener = new DBIOCore();
+        testListener.runExperimentSetWatch();
+
+        DBIOCore testSender = new DBIOCore();
+        testSender.runExperimentSendData();
+
+        Invitation testOutput = testListener.runExperimentGetData();
+        Invitation testSideListen = testSender.runExperimentGetData();
     }
 
     // This is the method that controls what happens after a user decides on a permission at runtime.
