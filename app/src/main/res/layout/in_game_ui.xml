@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    >
+
+    <!-- This right here allows the users to be able to swipe between games as they please!
+     Swiping should also update the information that is shown on the left as well!!!
+     -->
+    <android.support.v4.view.ViewPager
+        android:id="@+id/gamesListPager"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        >
+
+        <!-- our game board is here. -->
+        <GridView
+            android:id="@+id/chessboard"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:background="@color/SlateGray"
+            android:numColumns="8"
+            android:padding="0dp"
+            android:horizontalSpacing="0dp"
+            android:verticalSpacing="0dp"
+            >
+        </GridView>
+
+    </android.support.v4.view.ViewPager>
+
+
+    <!-- shows the events that have taken place while the user is playing a game. Pretty cool -->
+    <ListView
+        android:id="@+id/EventsList"
+        android:layout_width="300dp"
+        android:layout_height="250dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        >
+    </ListView>
+
+
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="30dp"
+        android:layout_above="@+id/HistoryList"
+        android:layout_alignParentRight="true"
+        android:background="@color/PowderBlue"
+        android:layout_below="@+id/matchTitleBar"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Activity"
+            android:textSize="25dp"
+            android:textAlignment="center"
+            android:textColor="@color/Black"
+            />
+
+    </RelativeLayout>
+
+    <!-- layout for the current players in the game -->
+    <RelativeLayout
+        android:id="@+id/matchTitleBar"
+        android:layout_width="220dp"
+        android:layout_height="40dp"
+        android:background="@color/white"
+        android:layout_marginLeft="300dp"
+        >
+
+        <!-- Displays the players of the current match -->
+        <TextView
+            android:id="@+id/playersField"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="thenotoriousrog vs steven"
+            android:textSize="15sp"
+            android:textColor="@color/Black"
+            android:textAlignment="center"
+            android:layout_marginRight="100dp"
+
+            />
+
+    </RelativeLayout>
+
+
+    <!-- Layout for the quit button -->
+    <RelativeLayout
+        android:id="@+id/QuitLayout"
+        android:layout_width="90dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:background="@color/white"
+        >
+
+        <!-- Displays the quit button. -->
+        <Button
+            android:id="@+id/quitButton"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="QUIT"
+            android:textColor="@color/Red"
+            android:textAlignment="center"
+            android:layout_alignParentRight="true"
+            />
+    </RelativeLayout>
+
+</RelativeLayout>

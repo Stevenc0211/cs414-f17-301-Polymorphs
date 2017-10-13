@@ -126,7 +126,7 @@ public class StartupScreen extends AppCompatActivity implements GoogleApiClient.
             String userGoogleDisplayName = acct.getDisplayName(); // get this user's display name, pretty awesome!
             // TODO: TEAM, play around with some of the things GoogleSignInAccount can do for example, type in acct. (like literally type the dot ('.') and see some of the methods that show up!
 
-            Toast.makeText(getApplicationContext(), "Welcome to Chad Chess, " + userGoogleDisplayName, Toast.LENGTH_LONG).show(); // this message may be too long at first, also we want to change it to mix things up.
+           // Toast.makeText(getApplicationContext(), "Welcome to Chad Chess, " + userGoogleDisplayName, Toast.LENGTH_LONG).show(); // this message may be too long at first, also we want to change it to mix things up.
 
             // TODO: start the main game activity here!!!
             Intent mainGameUIIntent = new Intent(StartupScreen.this, MainGameUI.class); // main game ui intent that is sent when the app is started.
