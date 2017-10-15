@@ -6,26 +6,26 @@
     android:background="@color/white"
     >
 
-    <!-- This right here allows the users to be able to swipe between games as they please!
-     Swiping should also update the information that is shown on the left as well!!!
+    <!--
+        We have to have another one of these for phones with low, high, and medium densities so that people who are using the app can
+        see the app in the way that it is intended but each user's phone is different hence why we have the different densities. 
      -->
     <android.support.v4.view.ViewPager
         android:id="@+id/gamesListPager"
-        android:layout_width="300dp"
+        android:layout_width="250dp"
         android:layout_height="match_parent"
         >
 
-        <!-- our game board is here. -->
+        <!-- our game board is here. NumColumns sets the number of columns that we need to have.  -->
         <GridView
             android:id="@+id/chessboard"
-            android:layout_width="300dp"
-            android:layout_height="match_parent"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
             android:background="@color/SlateGray"
-            android:numColumns="8"
             android:padding="0dp"
-            android:stretchMode="columnWidth"
-            android:horizontalSpacing="0dp"
-            android:verticalSpacing="0dp"
+            android:numColumns="12"
+            android:horizontalSpacing="5dp"
+            android:verticalSpacing="5dp"
             >
         </GridView>
 
@@ -37,6 +37,7 @@
         android:id="@+id/EventsList"
         android:layout_width="300dp"
         android:layout_height="250dp"
+        android:layout_below="@+id/ActivityTitleBar"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         >
@@ -44,10 +45,11 @@
 
 
     <RelativeLayout
-        android:layout_width="300dp"
+        android:id="@+id/ActivityTitleBar"
+        android:layout_width="288dp"
         android:layout_height="30dp"
         android:layout_alignParentRight="true"
-        android:background="@color/PowderBlue"
+        android:background="@color/ButtonBlue"
         android:layout_below="@+id/matchTitleBar"
         >
 
@@ -57,7 +59,7 @@
             android:text="Activity"
             android:textSize="25dp"
             android:textAlignment="center"
-            android:textColor="@color/Black"
+            android:textColor="@color/white"
             />
 
     </RelativeLayout>

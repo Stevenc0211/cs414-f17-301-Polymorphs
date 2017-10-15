@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- This simply shows a string explaining a quick little event for the user to be able to work with -->
+    <TextView
+        android:id="@+id/invitationMessage"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Steven sent an invite!"
+        android:textSize="25sp"
+        android:textColor="@color/black"
+        />
+
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/invitationMessage"
+        >
+
+        <Button
+            android:id="@+id/acceptButton"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:text="Accept"
+            android:layout_marginLeft="35dp"
+            android:background="@color/CadetBlue"
+            />
+
+        <Button
+            android:id="@+id/declineButton"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:text="Decline"
+            android:layout_alignRight="@+id/acceptButton"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="35dp"
+            android:background="@color/DarkOrange"
+            />
+
+    </RelativeLayout>
+
+</RelativeLayout>
