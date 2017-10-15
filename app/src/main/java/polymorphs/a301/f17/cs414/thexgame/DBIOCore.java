@@ -57,18 +57,27 @@ public class DBIOCore {
 
     /**
      * This returns a reference to the current users invitations list (inbound invitations).
-     * Since this is a list the proper why to add is as follows.
+     * Since this is a list the proper way to add is as follows.
      * key = ref.push().getKey()
      * ref.child(key).setValue(new Invitation())
+     * NOTE: the above code ensures that even if it is a first time user the list is created properly
      * @return - the reference to the invitations list
      */
     public static DatabaseReference getInvitationsReference() {
         return baseReference.child("invitations").child(currentUser);
     }
 
-//    public static DatabaseReference getBaseReferenceFor(String username) {
-//
-//    }
+    /**
+     * This returns a reference to any user via their username. This is an UNCHECKED reference meaning
+     * the user object may not exist if the passed username is not a current user.
+     * NOTE: if the user does not exist when you do 'User testUser = dataSnapshot.getValue(User.class);'
+     * or similar in the onChange method of a listener at this reference testUser will be null
+     * @param username - a username for an active user in the system
+     * @return the reference to that user, UNCHECKED
+     */
+    public static DatabaseReference getUserReferenceFor(String username) {
+        return baseReference.child("users").child(username);
+    }
 
 //    ValueEventListener inviteListener =  new ValueEventListener() {
 //        @Override
