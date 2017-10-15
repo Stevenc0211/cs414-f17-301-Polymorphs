@@ -20,9 +20,11 @@ import static android.content.ContentValues.TAG;
 public class DBIOCore {
     private static DatabaseReference baseReference = FirebaseDatabase.getInstance().getReference();
     private static String currentUser;
-    private static String otherUser;
 
-
+    /**
+     * Sets the current user, i.e. the user who in running the app. Should only be used in the StartupScreen
+     * @param userName - a username, if this is a first time user a new user object will be added to the database
+     */
     public static void setCurrentUser(String userName) {
         currentUser = userName;
         DatabaseReference tmp = getUserReference();
@@ -42,11 +44,24 @@ public class DBIOCore {
         });
     }
 
-
+    /**
+     * This returns a reference to the current users user object in the database.
+     * This is a checked reference, i.e. the user object is ensured to be there
+     * NOTE: if I understand this correctly the listener added in setCurrentUser should trigger and
+     * make the user after the StartupScreen and perhaps the MainGameUI have finished their onCreate methods
+     * @return
+     */
     public static DatabaseReference getUserReference() {
         return baseReference.child("users").child(currentUser);
     }
 
+    /**
+     * This returns a reference to the current users invitations list (inbound invitations).
+     * Since this is a list the proper why to add is as follows.
+     * key = ref.push().getKey()
+     * ref.child(key).setValue(new Invitation())
+     * @return - the reference to the invitations list
+     */
     public static DatabaseReference getInvitationsReference() {
         return baseReference.child("invitations").child(currentUser);
     }
