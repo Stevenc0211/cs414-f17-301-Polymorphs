@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "204534405374",
+    "firebase_url": "https://chaddb-45fc8.firebaseio.com",
+    "project_id": "chaddb-45fc8",
+    "storage_bucket": "chaddb-45fc8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:204534405374:android:ff6e11c3d781e268",
+        "android_client_info": {
+          "package_name": "polymorphs.a301.f17.cs414.thexgame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "204534405374-knoo4aoiglojn3gcokahjgn0880rb2i1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "polymorphs.a301.f17.cs414.thexgame",
+            "certificate_hash": "126c7d7964f564df2e2965dafee43092bd240b42"
+          }
+        },
+        {
+          "client_id": "204534405374-0k7koqbmc3c6m7luadp3606rrbv08ovj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ-LgGAk3Uq1uKDtEHK185NlsoOMXNYOw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "204534405374-0k7koqbmc3c6m7luadp3606rrbv08ovj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
