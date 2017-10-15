@@ -30,7 +30,7 @@
 
         <!-- Details the startup screen activity for users to see the login screen every time that they start the app again -->
         <activity android:name=".StartupScreen"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="landscape" />
 
       <activity android:name=".MainGameUI"
           android:screenOrientation="landscape" />
