@@ -107,49 +107,44 @@ public class MainGameUI extends Activity {
     // This method has code very similar to createInGameUIFragment, this one is not creating a new game however, this will simply pull from the database and show the current games of the user.
     protected void openCurrentGamesFragment()
     {
-        // Highjacked by Miles for testing
-        int stall = 1;
 
-//        Bundle fragmentArgs = new Bundle(); // the Bundle here allows us to send arguments to our fragment!
-//        // we should pull items from the data base including all of the users current games.
-//        // we should then send the information to the games here by attaching the games to the user which is pretty important!
-//
-//        // TODO: we should pull from the database again here and update the arraylist currentGames so we are making sure that the games we are updating is accurate. Very important!
-//
-//        fragmentArgs.putStringArrayList("currentGames", currentGames); // send in the list of current games under the name of "currentGames"
-//        inGameUI.setArguments(fragmentArgs); // set the arguments of the fragment.
-//
-//        RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.homescreenLayout); // get the relative layout of the homescreen.
-//        homescreenLayout.removeAllViews();
-//        homescreenLayout.setBackground(null); // this should remove all views from the main view to allow us to show the fragment properly.
-//
-//        FragmentTransaction transaction = getFragmentManager().beginTransaction(); // get the Fragment transaction to allow us to display the fragment properly
-//        transaction.replace(R.id.homescreenLayout, inGameUI); // replace the current fragment with our games
-//        transaction.commit(); // commit the fragment to be loaded.
+        Bundle fragmentArgs = new Bundle(); // the Bundle here allows us to send arguments to our fragment!
+        // we should pull items from the data base including all of the users current games.
+        // we should then send the information to the games here by attaching the games to the user which is pretty important!
+
+        // TODO: we should pull from the database again here and update the arraylist currentGames so we are making sure that the games we are updating is accurate. Very important!
+
+        fragmentArgs.putStringArrayList("currentGames", currentGames); // send in the list of current games under the name of "currentGames"
+        inGameUI.setArguments(fragmentArgs); // set the arguments of the fragment.
+
+        RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.homescreenLayout); // get the relative layout of the homescreen.
+        homescreenLayout.removeAllViews();
+        homescreenLayout.setBackground(null); // this should remove all views from the main view to allow us to show the fragment properly.
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction(); // get the Fragment transaction to allow us to display the fragment properly
+        transaction.replace(R.id.homescreenLayout, inGameUI); // replace the current fragment with our games
+        transaction.commit(); // commit the fragment to be loaded.
     }
 
     // This method opens up the notifications fragment
     protected void openNotificationsFragment()
     {
-        // Highjacked by Miles for testing
-        String key = DBIOCore.getInvitationsReference().push().getKey();
-        DBIOCore.getInvitationsReference().child(key).setValue(new Invitation("Miles", "Danny"));
-//
-//        Bundle fragmentArgs = new Bundle(); // the Bundle here allows us to send arguments to our fragment!
-//        // we should pull items from the data base including all of the users current games.
-//        // we should then send the information to the games here by attaching the games to the user which is pretty important!
-//
-//        // TODO: we should pull data from the database to get the users notifications. We also need to update the notifications counter as well!!
-//
-//        inGameUI.setArguments(fragmentArgs); // set the arguments of the fragment.
-//
-//        RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.homescreenLayout); // get the relative layout of the homescreen.
-//        homescreenLayout.removeAllViews();
-//        homescreenLayout.setBackground(null); // this should remove all views from the main view to allow us to show the fragment properly.
-//
-//        FragmentTransaction transaction = getFragmentManager().beginTransaction(); // get the Fragment transaction to allow us to display the fragment properly
-//        transaction.replace(R.id.homescreenLayout, notificationsUI); // replace the current fragment with our games
-//        transaction.commit(); // commit the fragment to be loaded.
+
+        Bundle fragmentArgs = new Bundle(); // the Bundle here allows us to send arguments to our fragment!
+        // we should pull items from the data base including all of the users current games.
+        // we should then send the information to the games here by attaching the games to the user which is pretty important!
+
+        // TODO: we should pull data from the database to get the users notifications. We also need to update the notifications counter as well!!
+
+        inGameUI.setArguments(fragmentArgs); // set the arguments of the fragment.
+
+        RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.homescreenLayout); // get the relative layout of the homescreen.
+        homescreenLayout.removeAllViews();
+        homescreenLayout.setBackground(null); // this should remove all views from the main view to allow us to show the fragment properly.
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction(); // get the Fragment transaction to allow us to display the fragment properly
+        transaction.replace(R.id.homescreenLayout, notificationsUI); // replace the current fragment with our games
+        transaction.commit(); // commit the fragment to be loaded.
     }
 
     // This is the first thing called when this class is called and will create the startup screen UI.

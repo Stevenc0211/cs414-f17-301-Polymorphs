@@ -59,7 +59,7 @@ public class InGameUI extends Fragment {
     // sets up the ActivityListView. TODO: This data should be pulled from the database
     protected void setupActivityListView(View gameUIView) {
         ListView activities = (ListView) gameUIView.findViewById(R.id.EventsList); // grabs the events that we are working with.
-        eventsListAdapter = new ActivityListAdapter(getContext(), R.layout.activity_item, events); // holds the game Event lists which is pretty important!
+        eventsListAdapter = new ActivityListAdapter(gameUIView.getContext(), R.layout.activity_item, events); // holds the game Event lists which is pretty important!
 
         activities.setAdapter(eventsListAdapter);
         eventsListAdapter.notifyDataSetChanged(); // let the adapter know we have new items to update.
@@ -114,7 +114,7 @@ public class InGameUI extends Fragment {
 
                 // the game will then be removed from the GamePager (may need to actually send this in as an argument for us to be able to remove this from an option as needed)
 
-                Toast.makeText(getContext(), "This feature is not ready yet!", Toast.LENGTH_SHORT).show(); // to show the user that this feature is not ready yet.
+                Toast.makeText(inGameUI.getContext(), "This feature is not ready yet!", Toast.LENGTH_SHORT).show(); // to show the user that this feature is not ready yet.
             }
         });
 

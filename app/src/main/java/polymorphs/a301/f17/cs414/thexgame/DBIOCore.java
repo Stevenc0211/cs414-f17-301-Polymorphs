@@ -20,7 +20,8 @@ import static android.content.ContentValues.TAG;
 public class DBIOCore {
     private static DatabaseReference baseReference = FirebaseDatabase.getInstance().getReference();
     private static String currentUser;
-    private static Boolean newUser = false;
+    private static String otherUser;
+
 
     public static void setCurrentUser(String userName) {
         currentUser = userName;
@@ -49,6 +50,10 @@ public class DBIOCore {
     public static DatabaseReference getInvitationsReference() {
         return baseReference.child("invitations").child(currentUser);
     }
+
+//    public static DatabaseReference getBaseReferenceFor(String username) {
+//
+//    }
 
 //    ValueEventListener inviteListener =  new ValueEventListener() {
 //        @Override
