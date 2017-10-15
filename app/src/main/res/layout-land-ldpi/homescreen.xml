@@ -16,7 +16,7 @@
         android:text="Create Game"
         android:layout_marginTop="10dp"
         android:layout_alignParentTop="true"
-        android:background="@drawable/buttonshape"
+        android:background="@drawable/buttonshape_ldpi"
         android:textColor="@color/white"
         android:layout_marginLeft="5dp"
         android:clickable="true"
@@ -30,9 +30,9 @@
         android:text="Current games"
         android:layout_below="@id/createGameButton"
         android:layout_marginTop="12dp"
-        android:background="@drawable/buttonshape"
-        android:textColor="@color/white"
+        android:background="@drawable/buttonshape_ldpi"
         android:layout_marginLeft="5dp"
+        android:textColor="@color/white"
         android:clickable="true"
         />
 
@@ -44,9 +44,9 @@
         android:text="Notifications (2)"
         android:layout_below="@+id/currentGamesButton"
         android:layout_marginTop="11dp"
-        android:background="@drawable/buttonshape"
-        android:textColor="@color/white"
+        android:background="@drawable/buttonshape_ldpi"
         android:layout_marginLeft="5dp"
+        android:textColor="@color/white"
         android:clickable="true"
         />
 
@@ -56,11 +56,11 @@
         android:layout_width="200dp"
         android:layout_height="60dp"
         android:text="Settings"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="15dp"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/buttonshape"
-        android:textColor="@color/white"
+        android:background="@drawable/buttonshape_ldpi"
         android:layout_marginLeft="5dp"
+        android:textColor="@color/white"
         android:clickable="true"
         />
 
@@ -71,16 +71,18 @@
     -->
     <ListView
         android:id="@+id/HistoryList"
-        android:layout_width="390dp"
-        android:layout_height="240dp"
+        android:layout_width="350dp"
+        android:layout_height="200dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/SettingsButton"
+
         >
     </ListView>
 
     <RelativeLayout
-        android:layout_width="390dp"
-        android:layout_height="30dp"
+        android:layout_width="350dp"
+        android:layout_height="35dp"
         android:layout_above="@+id/HistoryList"
         android:layout_alignParentRight="true"
         android:background="@color/ButtonBlue"
