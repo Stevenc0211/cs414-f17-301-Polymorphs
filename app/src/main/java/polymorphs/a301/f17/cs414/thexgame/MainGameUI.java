@@ -3,6 +3,7 @@ package polymorphs.a301.f17.cs414.thexgame;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
@@ -12,7 +13,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Date;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by Roger Hannagan on 9/19/17.
@@ -29,6 +41,47 @@ public class MainGameUI extends Activity {
     private ArrayList<GridView> games = new ArrayList<>(); // todo: this will be updated through our database, this holds all of the games that we are working with. Right now I will just have test code!
     private InGameUI inGameUI = new InGameUI(); // this is the copy of the in game ui that we will be able to control from outside the class if we really need to!
     private NotificationsUI notificationsUI = new NotificationsUI(); // a copy of the notifications UI that should be built for the user.
+
+    private User currentUser;
+    private ValueEventListener userListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            currentUser = dataSnapshot.getValue(User.class);
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+        }
+    };
+
+    private ArrayList<Invitation> invitations = new ArrayList<>();
+    private ChildEventListener inviteListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            invitations.add(dataSnapshot.getValue(Invitation.class));
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            int stall = 1; // Temporary until I can figure out what to do here
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+            int stall = 1; // Temporary until I can figure out what to do here
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            int stall = 1; // Temporary until I can figure out what to do here
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            int stall = 1; // Temporary until I can figure out what to do here
+        }
+    };
 
     // this method is in charge of starting the fragment for the user to be in charge of setting everything up correctly!!!
     protected void createInGameUIFragment()
@@ -54,6 +107,7 @@ public class MainGameUI extends Activity {
     // This method has code very similar to createInGameUIFragment, this one is not creating a new game however, this will simply pull from the database and show the current games of the user.
     protected void openCurrentGamesFragment()
     {
+
         Bundle fragmentArgs = new Bundle(); // the Bundle here allows us to send arguments to our fragment!
         // we should pull items from the data base including all of the users current games.
         // we should then send the information to the games here by attaching the games to the user which is pretty important!
@@ -75,6 +129,7 @@ public class MainGameUI extends Activity {
     // This method opens up the notifications fragment
     protected void openNotificationsFragment()
     {
+
         Bundle fragmentArgs = new Bundle(); // the Bundle here allows us to send arguments to our fragment!
         // we should pull items from the data base including all of the users current games.
         // we should then send the information to the games here by attaching the games to the user which is pretty important!
@@ -185,6 +240,10 @@ public class MainGameUI extends Activity {
         chessboard.setAdapter(squareAdapter);
         squareAdapter.notifyDataSetChanged(); // tell the square adapter to update the dataset to show the correct items in the gridview.
         */
+
+        DBIOCore.getUserReference().addValueEventListener(userListener);
+        DBIOCore.getInvitationsReference().addChildEventListener(inviteListener);
+
     }
 
 }

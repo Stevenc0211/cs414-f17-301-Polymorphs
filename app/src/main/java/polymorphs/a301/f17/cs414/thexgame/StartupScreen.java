@@ -124,6 +124,7 @@ public class StartupScreen extends AppCompatActivity implements GoogleApiClient.
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount(); // grabs this users account which can be used to assign the name to accounts in our game!!
             String userGoogleDisplayName = acct.getDisplayName(); // get this user's display name, pretty awesome!
+            DBIOCore.setCurrentUser(userGoogleDisplayName); // Starting DBIOCore
             // TODO: TEAM, play around with some of the things GoogleSignInAccount can do for example, type in acct. (like literally type the dot ('.') and see some of the methods that show up!
 
            // Toast.makeText(getApplicationContext(), "Welcome to Chad Chess, " + userGoogleDisplayName, Toast.LENGTH_LONG).show(); // this message may be too long at first, also we want to change it to mix things up.
