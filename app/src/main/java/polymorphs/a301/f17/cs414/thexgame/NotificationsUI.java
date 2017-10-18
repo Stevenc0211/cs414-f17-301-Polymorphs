@@ -47,7 +47,7 @@ public class NotificationsUI extends Fragment {
             eventsData.add("Game won!");
         }
 
-        eventListAdapter = new EventListAdapter(getContext(), R.layout.event_item, eventsData);
+        eventListAdapter = new EventListAdapter(notificationsView.getContext(), R.layout.event_item, eventsData);
         eventsList.setAdapter(eventListAdapter);
         eventListAdapter.notifyDataSetChanged(); // tell the adapter that we have some information to show here!
         eventsList.setDivider(null);
@@ -65,7 +65,7 @@ public class NotificationsUI extends Fragment {
             invitationsData.add("Steven sent an invitation!");
         }
 
-        invitationsListAdapter = new InvitationsListAdapter(getContext(), R.layout.invitation_item, invitationsData); // create the invitations adapter that we need to use.
+        invitationsListAdapter = new InvitationsListAdapter(notificationsView.getContext(), R.layout.invitation_item, invitationsData); // create the invitations adapter that we need to use.
         invitationsList.setAdapter(invitationsListAdapter);
         invitationsListAdapter.notifyDataSetChanged();
         invitationsList.setDivider(null);
