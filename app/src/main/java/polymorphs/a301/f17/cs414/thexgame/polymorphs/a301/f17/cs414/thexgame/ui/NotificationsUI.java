@@ -1,4 +1,4 @@
-package polymorphs.a301.f17.cs414.thexgame;
+package polymorphs.a301.f17.cs414.thexgame.polymorphs.a301.f17.cs414.thexgame.ui;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -8,6 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+
+import polymorphs.a301.f17.cs414.thexgame.R;
+import polymorphs.a301.f17.cs414.thexgame.polymorphs.a301.f17.cs414.thexgame.ui.EventListAdapter;
+import polymorphs.a301.f17.cs414.thexgame.polymorphs.a301.f17.cs414.thexgame.ui.InvitationsListAdapter;
 
 /**
  * Created by thenotoriousrog on 10/13/17.

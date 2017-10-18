@@ -1,9 +1,9 @@
-package polymorphs.a301.f17.cs414.thexgame;
+package polymorphs.a301.f17.cs414.thexgame.polymorphs.a301.f17.cs414.thexgame.ui;
 
-import android.app.Activity;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.widget.GridView;
+
+import polymorphs.a301.f17.cs414.thexgame.R;
 
 /**
  * Created by thenotoriousrog on 10/13/17.
@@ -34,7 +34,8 @@ public class GamePageChangeListener implements ViewPager.OnPageChangeListener {
     @Override
     public void onPageSelected(int position)
     {
-        Snackbar.make(inGameUI.getView(), "GAME " + (position+1), Snackbar.LENGTH_SHORT).show(); // show the snackbar plus the game for the users to see, this is actually pretty cool!!! You'll see
+        // removed this as it is causing issues on the phone for Andy, need to find a new way to inform users that are being used by Roger, pretty important!
+       // Snackbar.make(inGameUI.getView(), "GAME " + (position+1), Snackbar.LENGTH_SHORT).show(); // show the snackbar plus the game for the users to see, this is actually pretty cool!!! You'll see
     }
 
 

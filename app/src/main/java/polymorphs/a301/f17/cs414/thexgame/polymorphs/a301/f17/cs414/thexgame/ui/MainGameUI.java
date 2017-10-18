@@ -1,4 +1,4 @@
-package polymorphs.a301.f17.cs414.thexgame;
+package polymorphs.a301.f17.cs414.thexgame.polymorphs.a301.f17.cs414.thexgame.ui;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
@@ -6,13 +6,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
+
+import polymorphs.a301.f17.cs414.thexgame.R;
 
 /**
  * Created by Roger Hannagan on 9/19/17.
@@ -29,6 +28,7 @@ public class MainGameUI extends Activity {
     private ArrayList<GridView> games = new ArrayList<>(); // todo: this will be updated through our database, this holds all of the games that we are working with. Right now I will just have test code!
     private InGameUI inGameUI = new InGameUI(); // this is the copy of the in game ui that we will be able to control from outside the class if we really need to!
     private NotificationsUI notificationsUI = new NotificationsUI(); // a copy of the notifications UI that should be built for the user.
+    private SettingsUI settingsUI = new SettingsUI(); // holds a copy of our settingsUI.
 
     // this method is in charge of starting the fragment for the user to be in charge of setting everything up correctly!!!
     protected void createInGameUIFragment()
@@ -39,6 +39,8 @@ public class MainGameUI extends Activity {
 
         currentGames.add("Game " + currentGames.size() + 1); // creates a new game with the name i.e. Game 2 (where the 2 will increase each time!)
         fragmentArgs.putStringArrayList("currentGames", currentGames); // send in the list of current games under the name of "currentGames"
+        fragmentArgs.putBoolean("Start new game", true); // tells the InGameUI that the user wants to create a new game
+        fragmentArgs.putBoolean("Open current games", false); // tells the InGameUI that the user just wants to open the list of current games.
 
         inGameUI.setArguments(fragmentArgs); // set the arguments of the fragment.
 
@@ -61,6 +63,9 @@ public class MainGameUI extends Activity {
         // TODO: we should pull from the database again here and update the arraylist currentGames so we are making sure that the games we are updating is accurate. Very important!
 
         fragmentArgs.putStringArrayList("currentGames", currentGames); // send in the list of current games under the name of "currentGames"
+        fragmentArgs.putBoolean("Start new game", false); // tells the InGameUI that the user wants to create a new game
+        fragmentArgs.putBoolean("Open current games", true); // tells the InGameUI that the user just wants to open the list of current games.
+
         inGameUI.setArguments(fragmentArgs); // set the arguments of the fragment.
 
         RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.homescreenLayout); // get the relative layout of the homescreen.
@@ -89,6 +94,22 @@ public class MainGameUI extends Activity {
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction(); // get the Fragment transaction to allow us to display the fragment properly
         transaction.replace(R.id.homescreenLayout, notificationsUI); // replace the current fragment with our games
+        transaction.commit(); // commit the fragment to be loaded.
+    }
+
+    // This method opens the settings fragment.
+    protected void openSettingsFragment()
+    {
+        Bundle fragmentArgs = new Bundle(); // the Bundle here allows us to send arguments to our fragment!
+
+        inGameUI.setArguments(fragmentArgs); // set the arguments of the fragment.
+
+        RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.homescreenLayout); // get the relative layout of the homescreen.
+        homescreenLayout.removeAllViews();
+        homescreenLayout.setBackground(null); // this should remove all views from the main view to allow us to show the fragment properly.
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction(); // get the Fragment transaction to allow us to display the fragment properly
+        transaction.replace(R.id.homescreenLayout, settingsUI); // replace the current fragment with our games
         transaction.commit(); // commit the fragment to be loaded.
     }
 
@@ -121,13 +142,6 @@ public class MainGameUI extends Activity {
             public void onClick(View view) {
 
                 createInGameUIFragment(); // have the InGameUI created in here!!
-
-
-                // open up the in game fragment here! Very important! If the game closes we should go back to this home menu!
-
-                // When a new game is created we need to ensure that this game is started and added first the list of the of games in the game pager.
-
-                // The board should be generated and the player should be notified if they want to add users or not!
             }
         });
 
@@ -138,17 +152,9 @@ public class MainGameUI extends Activity {
             @Override
             public void onClick(View view) {
 
-
                 openCurrentGamesFragment(); // have the fragment open and show the current games to the user! Very important!
 
                 // TODO: we can also pull from the database here and update current games if we wanted.
-
-                // open up the current games for the user.
-
-                // we really should have the games list the games for the user's turn is next first (I know that was worded horribly)
-
-                // again if the user hits the back button the users should see the homescreen again.
-
             }
         });
 
@@ -160,10 +166,6 @@ public class MainGameUI extends Activity {
             public void onClick(View view) {
 
                 openNotificationsFragment(); // open up the notifications fragment!
-
-                // This should open up our notifications fragment which will show the user's information including events as well as invitations!
-
-                // Again, hitting back button in this fragment should show the homescreen again, very important
             }
         });
 
@@ -173,18 +175,11 @@ public class MainGameUI extends Activity {
             @Override
             public void onClick(View view) {
 
-                // todo: @Steven you will implement the fragment manager here to get your UI to appear when the clicks the Settings button. Look and see how I do it.
+                openSettingsFragment(); // opens the settings fragment!
 
-                Toast.makeText(getApplicationContext(), "This feature is not ready yet!", Toast.LENGTH_SHORT).show();
+                // some of the features inside the settings fragment do not work yet and will be updated when some more of the main features of the game have been implemented.
             }
         });
-
-        /* keep this code, this will start up our game chess board and allow users to be able to work on this thing here!!
-        chessboard = (GridView) findViewById(R.id.chessboard); // find the chess board that we want to be working with.
-        SquareAdapter squareAdapter = new SquareAdapter(getApplicationContext());
-        chessboard.setAdapter(squareAdapter);
-        squareAdapter.notifyDataSetChanged(); // tell the square adapter to update the dataset to show the correct items in the gridview.
-        */
     }
 
 }

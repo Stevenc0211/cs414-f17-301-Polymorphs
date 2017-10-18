@@ -29,10 +29,13 @@
       </activity>
 
         <!-- Details the startup screen activity for users to see the login screen every time that they start the app again -->
-        <activity android:name=".StartupScreen"
+        <activity android:name=".polymorphs.a301.f17.cs414.thexgame.ui.StartupScreen"
             android:screenOrientation="landscape" />
 
-      <activity android:name=".MainGameUI"
+      <activity android:name=".polymorphs.a301.f17.cs414.thexgame.ui.MainGameUI"
+          android:screenOrientation="landscape" />
+
+      <activity android:name=".polymorphs.a301.f17.cs414.thexgame.ui.SendNotificationsUI"
           android:screenOrientation="landscape" />
 
     </application>

@@ -1,4 +1,4 @@
-package polymorphs.a301.f17.cs414.thexgame;
+package polymorphs.a301.f17.cs414.thexgame.polymorphs.a301.f17.cs414.thexgame.ui;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -10,10 +10,14 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import polymorphs.a301.f17.cs414.thexgame.R;
+
 /**
  * Created by thenotoriousrog on 10/15/17.
  *
  * This fragment will be in control of adding, removing, and sending invites to users that the player wants to use.
+ *
+ * WARNING** This class is in progress and not to be used yet! todo: @Miles, you will be using SendNotificationsUI for now until SendInvitesUI is finished ~Roger
  */
 
 public class SendInvitesUI extends Fragment {
