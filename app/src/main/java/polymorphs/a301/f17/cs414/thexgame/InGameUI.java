@@ -117,7 +117,6 @@ public class InGameUI extends Fragment {
                 Toast.makeText(inGameUI.getContext(), "This feature is not ready yet!", Toast.LENGTH_SHORT).show(); // to show the user that this feature is not ready yet.
             }
         });
-
         return gameUIView; // return the view that we are working with.
     }
 
