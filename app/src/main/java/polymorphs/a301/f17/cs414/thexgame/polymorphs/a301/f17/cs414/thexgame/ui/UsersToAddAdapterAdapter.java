@@ -15,7 +15,7 @@ import polymorphs.a301.f17.cs414.thexgame.R;
 /**
  * Created by thenotoriousrog on 10/15/17.
  *
- *
+ * This is the UI we want to use where we will either accept or decline the invitation. Accepting creates and adds a new game to the list of games. Declining just removes from notifications list.
  */
 
 public class UsersToAddAdapterAdapter extends ArrayAdapter<String> {
