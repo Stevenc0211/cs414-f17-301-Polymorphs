@@ -1,4 +1,4 @@
-package polymorphs.a301.f17.cs414.thexgame.polymorphs.a301.f17.cs414.thexgame.ui;
+package polymorphs.a301.f17.cs414.thexgame.ui;
 
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
