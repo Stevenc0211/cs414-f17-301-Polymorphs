@@ -1,5 +1,7 @@
-package polymorphs.a301.f17.cs414.thexgame;
+package polymorphs.a301.f17.cs414.thexgame.polymorphs.a301.f17.cs414.thexgame.ui;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -13,6 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+
+import polymorphs.a301.f17.cs414.thexgame.DBIOCore;
+import polymorphs.a301.f17.cs414.thexgame.R;
 
 /**
  * Created by thenotoriousrog on 10/13/17.
@@ -32,6 +37,10 @@ public class InGameUI extends Fragment {
     private ActivityListAdapter eventsListAdapter; // the events adapter here for us to update, very important!
     private SquareAdapter squareAdapter; // holds our square adapter which will allow us to be able to work on our lists and update the information for the players to be able to play a game!
     private View inGameUI; // holds the in game ui view which is needed to create another board for users to be able to play games on.
+    private boolean startNewGame = false; // tells the inGameUI that we want to start a new game, which involves sending a list of invite(s) to other player(s).
+    private boolean openCurrentGames = false; // tells inGameUI to just open the current list of games.
+
+    private DBIOCore database = new DBIOCore(); // grab a copy of our database to allow us to be able to grab information from the database.
 
     // this method sets up our game pager.
     protected void setupGamePager(View gameUIView) {
@@ -67,16 +76,56 @@ public class InGameUI extends Fragment {
         activities.setDividerHeight(10); // set the spacing between our invisible dividers.
     }
 
-    // this is the first method reached when the fragment is started.
+    // this is the first method reached when the fragment is started. This method should only be used to setting of variables really. onCreateView is used for the more UI element creation and setting.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Team, see how this works? We send in to the fragment and they are grabbed in the onCreate method. Look in MainGameUI for how we make a call to InGameUI and how we send those fragments, pretty crucial to see.
         Bundle args = getArguments(); // get the arguments sent in for the fragment.
-        currentGames = args.getStringArrayList("currentGames"); // grab the ArrayList of current games.
-
+        currentGames = args.getStringArrayList("currentGames"); // grab the ArrayList of current games. // todo: perhaps grabbed from database? If not, remove this line.
+        startNewGame = args.getBoolean("Start new game"); // grab the boolean argument.
+        openCurrentGames = args.getBoolean("Open current games"); // grab the boolean argument.
     }
 
+    // Pops up a dialog box and asks if users want to send invites, upon yes, inflate the send_invitations.xml
+    protected void askToSendInvites(View gameUIView)
+    {
+        //final SendNotificationsUI sendNotificationsUI = new SendNotificationsUI(); // a copy of the SendNotificationsUI we want to inflate.
+        final Dialog invitePlayersDialog = new Dialog(gameUIView.getContext()); // creates the dialog asking users if they want to invite other users to the game or not.
+        invitePlayersDialog.setContentView(R.layout.invite_players_dialog); // set the dialog that we want the users to see.
+        invitePlayersDialog.setTitle("Do you want to invite players?");
+        invitePlayersDialog.show(); // show the dialog asking if players want to send invite to players or not.
+
+        Button yesButton = (Button) invitePlayersDialog.findViewById(R.id.dialogYesButton); // get the yes button for the dialog
+        yesButton.setOnClickListener(new View.OnClickListener()
+        {
+            // Upon click, the dialog will close and the SendNotificationsUI is inflated.
+            @Override
+            public void onClick(View view) {
+
+                invitePlayersDialog.dismiss(); // close the invitePlayersDialog box.
+
+                Intent sendInvitesIntent = new Intent(getActivity(), SendNotificationsUI.class);
+                Bundle args = new Bundle(); // bundle to send to SendNotificationsUI
+                args.putSerializable("database", database); // send in a copy of our data base which will allow us to be able to use the database to extract information.
+                sendInvitesIntent.putExtra("args", args); // put the bundle into the intent to be grabbed.
+
+                startActivity(sendInvitesIntent); // start the activity.
+            }
+        });
+
+        Button noButton = (Button) invitePlayersDialog.findViewById(R.id.dialogNoButton); // get the no button for the dialog.
+        noButton.setOnClickListener(new View.OnClickListener()
+        {
+            // Upon click, simply close the dialog box.
+            @Override
+            public void onClick(View view) {
+                invitePlayersDialog.dismiss(); // close the invitePlayersDialog box.
+            }
+        });
+
+    }
 
     // This method is in charge of starting up everything including the main view which is extremely important!
     @Override
@@ -117,6 +166,12 @@ public class InGameUI extends Fragment {
                 Toast.makeText(inGameUI.getContext(), "This feature is not ready yet!", Toast.LENGTH_SHORT).show(); // to show the user that this feature is not ready yet.
             }
         });
+
+        if(startNewGame == true)
+        {
+            askToSendInvites(gameUIView); // make a call that will ask if a users wants to send invites and then will inflate the new fragment
+        }
+        else {} // do nothing, simply open up the current games.
 
         return gameUIView; // return the view that we are working with.
     }

@@ -1,10 +1,14 @@
 package polymorphs.a301.f17.cs414.thexgame;
 
+import java.io.Serializable;
+
 /**
  * Created by Miles on 10/12/2017. Stub of invitation class for testing
+ *
+ * The class is serializable to allow for passing of this data across activities.
  */
 
-public class Invitation {
+public class Invitation implements Serializable {
     private String invitingUser;
     private String invitedUser;
 

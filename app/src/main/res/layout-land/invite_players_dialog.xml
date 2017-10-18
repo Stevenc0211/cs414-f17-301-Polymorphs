@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="@color/CornflowerBlue"
+    >
+
+    <!-- Simple text to tell the user what the popup is asking for -->
+    <TextView
+        android:id="@+id/textTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:text="Do you want to invite players?"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:layout_marginTop="25dp"
+        />
+
+    <!-- Yes button -->
+    <Button
+        android:id="@+id/dialogYesButton"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/CornflowerBlue"
+        android:text="Yes"
+        android:textColor="@color/white"
+
+
+        />
+
+
+    <!-- No button -->
+    <Button
+        android:id="@+id/dialogNoButton"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="No"
+        android:background="@color/CornflowerBlue"
+        android:textColor="@color/white"
+
+        />
+
+</RelativeLayout>

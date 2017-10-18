@@ -9,6 +9,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
+
 import static android.content.ContentValues.TAG;
 
 /**
@@ -16,12 +18,18 @@ import static android.content.ContentValues.TAG;
  */
 
 
-public class DBIOCore {
+public class DBIOCore implements Serializable {
 
-    Invitation outputInvite;
+    Invitation outputInvite; // Invitation is Serializable, but we also need to make DBIOCore serializable as well.
 
     public DBIOCore() {
 
+    }
+
+    // Added by Roger to test the serializable creation of the database.
+    public String testDatabaseCreation()
+    {
+        return "Database was created successfully!";
     }
 
     public void runExperimentSetWatch() {

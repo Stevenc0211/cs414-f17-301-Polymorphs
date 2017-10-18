@@ -1,4 +1,4 @@
-package polymorphs.a301.f17.cs414.thexgame;
+package polymorphs.a301.f17.cs414.thexgame.polymorphs.a301.f17.cs414.thexgame.ui;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -10,6 +10,8 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import polymorphs.a301.f17.cs414.thexgame.R;
 
 /**
  * Created by Roger Hannagan on 9/20/17.

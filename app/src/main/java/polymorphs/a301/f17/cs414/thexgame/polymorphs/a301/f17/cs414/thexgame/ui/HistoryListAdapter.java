@@ -1,4 +1,4 @@
-package polymorphs.a301.f17.cs414.thexgame;
+package polymorphs.a301.f17.cs414.thexgame.polymorphs.a301.f17.cs414.thexgame.ui;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import java.util.List;
+
+import polymorphs.a301.f17.cs414.thexgame.R;
 
 /**
  * Created by thenotoriousrog on 10/12/17.

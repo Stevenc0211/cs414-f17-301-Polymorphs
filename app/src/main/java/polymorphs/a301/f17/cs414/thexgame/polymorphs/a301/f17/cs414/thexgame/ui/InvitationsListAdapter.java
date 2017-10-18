@@ -1,4 +1,4 @@
-package polymorphs.a301.f17.cs414.thexgame;
+package polymorphs.a301.f17.cs414.thexgame.polymorphs.a301.f17.cs414.thexgame.ui;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,10 +10,12 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import polymorphs.a301.f17.cs414.thexgame.R;
+
 /**
  * Created by thenotoriousrog on 10/13/17.
  *
- * This class is another adapter like the others.
+ * WARNING: this adapter is not referring to any of the adapters used in the Invitation class nor the adapters in the inviteusers UI.
  */
 
 public class InvitationsListAdapter extends ArrayAdapter {
