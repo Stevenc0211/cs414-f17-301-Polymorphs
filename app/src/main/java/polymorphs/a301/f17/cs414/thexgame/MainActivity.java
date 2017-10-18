@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
-import polymorphs.a301.f17.cs414.thexgame.polymorphs.a301.f17.cs414.thexgame.ui.StartupScreen;
+import polymorphs.a301.f17.cs414.thexgame.ui.StartupScreen;
 
 /**
  * Created by Roger Hannagan on 9/13/17.

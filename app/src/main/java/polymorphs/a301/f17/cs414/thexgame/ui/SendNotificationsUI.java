@@ -1,4 +1,4 @@
-package polymorphs.a301.f17.cs414.thexgame.polymorphs.a301.f17.cs414.thexgame.ui;
+package polymorphs.a301.f17.cs414.thexgame.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import polymorphs.a301.f17.cs414.thexgame.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.Invitation;
 import polymorphs.a301.f17.cs414.thexgame.R;
-import polymorphs.a301.f17.cs414.thexgame.polymorphs.a301.f17.cs414.thexgame.ui.InviteListAdapter;
 
 /**
  * Created by steve-0 on 10/17/17. Updated and commented by Roger.
