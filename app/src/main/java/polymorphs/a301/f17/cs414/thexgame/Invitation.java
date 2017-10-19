@@ -25,6 +25,9 @@ public class Invitation implements Serializable {
         this.invitingUser = invitingUser;
     }
 
+    /**
+     * For Firebase loading ONLY. DO NOT USE!!
+     */
     public Invitation() {
         invitedUser = "";
         invitedUser = "";

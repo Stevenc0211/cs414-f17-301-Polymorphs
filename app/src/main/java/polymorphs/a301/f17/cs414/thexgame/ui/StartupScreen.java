@@ -16,6 +16,7 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
+import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.R;
 
 /**

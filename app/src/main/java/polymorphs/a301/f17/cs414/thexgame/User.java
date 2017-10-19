@@ -10,8 +10,15 @@ public class User {
     private String username;
     private int knownInvites;
 
-    public User(){} // For Firebase load
+    /**
+     * For Firebase loading ONLY. DO NOT USE!!
+     */
+    public User(){}
 
+    /**
+     * Primary constructor for User
+     * @param username - the users name
+     */
     public User(String username) {
         this.username = username;
         knownInvites = 0;

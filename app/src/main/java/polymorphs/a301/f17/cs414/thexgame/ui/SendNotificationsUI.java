@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import polymorphs.a301.f17.cs414.thexgame.DBIOCore;
+import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.Invitation;
 import polymorphs.a301.f17.cs414.thexgame.R;
 
@@ -27,8 +27,6 @@ public class SendNotificationsUI extends Activity  {
     private InviteListAdapter inviteListAdapter; // the adapter that will populate the invite list.
     // removed for now --> private final int SEND_INVITES = 4000; // this is the request code for sending invites to players very important.
 
-    private DBIOCore database; // the database that we want to be using.
-
     // this method simply generates the UI that we created for the SendNotificationsUI.
     protected void setupUI(final ArrayList<Invitation> usersToSendto)
     {
@@ -38,19 +36,8 @@ public class SendNotificationsUI extends Activity  {
             @Override
             public void onClick(View view) {
 
-                // TODO: send invitations to each of the users in here. This will involve having to write to the DataBase meaning we will have to send in our DataBase object.
-
-                String testMessage = database.testDatabaseCreation(); // run the test and see if the database was created successfully.
-
-                // This is merely to check whether or not the database would receive a NotSerializableError. You may remove once you know it's working and have the real invitations working.
-                if(testMessage != null)
-                {
-                    Toast.makeText(getApplicationContext(), "Database sent back result: " + testMessage ,Toast.LENGTH_SHORT).show(); // show the message
-                }
-                else
-                {
-                    Toast.makeText(getApplicationContext(), "Database failed its test..." ,Toast.LENGTH_SHORT).show(); // show the message
-                }
+                // TODO: send invitations to each of the users in here. This will involve creating Invitation objects
+                // TODO: for each invited user then calling DBIOCore.sendInvite() for each invitation
 
                 finish(); // end the Activity.
             }
@@ -77,7 +64,6 @@ public class SendNotificationsUI extends Activity  {
 
         Intent sendInvitesIntent = getIntent();
         Bundle args = sendInvitesIntent.getBundleExtra("args");
-        database = (DBIOCore) args.getSerializable("database"); // grab the serialized object
 
         // TODO: @Miles, okay so I have made the database serializable so we can have our database object. I also made Invitation serializable so we shouldn't have anymore problems from now on.
         // TODO: All you need to do now is populate the database with something.
