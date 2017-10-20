@@ -7,6 +7,8 @@ package polymorphs.a301.f17.cs414.thexgame;
 
 import org.junit.Test;
 
+import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
+
 import static org.junit.Assert.fail;
 
 

@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import polymorphs.a301.f17.cs414.thexgame.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.R;
 
 /**
@@ -39,8 +38,6 @@ public class InGameUI extends Fragment {
     private View inGameUI; // holds the in game ui view which is needed to create another board for users to be able to play games on.
     private boolean startNewGame = false; // tells the inGameUI that we want to start a new game, which involves sending a list of invite(s) to other player(s).
     private boolean openCurrentGames = false; // tells inGameUI to just open the current list of games.
-
-    private DBIOCore database = new DBIOCore(); // grab a copy of our database to allow us to be able to grab information from the database.
 
     // this method sets up our game pager.
     protected void setupGamePager(View gameUIView) {
@@ -108,7 +105,6 @@ public class InGameUI extends Fragment {
 
                 Intent sendInvitesIntent = new Intent(getActivity(), SendNotificationsUI.class);
                 Bundle args = new Bundle(); // bundle to send to SendNotificationsUI
-                args.putSerializable("database", database); // send in a copy of our data base which will allow us to be able to use the database to extract information.
                 sendInvitesIntent.putExtra("args", args); // put the bundle into the intent to be grabbed.
 
                 startActivity(sendInvitesIntent); // start the activity.

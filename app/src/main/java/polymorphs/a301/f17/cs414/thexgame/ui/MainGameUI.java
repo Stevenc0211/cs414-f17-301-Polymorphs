@@ -12,6 +12,9 @@ import android.widget.RelativeLayout;
 import java.util.ArrayList;
 
 import polymorphs.a301.f17.cs414.thexgame.R;
+import polymorphs.a301.f17.cs414.thexgame.User;
+import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
+import polymorphs.a301.f17.cs414.thexgame.persistence.UserListener;
 
 /**
  * Created by Roger Hannagan on 9/19/17.
@@ -115,18 +118,16 @@ public class MainGameUI extends Activity {
 
     // This is the first thing called when this class is called and will create the startup screen UI.
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreen); // set the homescreen layout.
 
         history = (ListView) findViewById(R.id.HistoryList); // holds the list of the history for the users to be able to work with!!
 
-        histAdapter = new HistoryListAdapter(this, R.layout.game_item,  gameHistory); // send in the game history for the game adapter!!
+        histAdapter = new HistoryListAdapter(this, R.layout.game_item, gameHistory); // send in the game history for the game adapter!!
 
         // todo: be sure to remove this, this is just populating some items for us to test and see how the game is working
-        for(int i = 0; i < 15; i++)
-        {
+        for (int i = 0; i < 15; i++) {
             gameHistory.add("Game " + i); // simply add 15 game items for the users to be able to see
         }
 
@@ -136,8 +137,7 @@ public class MainGameUI extends Activity {
         histAdapter.notifyDataSetChanged(); // tell the adapter that the data has changed in the listview.
 
         Button createGameButton = (Button) findViewById(R.id.createGameButton); // grab the button we are working with.
-        createGameButton.setOnClickListener(new View.OnClickListener()
-        {
+        createGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -147,8 +147,7 @@ public class MainGameUI extends Activity {
 
 
         Button currentGameButton = (Button) findViewById(R.id.currentGamesButton); // grab our button here.
-        currentGameButton.setOnClickListener(new View.OnClickListener()
-        {
+        currentGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -160,8 +159,7 @@ public class MainGameUI extends Activity {
 
 
         Button notificationsButton = (Button) findViewById(R.id.NotificationsButton); // grab our notifications button.
-        notificationsButton.setOnClickListener(new View.OnClickListener()
-        {
+        notificationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -170,8 +168,7 @@ public class MainGameUI extends Activity {
         });
 
         Button settingsButton = (Button) findViewById(R.id.SettingsButton); // grab our settings button.
-        settingsButton.setOnClickListener(new View.OnClickListener()
-        {
+        settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -180,6 +177,6 @@ public class MainGameUI extends Activity {
                 // some of the features inside the settings fragment do not work yet and will be updated when some more of the main features of the game have been implemented.
             }
         });
-    }
 
+    }
 }
