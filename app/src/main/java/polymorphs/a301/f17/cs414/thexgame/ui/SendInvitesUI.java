@@ -19,7 +19,7 @@ import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListListener;
  *
  * This fragment will be in control of adding, removing, and sending invites to users that the player wants to use.
  *
- * WARNING** This class is in progress and not to be used yet! todo: @Miles, you will be using SendNotificationsUI for now until SendInvitesUI is finished ~Roger
+ * WARNING** TODO: team, this class is going to be removed I will not be using this class because I'm going to change the entire UI
  */
 
 public class SendInvitesUI extends Fragment {

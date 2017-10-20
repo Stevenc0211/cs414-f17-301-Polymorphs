@@ -39,16 +39,19 @@ public class UsernameListListener {
     ChildEventListener listener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            System.out.println("test");
             inviteList.put(s, dataSnapshot.getValue(String.class));
         }
 
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            System.out.println("test1");
             inviteList.put(s, dataSnapshot.getValue(String.class));
         }
 
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
+            System.out.println("test2");
             String removedUsername = dataSnapshot.getValue(String.class);
             Set<String> keys = inviteList.keySet();
             String rmKey = "";

@@ -40,6 +40,14 @@ public class MainGameUI extends Activity {
     private NotificationsUI notificationsUI = new NotificationsUI(); // a copy of the notifications UI that should be built for the user.
     private SettingsUI settingsUI = new SettingsUI(); // holds a copy of our settingsUI.
     private User currentUser; // this is our main user which is created as soon as they start the app.
+    private Button submitButton; // holds a copy of the submit button so we can terminate the button once the view is gone.
+
+    private SubmitButtonClickListener submitClickListener;
+
+    // These will be populated by the shared preferences.
+    private String email; // email of the user.
+    private String name; // name of the user.
+    private String username; // username of the user
 
     // this method is in charge of starting the fragment for the user to be in charge of setting everything up correctly!!!
     protected void createInGameUIFragment() {
@@ -129,10 +137,36 @@ public class MainGameUI extends Activity {
         return usernameCreated;
     }
 
+    protected boolean isUserCreated()
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean userCreated = preferences.getBoolean("userCreated", false); // grabs the boolean named usernameCreated, if the boolean does not exist, the default boolean is false.
+        return userCreated;
+    }
+
     // When this method is called, the mainGameUI is created along with all of the adapters and button listeners with the homescreenlayout created.
     protected void createMainGameUI()
     {
         setContentView(R.layout.homescreen); // set the homescreen layout.
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
+        if(isUserCreated() == false)
+        {
+            name = submitClickListener.getName();
+            email = submitClickListener.getEmail();
+            username = submitClickListener.getUsername();
+
+            System.out.println("name we want to send = " + name);
+            System.out.println("email we want to send = " + email);
+            System.out.println("username we want to send = " + username);
+
+            // TODO: @Miles, right here we are able to set the information into the database FINALLY! I don't know why it's so hard to move data out of listeners lol.
+            DBIOCore.setCurrentUser(name, email, username); // adds a user to the database @Miles, if you haven't already, look in the DBIOcore to see the changes and comments I have made.
+        }
+        else
+        {
+            preferences.edit().putBoolean("userCreated", true).commit(); // IGNORE THIS!
+        }
 
         history = (ListView) findViewById(R.id.HistoryList); // holds the list of the history for the users to be able to work with!!
 
@@ -195,25 +229,36 @@ public class MainGameUI extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+        // we are WRITING to main memory here. This is putting out boolean in so that the user never has to create a new username again.
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        //preferences.edit().putBoolean("usernameCreated", true).commit();
+
         super.onCreate(savedInstanceState);
 
         Intent thisIntent = getIntent(); // grab the intent sent from the StartupScreen class.
         Bundle args = thisIntent.getBundleExtra("args");
-        final String googleDisplayName = args.getString("GoogleDisplayName");
-        final String email = args.getString("email");
+        name = args.getString("GoogleDisplayName");
+        email = args.getString("email");
 
 
         if(isUsernameSet() == false)
         {
-            // we are WRITING to main memory here. This is putting out boolean in so that the user never has to create a new username again.
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
             preferences.edit().putBoolean("usernameCreated", true).commit();
-
+            preferences.edit().putBoolean("userCreated", true).commit();
 
             setContentView(R.layout.setusername); // set's the username layout for us to be able to use.
             final EditText textField = (EditText) findViewById(R.id.usernameField); // grab the edit text username field.
             final Button submitButton = (Button) findViewById(R.id.submitButton); // grab the submit button.
 
+
+            submitClickListener = new SubmitButtonClickListener(name, email, textField, MainGameUI.this);
+            submitButton.setOnClickListener(submitClickListener);
+
+            System.out.println("name from button: " + submitClickListener.getName());
+            System.out.println("name from button: " + submitClickListener.getEmail());
+            System.out.println("name from button: " + submitClickListener.getUsername());
+
+            /*
             // Hitting submit will send the username off into the data base for the users to be able to get things. Pretty cool
             submitButton.setOnClickListener(new View.OnClickListener()
             {
@@ -226,15 +271,17 @@ public class MainGameUI extends Activity {
                     }
                     else // save the username write it to the DataBase.
                     {
-                        String username = textField.getText().toString(); // grab the username.
+                        username = textField.getText().toString(); // grab the username.
 
-                        User thisUser = new User(googleDisplayName, email, username);
-                        DBIOCore.addUser(thisUser); // adds a user to the database @Miles, if you haven't already, look in the DBIOcore to see the changes and comments I have made.
-                        submitButton.setOnClickListener(null); // remove the click listener.
+                        //User thisUser = new User(googleDisplayName, email, username);
+                        preferences.edit().putString("name", name);
+                        preferences.edit().putString("email", email);
+                        preferences.edit().putString("username", username);
                         createMainGameUI(); // create the main game ui now.
                     }
                 }
             });
+            */
 
         }
         else

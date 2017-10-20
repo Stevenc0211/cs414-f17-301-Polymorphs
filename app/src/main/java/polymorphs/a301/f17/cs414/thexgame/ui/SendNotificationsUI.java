@@ -74,7 +74,10 @@ public class SendNotificationsUI extends Activity  {
         // Important to note: the person who is sending the invites should be the same.
         // TODO: @Miles, @Andy, you guys should try to figure out how to send in the name of the user who is sending in the invite. If not, I can figure it out, but for right now I hardcoded it for you to test!
 
-        ArrayList<String> people = DBIOCore.getUsernames(); // get the list of usernames from the database.
+        UsernameListListener usernameListener = new UsernameListListener();
+        DBIOCore.registerToUsernameList(usernameListener);
+        // TODO: @MILES ** this is where I'm getting the failed error and I cannot for the life of me figure out why. I get a null exception when I try to grab the data.
+        ArrayList<String> people = usernameListener.getUsernameList(); // get the list of usernames
         for(int i = 0; i < people.size(); i++)
         {
             Invitation invite = new Invitation("thenotoriousrog", people.get(i));
