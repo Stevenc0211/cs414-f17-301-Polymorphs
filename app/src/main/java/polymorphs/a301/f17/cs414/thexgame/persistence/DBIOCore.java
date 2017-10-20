@@ -15,6 +15,7 @@ import java.util.Iterator;
 import polymorphs.a301.f17.cs414.thexgame.Invitation;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
 
+
 import static android.content.ContentValues.TAG;
 
 /**
@@ -25,9 +26,35 @@ import static android.content.ContentValues.TAG;
 public class DBIOCore {
     private static DatabaseReference baseReference = FirebaseDatabase.getInstance().getReference();
     private static String currentUser;
-    private static User thisUser; // this is exactly the same idea as the above currentUser, but with the User Object.
+   // private static UserOld thisUser; // this is exactly the same idea as the above currentUser, but with the UserOld Object.
 
 
+
+    /**
+     * Sets the current user, i.e. the user who in running the app. Should only be used in the StartupScreen
+     * @param userName - a username, if this is a first time user a new user object will be added to the database
+
+    public static void setCurrentUser(String userName) {
+        currentUser = userName;
+        DatabaseReference tmp = getUserReference();
+        tmp.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User testUser = dataSnapshot.getValue(User.class);
+                if (testUser == null) {
+                    getUserReference().setValue(new User(currentUser));
+                    String key = baseReference.child("usernameList").push().getKey();
+                    baseReference.child("usernameList").child(key).setValue(currentUser);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+            }
+        });
+    }
+    */
 
 
     /** TODO: @Miles I removed this because I think that we should be making use of the objects themselves in the database.
