@@ -65,6 +65,7 @@ public class SendNotificationsUI extends Activity  {
 
         Intent sendInvitesIntent = getIntent();
         Bundle args = sendInvitesIntent.getBundleExtra("args");
+        ArrayList<String> people = args.getStringArrayList("usernames"); // grab the set of usernames from InGameUI
 
         // TODO: @Miles, okay so I have made the database serializable so we can have our database object. I also made Invitation serializable so we shouldn't have anymore problems from now on.
         // TODO: All you need to do now is populate the database with something.
@@ -74,10 +75,7 @@ public class SendNotificationsUI extends Activity  {
         // Important to note: the person who is sending the invites should be the same.
         // TODO: @Miles, @Andy, you guys should try to figure out how to send in the name of the user who is sending in the invite. If not, I can figure it out, but for right now I hardcoded it for you to test!
 
-        UsernameListListener usernameListener = new UsernameListListener();
-        DBIOCore.registerToUsernameList(usernameListener);
-        // TODO: @MILES ** this is where I'm getting the failed error and I cannot for the life of me figure out why. I get a null exception when I try to grab the data.
-        ArrayList<String> people = usernameListener.getUsernameList(); // get the list of usernames
+
         for(int i = 0; i < people.size(); i++)
         {
             Invitation invite = new Invitation("thenotoriousrog", people.get(i));

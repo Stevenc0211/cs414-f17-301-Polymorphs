@@ -39,6 +39,8 @@ public class InGameUI extends Fragment {
     private boolean startNewGame = false; // tells the inGameUI that we want to start a new game, which involves sending a list of invite(s) to other player(s).
     private boolean openCurrentGames = false; // tells inGameUI to just open the current list of games.
 
+    ArrayList<String> usernames; // holds the list of people to invite.
+
     // this method sets up our game pager.
     protected void setupGamePager(View gameUIView) {
         // Need to setup the view pager now!
@@ -83,6 +85,7 @@ public class InGameUI extends Fragment {
         currentGames = args.getStringArrayList("currentGames"); // grab the ArrayList of current games. // todo: perhaps grabbed from database? If not, remove this line.
         startNewGame = args.getBoolean("Start new game"); // grab the boolean argument.
         openCurrentGames = args.getBoolean("Open current games"); // grab the boolean argument.
+        usernames = args.getStringArrayList("usernames");
     }
 
     // Pops up a dialog box and asks if users want to send invites, upon yes, inflate the send_invitations.xml
@@ -105,7 +108,9 @@ public class InGameUI extends Fragment {
 
                 Intent sendInvitesIntent = new Intent(getActivity(), SendNotificationsUI.class);
                 Bundle args = new Bundle(); // bundle to send to SendNotificationsUI
+                args.putStringArrayList("usernames", usernames);
                 sendInvitesIntent.putExtra("args", args); // put the bundle into the intent to be grabbed.
+
 
                 startActivity(sendInvitesIntent); // start the activity.
             }
