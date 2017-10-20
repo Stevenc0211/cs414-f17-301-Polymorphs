@@ -118,20 +118,21 @@ public class StartupScreen extends AppCompatActivity implements GoogleApiClient.
         }
     }
 
-    // TODO: look here for when we want to implement users to invite another user to play a game.
     private void handleSignInResult(GoogleSignInResult result) {
         //Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount(); // grabs this users account which can be used to assign the name to accounts in our game!!
             String userGoogleDisplayName = acct.getDisplayName(); // get this user's display name, pretty awesome!
-            DBIOCore.setCurrentUser(userGoogleDisplayName); // Starting DBIOCore
-            // TODO: TEAM, play around with some of the things GoogleSignInAccount can do for example, type in acct. (like literally type the dot ('.') and see some of the methods that show up!
-
-           // Toast.makeText(getApplicationContext(), "Welcome to Chad Chess, " + userGoogleDisplayName, Toast.LENGTH_LONG).show(); // this message may be too long at first, also we want to change it to mix things up.
+            String email = acct.getEmail(); // get this user's email
+            //DBIOCore.setCurrentUser(userGoogleDisplayName); // Starting DBIOCore, removed for now to follow the general flow of adding users to the database.
 
             // TODO: start the main game activity here!!!
             Intent mainGameUIIntent = new Intent(StartupScreen.this, MainGameUI.class); // main game ui intent that is sent when the app is started.
+            Bundle args = new Bundle();
+            args.putString("GoogleDisplayName", userGoogleDisplayName); // put the user's google display name
+            args.putString("email", email); // put the email as an argument too.
+            mainGameUIIntent.putExtra("args", args); // send in the arguments for the MainGameUI
             startActivity(mainGameUIIntent);
         }
         else // Signed out, show unauthenticated UI.

@@ -9,8 +9,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import polymorphs.a301.f17.cs414.thexgame.Invitation;
-import polymorphs.a301.f17.cs414.thexgame.User;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
 
 import static android.content.ContentValues.TAG;
 
@@ -22,23 +25,104 @@ import static android.content.ContentValues.TAG;
 public class DBIOCore {
     private static DatabaseReference baseReference = FirebaseDatabase.getInstance().getReference();
     private static String currentUser;
+    private static User thisUser; // this is exactly the same idea as the above currentUser, but with the User Object.
 
-    /**
-     * Sets the current user, i.e. the user who in running the app. Should only be used in the StartupScreen
-     * @param userName - a username, if this is a first time user a new user object will be added to the database
+    /*
+        todo: @Miles I added this method to help me grab a list of registered users, if you do not like please let me know and I can remove it ~Roger.
+
+        Retrieves the list of usernames from within the database.
      */
-    public static void setCurrentUser(String userName) {
-        currentUser = userName;
-        DatabaseReference tmp = getUserReference();
-        tmp.addListenerForSingleValueEvent(new ValueEventListener() {
+    public static ArrayList<String> getUsernames()
+    {
+        final ArrayList<String> usernames = new ArrayList<>();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                User testUser = dataSnapshot.getValue(User.class);
-                if (testUser == null) {
-                    getUserReference().setValue(new User(currentUser));
-                    String key = baseReference.child("usernameList").push().getKey();
-                    baseReference.child("usernameList").child(key).setValue(currentUser);
+
+                for(DataSnapshot userSnapshot: dataSnapshot.getChildren())
+                {
+                    // TODO: @Miles, I'm struggling to read the data, I get an error when I try to create game and grab the list of users.
+                    // **WEIRD** another weird thing is when I print out str right below, it shows for whatever reason, my email address. Not my name or my random nickname.
+
+                    String str = (String) userSnapshot.getValue(String.class).toString();
+                    System.out.println("The string equivalent of what we are trying to grab = " + str);
+                    User user = userSnapshot.getValue(User.class);
+                    if(user != null)
+                    {
+                        usernames.add(user.getNickname()); // add this to the list of usernames we want to return.
+                    }
+                    else
+                    {
+                        System.out.println("found null child!!");
+                    }
                 }
+
+                /*
+                Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator(); // iterator to iterate through list of users.
+                while(iterator.hasNext())
+                {
+                    DataSnapshot snapshot = iterator.next();
+                    User user = snapshot.child("users").getValue(User.class);
+                    if(user != null)
+                    {
+                        usernames.add(user.getNickname()); // add this to the list of usernames we want to return.
+                    }
+                    else
+                    {
+                        System.out.println("found null child!!");
+                    }
+
+                }
+                */
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+            }
+        });
+
+        return usernames;
+    }
+
+    /** TODO: @Miles I added this because I think we should be making use of objects in our database.
+     * Adds a user to the database. This is only called once (besides for testing purposes) in MainGameUI *AFTER* a user selects their username (nickname) for the very first (and only) time.
+     * @param userToAdd - this is a user that we are adding to the database. This only happens once they have logged in using oAuth and have set a nickname.
+     *                    This is started in StartupScreen and finishes in MainGameUI.
+     */
+    public static void addUser(final User userToAdd) {
+        //DatabaseReference tmp = getUserReference();
+       //final DatabaseReference usersRef = baseReference.getRef().child("users");
+        final DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+
+        baseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                // TODO: @Miles I'm trying to add a user to the database here, but I want to add the User object and I guess I don't know how to add User to the child "users" how do I do that?
+
+                //User testUser = dataSnapshot.child("users").getValue(User.class);
+                //Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
+
+                System.out.println("user we want to have has name: " + userToAdd.getName() + " email: " + userToAdd.getEmail() + " nickname: " + userToAdd.getNickname());
+                //baseReference.child("users").child(userToAdd.getNickname()).setValue(userToAdd); // add the user to the database of user objects.
+                //baseReference.child("usernameList").child(userToAdd.getNickname()).setValue(userToAdd); // add the user's nickname to the list of nicknames in the database.
+
+                usersRef.child(userToAdd.getNickname()).setValue(userToAdd); // add the user to the database of user objects.
+                usersRef.child(userToAdd.getNickname()).setValue(userToAdd); // add the user's nickname to the list of nicknames in the database.
+                //usersRef.setValue(userToAdd);
+
+                /*
+                if (testUser == null) // if user is not in the database add them.
+                {
+                    baseReference.child("users").setValue(userToAdd); // add the user to the database of user objects.
+                    baseReference.child("usernameList").child(userToAdd.getNickname()).setValue(userToAdd); // add the user's nickname to the list of nicknames in the database.
+                    thisUser = testUser; // set the actual object for us to use.
+                }
+                */
+
             }
 
             @Override
@@ -47,6 +131,34 @@ public class DBIOCore {
             }
         });
     }
+
+
+    /** TODO: @Miles I removed this because I think that we should be making use of the objects themselves in the database.
+     * Sets the current user, i.e. the user who in running the app. Should only be used in the StartupScreen
+     * @param userName - a username, if this is a first time user a new user object will be added to the database
+
+    public static void setCurrentUser(String userName) {
+        currentUser = userName;
+        DatabaseReference tmp = getUserReference();
+        tmp.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                User testUser = dataSnapshot.getValue(User.class);
+                if (testUser == null) {
+                    getUserReference().setValue(new User(currentUser));
+                    String key = baseReference.child("usernameList").push().getKey();
+                    baseReference.child("usernameList").child(key).setValue(currentUser);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+            }
+        })
+    */
 
     /**
      * This returns a reference to the current users user object in the database.

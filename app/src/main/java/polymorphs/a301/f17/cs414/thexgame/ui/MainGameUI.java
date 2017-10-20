@@ -1,18 +1,25 @@
 package polymorphs.a301.f17.cs414.thexgame.ui;
 
+
+
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import polymorphs.a301.f17.cs414.thexgame.R;
-import polymorphs.a301.f17.cs414.thexgame.User;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.persistence.UserListener;
 
@@ -32,10 +39,10 @@ public class MainGameUI extends Activity {
     private InGameUI inGameUI = new InGameUI(); // this is the copy of the in game ui that we will be able to control from outside the class if we really need to!
     private NotificationsUI notificationsUI = new NotificationsUI(); // a copy of the notifications UI that should be built for the user.
     private SettingsUI settingsUI = new SettingsUI(); // holds a copy of our settingsUI.
+    private User currentUser; // this is our main user which is created as soon as they start the app.
 
     // this method is in charge of starting the fragment for the user to be in charge of setting everything up correctly!!!
-    protected void createInGameUIFragment()
-    {
+    protected void createInGameUIFragment() {
         Bundle fragmentArgs = new Bundle(); // the Bundle here allows us to send arguments to our fragment!
         // we should pull items from the data base including all of the users current games.
         // we should then send the information to the games here by attaching the games to the user which is pretty important!
@@ -57,8 +64,7 @@ public class MainGameUI extends Activity {
     }
 
     // This method has code very similar to createInGameUIFragment, this one is not creating a new game however, this will simply pull from the database and show the current games of the user.
-    protected void openCurrentGamesFragment()
-    {
+    protected void openCurrentGamesFragment() {
         Bundle fragmentArgs = new Bundle(); // the Bundle here allows us to send arguments to our fragment!
         // we should pull items from the data base including all of the users current games.
         // we should then send the information to the games here by attaching the games to the user which is pretty important!
@@ -81,8 +87,7 @@ public class MainGameUI extends Activity {
     }
 
     // This method opens up the notifications fragment
-    protected void openNotificationsFragment()
-    {
+    protected void openNotificationsFragment() {
         Bundle fragmentArgs = new Bundle(); // the Bundle here allows us to send arguments to our fragment!
         // we should pull items from the data base including all of the users current games.
         // we should then send the information to the games here by attaching the games to the user which is pretty important!
@@ -101,8 +106,7 @@ public class MainGameUI extends Activity {
     }
 
     // This method opens the settings fragment.
-    protected void openSettingsFragment()
-    {
+    protected void openSettingsFragment() {
         Bundle fragmentArgs = new Bundle(); // the Bundle here allows us to send arguments to our fragment!
 
         inGameUI.setArguments(fragmentArgs); // set the arguments of the fragment.
@@ -116,10 +120,18 @@ public class MainGameUI extends Activity {
         transaction.commit(); // commit the fragment to be loaded.
     }
 
-    // This is the first thing called when this class is called and will create the startup screen UI.
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    // checks the SharedPreferences to see if the username has correctly been set. If so, proceed to maingameui, otherwise show newusername layout.
+    protected boolean isUsernameSet()
+    {
+        // We are reading from main memory here. This is where we will have to have read/write permissions setup on the phone. The app will always ask for a username unless we have this here.
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean usernameCreated = preferences.getBoolean("usernameCreated", false); // grabs the boolean named usernameCreated, if the boolean does not exist, the default boolean is false.
+        return usernameCreated;
+    }
+
+    // When this method is called, the mainGameUI is created along with all of the adapters and button listeners with the homescreenlayout created.
+    protected void createMainGameUI()
+    {
         setContentView(R.layout.homescreen); // set the homescreen layout.
 
         history = (ListView) findViewById(R.id.HistoryList); // holds the list of the history for the users to be able to work with!!
@@ -177,6 +189,60 @@ public class MainGameUI extends Activity {
                 // some of the features inside the settings fragment do not work yet and will be updated when some more of the main features of the game have been implemented.
             }
         });
+    }
+
+    // This is the first thing called when this class is called and will create the startup screen UI.
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        Intent thisIntent = getIntent(); // grab the intent sent from the StartupScreen class.
+        Bundle args = thisIntent.getBundleExtra("args");
+        final String googleDisplayName = args.getString("GoogleDisplayName");
+        final String email = args.getString("email");
+
+
+        if(isUsernameSet() == false)
+        {
+            // we are WRITING to main memory here. This is putting out boolean in so that the user never has to create a new username again.
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+            preferences.edit().putBoolean("usernameCreated", true).commit();
+
+
+            setContentView(R.layout.setusername); // set's the username layout for us to be able to use.
+            final EditText textField = (EditText) findViewById(R.id.usernameField); // grab the edit text username field.
+            final Button submitButton = (Button) findViewById(R.id.submitButton); // grab the submit button.
+
+            // Hitting submit will send the username off into the data base for the users to be able to get things. Pretty cool
+            submitButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view) {
+
+                    if(textField.getText().length() == 0)
+                    {
+                        Toast.makeText(getApplicationContext(), "You must enter a username " + ("\ud83d\ude1c"), Toast.LENGTH_SHORT).show(); // display a little message (with silly face) to the user.
+                    }
+                    else // save the username write it to the DataBase.
+                    {
+                        String username = textField.getText().toString(); // grab the username.
+
+                        User thisUser = new User(googleDisplayName, email, username);
+                        DBIOCore.addUser(thisUser); // adds a user to the database @Miles, if you haven't already, look in the DBIOcore to see the changes and comments I have made.
+                        submitButton.setOnClickListener(null); // remove the click listener.
+                        createMainGameUI(); // create the main game ui now.
+                    }
+                }
+            });
+
+        }
+        else
+        {
+            createMainGameUI(); // setup the familiar homescreen layout that we are used to seeing.
+        }
+
+
 
     }
 }

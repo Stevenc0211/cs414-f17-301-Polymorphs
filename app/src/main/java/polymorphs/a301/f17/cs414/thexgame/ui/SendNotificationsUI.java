@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.Invitation;
 import polymorphs.a301.f17.cs414.thexgame.R;
+import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListListener;
 
 /**
  * Created by steve-0 on 10/17/17. Updated and commented by Roger.
@@ -72,6 +73,15 @@ public class SendNotificationsUI extends Activity  {
 
         // Important to note: the person who is sending the invites should be the same.
         // TODO: @Miles, @Andy, you guys should try to figure out how to send in the name of the user who is sending in the invite. If not, I can figure it out, but for right now I hardcoded it for you to test!
+
+        ArrayList<String> people = DBIOCore.getUsernames(); // get the list of usernames from the database.
+        for(int i = 0; i < people.size(); i++)
+        {
+            Invitation invite = new Invitation("thenotoriousrog", people.get(i));
+            peopleToInvite.add(invite);
+        }
+
+        /*
         Invitation inv1 = new Invitation("Roger", "Miles");
         Invitation inv2 = new Invitation("Roger", "Andy");
         Invitation inv3 = new Invitation("Roger", "Steven");
@@ -84,6 +94,7 @@ public class SendNotificationsUI extends Activity  {
         peopleToInvite.add(inv4);
         peopleToInvite.add(inv5);
         peopleToInvite.add(inv6);
+        */
 
         setupUI(peopleToInvite);
     }
