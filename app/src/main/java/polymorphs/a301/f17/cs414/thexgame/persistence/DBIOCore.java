@@ -24,6 +24,7 @@ public class DBIOCore {
     private static DatabaseReference baseReference = FirebaseDatabase.getInstance().getReference();
     private static String currentUser;
     private static String userEmail;
+    private static String userNickname;
 
     /**
      * Sets up the database to begin serving data for the current user. Should be called from the
@@ -49,6 +50,7 @@ public class DBIOCore {
                 }
                 else
                 {
+                    userNickname = testUser.getNickname();
                     System.out.println("Nothing was added to the database!");
                 }
 
@@ -86,7 +88,7 @@ public class DBIOCore {
      * @param observer - the observer to register
      */
     public static void registerToCurrentUserInviteList(InviteListObserver observer) {
-        baseReference.child("invites").child(currentUser).addChildEventListener(new InviteListListener(observer));
+        baseReference.child("invites").child(userNickname).addChildEventListener(new InviteListListener(observer));
     }
 
     /**
