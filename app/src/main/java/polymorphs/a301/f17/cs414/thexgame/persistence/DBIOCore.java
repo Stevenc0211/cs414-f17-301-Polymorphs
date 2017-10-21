@@ -9,9 +9,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import polymorphs.a301.f17.cs414.thexgame.Invitation;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
 
@@ -26,48 +23,24 @@ import static android.content.ContentValues.TAG;
 public class DBIOCore {
     private static DatabaseReference baseReference = FirebaseDatabase.getInstance().getReference();
     private static String currentUser;
-   // private static UserOld thisUser; // this is exactly the same idea as the above currentUser, but with the UserOld Object.
-
-
+    private static String userEmail;
+    private static UserListener userListener = null;
+    private static InviteListListener inviteListListener = null;
+    private static UsernameListListener usernameListListener = null;
 
     /**
-     * Sets the current user, i.e. the user who in running the app. Should only be used in the StartupScreen
-     * @param userName - a username, if this is a first time user a new user object will be added to the database
-
-    public static void setCurrentUser(String userName) {
-        currentUser = userName;
-        DatabaseReference tmp = getUserReference();
-        tmp.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User testUser = dataSnapshot.getValue(User.class);
-                if (testUser == null) {
-                    getUserReference().setValue(new User(currentUser));
-                    String key = baseReference.child("usernameList").push().getKey();
-                    baseReference.child("usernameList").child(key).setValue(currentUser);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-            }
-        });
-    }
-    */
-
-
-    /** TODO: @Miles I removed this because I think that we should be making use of the objects themselves in the database.
-     * Sets the current user, i.e. the user who in running the app. Should only be used in the StartupScreen
-     * @param userName - a username, if this is a first time user a new user object will be added to the database
-    */
-    public static void setCurrentUser(final String name, final String email, final String userName) {
-        currentUser = userName;
+     * Sets up the database to begin serving data for the current user. Should be called from the
+     * start screen only. If the user is new a new user object will be added to the database with a black username (nickname)
+     * @param name - the google display name for the user, will be the primary key of the current user
+     * @param email - the users email
+     */
+    public static void setCurrentUser(String name, final String email) {
+        currentUser = name;
+        userEmail = email;
         DatabaseReference tmp = getUserReference();
 
         System.out.println("name of person we are adding: " + name);
         System.out.println("email of person we are adding: " + email);
-        System.out.println("username of person we are adding: " + userName);
         tmp.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -75,9 +48,7 @@ public class DBIOCore {
                 User testUser = dataSnapshot.getValue(User.class);
                 if (testUser == null) {
                     System.out.println("We are adding the user now!");
-                    getUserReference().setValue(new User(name, email, currentUser));
-                    String key = baseReference.child("usernameList").push().getKey();
-                    baseReference.child("usernameList").child(key).setValue(currentUser);
+                    getUserReference().setValue(new User(currentUser, email, ""));
                 }
                 else
                 {
@@ -104,21 +75,42 @@ public class DBIOCore {
     }
 
     /**
-     * This method registers the passed UserListener to the current users data. The UserListener will be kept
-     * up to data with any changes to the current users data
-     * @param listener - the listener to register
+     * This method registers the passed Observer to the current users data. The Observers update methods
+     * will be called if there is any change in the user data
+     * @param observer - the observer to register
      */
-    public static void registerToCurrentUser(UserListener listener) {
-        getUserReference().addValueEventListener(listener.listener);
+    public static void registerToCurrentUser(UserObserver observer) {
+        if (userListener == null) {
+            userListener = new UserListener();
+            getUserReference().addValueEventListener(userListener);
+        }
+        userListener.attach(observer);
     }
 
     /**
-     * This method registers the passed InviteListListener to the current users invitation list.
-     * The InviteListListener will be kept up to data with any changes to the current users invitation list
-     * @param listener - the listener to register
+     * This method registers the passed Observer to the current users invitation list.
+     * The Observers update methods will be called if there is any change in the list data
+     * @param observer - the observer to register
      */
-    public static void registerToCurrentUserInviteList(InviteListListener listener) {
-        baseReference.child("invites").child(currentUser).addChildEventListener(listener.listener);
+    public static void registerToCurrentUserInviteList(InviteListObserver observer) {
+        if (inviteListListener == null) {
+            inviteListListener = new InviteListListener();
+            getUserReference().addChildEventListener(inviteListListener);
+        }
+        inviteListListener.attach(observer);
+    }
+
+    /**
+     * This method registers the passed Observer to the master username list.
+     * The Observers update methods will be called if there is any change in the list data
+     * @param observer - the observer to register
+     */
+    public static void registerToUsernameList(UsernameListObserver observer) {
+        if (usernameListListener == null) {
+            usernameListListener = new UsernameListListener();
+            getUserReference().addChildEventListener(usernameListListener);
+        }
+        usernameListListener.attach(observer);
     }
 
     /**
@@ -133,11 +125,12 @@ public class DBIOCore {
     }
 
     /**
-     * This method registers the passed UsernameListListener to the master list of usernames.
-     * The UsernameListListener will be kept up to data with any changes master list of usernames.
-     * @param listener - the listener to register
+     * This should be used when the username (nickname) of the current user needs to be set.
+     * @param username - the new username (nickname)
      */
-    public static void registerToUsernameList(UsernameListListener listener) {
-        baseReference.child("usernameList").addChildEventListener(listener.listener);
+    public static void setCurrentUserUsername(String username) {
+        getUserReference().child("nickname").setValue(username);
+        String key = baseReference.child("usernameList").push().getKey();
+        baseReference.child("usernameList").child(key).setValue(username);
     }
 }

@@ -15,8 +15,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import polymorphs.a301.f17.cs414.thexgame.R;
+import polymorphs.a301.f17.cs414.thexgame.User;
+import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
+import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListObserver;
 
 /**
  * Created by thenotoriousrog on 10/13/17.
@@ -25,7 +29,7 @@ import polymorphs.a301.f17.cs414.thexgame.R;
  * destroyed relatively easily and we want this to be built and destroyed relativly easy which is very important for us to do correctly!
  */
 
-public class InGameUI extends Fragment {
+public class InGameUI extends Fragment implements UsernameListObserver {
 
     private ArrayList<String> currentGames; // the list of current games.
     private ViewPager gamePager; // this holds the game view pager which essentially is a list of horizontal list items of the game, which is pretty awesome!
@@ -39,7 +43,7 @@ public class InGameUI extends Fragment {
     private boolean startNewGame = false; // tells the inGameUI that we want to start a new game, which involves sending a list of invite(s) to other player(s).
     private boolean openCurrentGames = false; // tells inGameUI to just open the current list of games.
 
-    ArrayList<String> usernames; // holds the list of people to invite.
+    HashMap<String, String> usernames; // holds the list of people to invite keyed by the previous usernames database key
 
     // this method sets up our game pager.
     protected void setupGamePager(View gameUIView) {
@@ -85,7 +89,6 @@ public class InGameUI extends Fragment {
         currentGames = args.getStringArrayList("currentGames"); // grab the ArrayList of current games. // todo: perhaps grabbed from database? If not, remove this line.
         startNewGame = args.getBoolean("Start new game"); // grab the boolean argument.
         openCurrentGames = args.getBoolean("Open current games"); // grab the boolean argument.
-        usernames = args.getStringArrayList("usernames");
     }
 
     // Pops up a dialog box and asks if users want to send invites, upon yes, inflate the send_invitations.xml
@@ -108,7 +111,8 @@ public class InGameUI extends Fragment {
 
                 Intent sendInvitesIntent = new Intent(getActivity(), SendNotificationsUI.class);
                 Bundle args = new Bundle(); // bundle to send to SendNotificationsUI
-                args.putStringArrayList("usernames", usernames);
+                ArrayList<String> users = new ArrayList<>( usernames.values() );
+                args.putStringArrayList("usernames", users);
                 sendInvitesIntent.putExtra("args", args); // put the bundle into the intent to be grabbed.
 
 
@@ -132,6 +136,10 @@ public class InGameUI extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        DBIOCore.registerToUsernameList(this);
+        usernames = new HashMap<>();
+
+
         View gameUIView = inflater.inflate(R.layout.in_game_ui, container, false); // inflate our view of our main game.
 
         inGameUI = gameUIView; // set out global value to be GameUIView <-- yes this is horrible coding, I will fix it later, I'm tired at the moment haha
@@ -177,4 +185,26 @@ public class InGameUI extends Fragment {
         return gameUIView; // return the view that we are working with.
     }
 
+    @Override
+    public void usernameAdded(String addedUsername, String precedingUsernameKey) {
+        usernames.put(precedingUsernameKey, addedUsername);
+    }
+
+    @Override
+    public void usernameChanged(String changedUsername, String precedingUsernameKey) {
+        usernames.put(precedingUsernameKey, changedUsername);
+    }
+
+    @Override
+    public void usernameRemoved(String removedUsername) {
+        String rmKey = "";
+        for (String key : usernames.keySet()) {
+            if (usernames.get(key).equals(removedUsername)) {
+                rmKey = key;
+            }
+        }
+        if (rmKey != "") {
+            usernames.remove(rmKey);
+        }
+    }
 }
