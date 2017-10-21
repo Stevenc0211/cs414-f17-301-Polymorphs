@@ -12,9 +12,27 @@ import java.io.Serializable;
 public class Invitation implements Serializable {
     private String invitingUser;
     private String invitedUser;
+    private boolean selected = false;
+    private String dbKey;
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
 
     public String getInvitingUser() {
         return invitingUser;
+    }
+
+    public void setDbKeyKey(String key) {
+        dbKey = key;
+    }
+
+    public String getDbKey() {
+        return dbKey;
     }
 
     public String getInvitedUser() {

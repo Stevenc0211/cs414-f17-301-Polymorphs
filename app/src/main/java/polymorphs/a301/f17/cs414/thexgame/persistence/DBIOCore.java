@@ -106,7 +106,12 @@ public class DBIOCore {
      */
     public static void sendInvite(Invitation invite) {
         String key = baseReference.child("invites").child(invite.getInvitedUser()).push().getKey();
+        invite.setDbKeyKey(key);
         baseReference.child("invites").child(invite.getInvitedUser()).child(key).setValue(invite);
+    }
+
+    public static void removeInvite(Invitation invite) {
+        baseReference.child("invites").child(invite.getInvitedUser()).child(invite.getDbKey()).removeValue();
     }
 
     /**

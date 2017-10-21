@@ -105,7 +105,6 @@ public class InGameUI extends Fragment implements UsernameListObserver, UserObse
         invitePlayersDialog.setContentView(R.layout.invite_players_dialog); // set the dialog that we want the users to see.
         invitePlayersDialog.setTitle("Do you want to invite players?");
         invitePlayersDialog.show(); // show the dialog asking if players want to send invite to players or not.
-
         Button yesButton = (Button) invitePlayersDialog.findViewById(R.id.dialogYesButton); // get the yes button for the dialog
         yesButton.setOnClickListener(new View.OnClickListener()
         {
@@ -161,7 +160,6 @@ public class InGameUI extends Fragment implements UsernameListObserver, UserObse
         for (int i = 0; i < 15; i++) {
             events.add("Event to notify...");
         }
-
         setupActivityListView(gameUIView); // setup the activity list for users to get news on what is happening with the game! TODO: this also should be shown in real time!
 
         TextView userVSOpponent = (TextView) gameUIView.findViewById(R.id.playersField); // get the text with the user and the player.

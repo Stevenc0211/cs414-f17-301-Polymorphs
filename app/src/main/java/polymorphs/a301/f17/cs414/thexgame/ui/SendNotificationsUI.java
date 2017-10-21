@@ -36,7 +36,9 @@ public class SendNotificationsUI extends Activity  {
             public void onClick(View view) {
 
                 for (int idx = 0; idx < allInvites.size(); idx++) {
-                    DBIOCore.sendInvite(allInvites.get(idx));
+                    if (inviteListAdapter.getItem(idx).isSelected()) {
+                        DBIOCore.sendInvite(allInvites.get(idx));
+                    }
                 }
 
                 finish(); // end the Activity.

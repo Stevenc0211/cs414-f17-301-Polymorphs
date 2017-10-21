@@ -46,6 +46,7 @@ public class SubmitButtonClickListener implements View.OnClickListener {
     public void onClick(View view)
     {
         username = usernameField.getText().toString();
+        // TODO: if users enter a number instead of text we must ask them to enter another
         // Adds the username to the user object of the new user
         DBIOCore.setCurrentUserUsername(username);
         mainGameUI.createMainGameUI();
