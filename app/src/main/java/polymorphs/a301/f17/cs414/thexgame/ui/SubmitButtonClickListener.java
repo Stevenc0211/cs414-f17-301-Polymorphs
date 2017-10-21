@@ -5,6 +5,8 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
+
 /**
  * Created by thenotoriousrog on 10/20/17.
  */
@@ -44,6 +46,8 @@ public class SubmitButtonClickListener implements View.OnClickListener {
     public void onClick(View view)
     {
         username = usernameField.getText().toString();
+        // Adds the username to the user object of the new user
+        DBIOCore.setCurrentUserUsername(username);
         mainGameUI.createMainGameUI();
     }
 

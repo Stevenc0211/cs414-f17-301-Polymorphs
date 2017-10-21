@@ -14,15 +14,13 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
-import polymorphs.a301.f17.cs414.thexgame.persistence.UserListener;
-import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListListener;
+import polymorphs.a301.f17.cs414.thexgame.persistence.UserObserver;
 
 /**
  * Created by Roger Hannagan on 9/19/17.
@@ -30,7 +28,7 @@ import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListListener;
  * This class is responsible for the main game UI. This is what we are going to update and mess with the most until we have a nice UI to work with. Updates will be applied here first.
  */
 
-public class MainGameUI extends Activity {
+public class MainGameUI extends Activity implements UserObserver {
 
     private ListView history; // holds the history of the game for us to use.
     private HistoryListAdapter histAdapter; // list adapter that shows the history of the apps themselves.
@@ -42,7 +40,6 @@ public class MainGameUI extends Activity {
     private SettingsUI settingsUI = new SettingsUI(); // holds a copy of our settingsUI.
     private User currentUser; // this is our main user which is created as soon as they start the app.
     private Button submitButton; // holds a copy of the submit button so we can terminate the button once the view is gone.
-    UsernameListListener usernameListener;
 
     private SubmitButtonClickListener submitClickListener;
 
@@ -57,13 +54,10 @@ public class MainGameUI extends Activity {
         // we should pull items from the data base including all of the users current games.
         // we should then send the information to the games here by attaching the games to the user which is pretty important!
 
-        ArrayList<String> people = usernameListener.getUsernameList(); // get the list of usernames
-
         currentGames.add("Game " + currentGames.size() + 1); // creates a new game with the name i.e. Game 2 (where the 2 will increase each time!)
         fragmentArgs.putStringArrayList("currentGames", currentGames); // send in the list of current games under the name of "currentGames"
         fragmentArgs.putBoolean("Start new game", true); // tells the InGameUI that the user wants to create a new game
         fragmentArgs.putBoolean("Open current games", false); // tells the InGameUI that the user just wants to open the list of current games.
-        fragmentArgs.putStringArrayList("usernames", people); // send this in for the ingame ui to be populated with the list of users.
 
         inGameUI.setArguments(fragmentArgs); // set the arguments of the fragment.
 
@@ -165,9 +159,6 @@ public class MainGameUI extends Activity {
             System.out.println("email we want to send = " + email);
             System.out.println("username we want to send = " + username);
 
-            // TODO: @Miles, right here we are able to set the information into the database FINALLY! I don't know why it's so hard to move data out of listeners lol.
-            DBIOCore.setCurrentUser(name, email, username); // adds a user to the database @Miles, if you haven't already, look in the DBIOcore to see the changes and comments I have made.
-
         }
         else
         {
@@ -241,14 +232,7 @@ public class MainGameUI extends Activity {
 
         super.onCreate(savedInstanceState);
 
-        usernameListener = new UsernameListListener();
-        DBIOCore.registerToUsernameList(usernameListener);
-
-        Intent thisIntent = getIntent(); // grab the intent sent from the StartupScreen class.
-        Bundle args = thisIntent.getBundleExtra("args");
-        name = args.getString("GoogleDisplayName");
-        email = args.getString("email");
-
+        DBIOCore.registerToCurrentUser(this);
 
         if(isUsernameSet() == false)
         {
@@ -300,5 +284,10 @@ public class MainGameUI extends Activity {
 
 
 
+    }
+
+    @Override
+    public void userUpdated(User u) {
+        currentUser = u;
     }
 }
