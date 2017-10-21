@@ -15,7 +15,13 @@ import static android.content.ContentValues.TAG;
  * This is used by the DBIOCore to organize all observers to a User object in the database.
  */
 
-class UserListener extends ListenerBase<UserObserver> implements ValueEventListener {
+class UserListener implements ValueEventListener {
+
+    private UserObserver observer;
+
+    public UserListener(UserObserver observer) {
+        this.observer = observer;
+    }
 
     /**
      * Called when Firebase detects a update to the data.
@@ -24,9 +30,7 @@ class UserListener extends ListenerBase<UserObserver> implements ValueEventListe
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
         User user = dataSnapshot.getValue(User.class);
-        for (UserObserver observer : observers){
-            observer.userUpdated(user);
-        }
+        observer.userUpdated(user);
     }
 
     /**

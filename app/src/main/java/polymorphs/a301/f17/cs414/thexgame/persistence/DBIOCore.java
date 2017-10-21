@@ -24,9 +24,6 @@ public class DBIOCore {
     private static DatabaseReference baseReference = FirebaseDatabase.getInstance().getReference();
     private static String currentUser;
     private static String userEmail;
-    private static UserListener userListener = null;
-    private static InviteListListener inviteListListener = null;
-    private static UsernameListListener usernameListListener = null;
 
     /**
      * Sets up the database to begin serving data for the current user. Should be called from the
@@ -34,7 +31,7 @@ public class DBIOCore {
      * @param name - the google display name for the user, will be the primary key of the current user
      * @param email - the users email
      */
-    public static void setCurrentUser(String name, final String email) {
+    public static void setCurrentUser(String name, String email) {
         currentUser = name;
         userEmail = email;
         DatabaseReference tmp = getUserReference();
@@ -48,7 +45,7 @@ public class DBIOCore {
                 User testUser = dataSnapshot.getValue(User.class);
                 if (testUser == null) {
                     System.out.println("We are adding the user now!");
-                    getUserReference().setValue(new User(currentUser, email, ""));
+                    getUserReference().setValue(new User(currentUser, userEmail, ""));
                 }
                 else
                 {
@@ -80,11 +77,7 @@ public class DBIOCore {
      * @param observer - the observer to register
      */
     public static void registerToCurrentUser(UserObserver observer) {
-        if (userListener == null) {
-            userListener = new UserListener();
-            getUserReference().addValueEventListener(userListener);
-        }
-        userListener.attach(observer);
+        getUserReference().addValueEventListener(new UserListener(observer));
     }
 
     /**
@@ -93,11 +86,7 @@ public class DBIOCore {
      * @param observer - the observer to register
      */
     public static void registerToCurrentUserInviteList(InviteListObserver observer) {
-        if (inviteListListener == null) {
-            inviteListListener = new InviteListListener();
-            getUserReference().addChildEventListener(inviteListListener);
-        }
-        inviteListListener.attach(observer);
+        baseReference.child("invites").child(currentUser).addChildEventListener(new InviteListListener(observer));
     }
 
     /**
@@ -106,11 +95,7 @@ public class DBIOCore {
      * @param observer - the observer to register
      */
     public static void registerToUsernameList(UsernameListObserver observer) {
-        if (usernameListListener == null) {
-            usernameListListener = new UsernameListListener();
-            getUserReference().addChildEventListener(usernameListListener);
-        }
-        usernameListListener.attach(observer);
+        baseReference.child("usernameList").addChildEventListener(new UsernameListListener(observer));
     }
 
     /**

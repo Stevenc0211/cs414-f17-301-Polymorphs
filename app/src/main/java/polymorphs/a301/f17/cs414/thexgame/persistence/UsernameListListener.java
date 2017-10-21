@@ -19,7 +19,13 @@ import static android.content.ContentValues.TAG;
  * This is used by the DBIOCore to organize all observers to the Username list in the database.
  */
 
-class UsernameListListener extends ListenerBase<UsernameListObserver> implements ChildEventListener {
+class UsernameListListener implements ChildEventListener {
+
+    private UsernameListObserver observer;
+
+    public UsernameListListener(UsernameListObserver observer) {
+        this.observer = observer;
+    }
 
     /**
      * Triggered when Firebase detects a new addition to the username list
@@ -28,9 +34,7 @@ class UsernameListListener extends ListenerBase<UsernameListObserver> implements
      */
     @Override
     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-        for (UsernameListObserver observer : observers) {
-            observer.usernameAdded(dataSnapshot.getValue(String.class), s);
-        }
+        observer.usernameAdded(dataSnapshot.getValue(String.class), s);
     }
 
     /**
@@ -40,9 +44,7 @@ class UsernameListListener extends ListenerBase<UsernameListObserver> implements
      */
     @Override
     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-        for (UsernameListObserver observer : observers) {
-            observer.usernameChanged(dataSnapshot.getValue(String.class), s);
-        }
+        observer.usernameChanged(dataSnapshot.getValue(String.class), s);
     }
 
     /**
@@ -51,9 +53,7 @@ class UsernameListListener extends ListenerBase<UsernameListObserver> implements
      */
     @Override
     public void onChildRemoved(DataSnapshot dataSnapshot) {
-        for (UsernameListObserver observer : observers) {
-            observer.usernameRemoved(dataSnapshot.getValue(String.class));
-        }
+        observer.usernameRemoved(dataSnapshot.getValue(String.class));
     }
 
     /**

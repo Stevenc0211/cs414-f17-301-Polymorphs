@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import polymorphs.a301.f17.cs414.thexgame.Invitation;
 import polymorphs.a301.f17.cs414.thexgame.R;
+import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 
 /**
  * Created by steve-0 on 10/17/17. Updated and commented by Roger.
@@ -21,7 +22,7 @@ import polymorphs.a301.f17.cs414.thexgame.R;
 public class SendNotificationsUI extends Activity  {
 
     // TODO: miles you will want to send the data base stuff here you will want to send in the list from the data base, i.e. an ArrayList of whatever object. It does have to be an arraylist.
-    private ArrayList<Invitation> peopleToInvite = new ArrayList<Invitation>(); // list of database items that we are working with.
+    private ArrayList<Invitation> allInvites = new ArrayList<>(); // list of database items that we are working with.
     private InviteListAdapter inviteListAdapter; // the adapter that will populate the invite list.
     // removed for now --> private final int SEND_INVITES = 4000; // this is the request code for sending invites to players very important.
 
@@ -34,8 +35,9 @@ public class SendNotificationsUI extends Activity  {
             @Override
             public void onClick(View view) {
 
-                // TODO: send invitations to each of the users in here. This will involve creating Invitation objects
-                // TODO: for each invited user then calling DBIOCore.sendInvite() for each invitation
+                for (int idx = 0; idx < allInvites.size(); idx++) {
+                    DBIOCore.sendInvite(allInvites.get(idx));
+                }
 
                 finish(); // end the Activity.
             }
@@ -62,38 +64,17 @@ public class SendNotificationsUI extends Activity  {
 
         Intent sendInvitesIntent = getIntent();
         Bundle args = sendInvitesIntent.getBundleExtra("args");
+        String currentUser = args.getString("currentUser");
         ArrayList<String> people = args.getStringArrayList("usernames"); // grab the set of usernames from InGameUI
-
-        // TODO: @Miles, okay so I have made the database serializable so we can have our database object. I also made Invitation serializable so we shouldn't have anymore problems from now on.
-        // TODO: All you need to do now is populate the database with something.
-
-
-
-        // Important to note: the person who is sending the invites should be the same.
-        // TODO: @Miles, @Andy, you guys should try to figure out how to send in the name of the user who is sending in the invite. If not, I can figure it out, but for right now I hardcoded it for you to test!
 
 
         for(int i = 0; i < people.size(); i++)
         {
-            Invitation invite = new Invitation("thenotoriousrog", people.get(i));
-            peopleToInvite.add(invite);
+            if (people.get(i).equals(currentUser)) continue;
+            Invitation invite = new Invitation(currentUser, people.get(i));
+            allInvites.add(invite);
         }
 
-        /*
-        Invitation inv1 = new Invitation("Roger", "Miles");
-        Invitation inv2 = new Invitation("Roger", "Andy");
-        Invitation inv3 = new Invitation("Roger", "Steven");
-        Invitation inv4 = new Invitation("Roger", "Badr");
-        Invitation inv5 = new Invitation("Roger", "Miles");
-        Invitation inv6 = new Invitation("Roger", "Ezio"); // I had to.
-        peopleToInvite.add(inv1);
-        peopleToInvite.add(inv2);
-        peopleToInvite.add(inv3);
-        peopleToInvite.add(inv4);
-        peopleToInvite.add(inv5);
-        peopleToInvite.add(inv6);
-        */
-
-        setupUI(peopleToInvite);
+        setupUI(allInvites);
     }
 }

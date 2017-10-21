@@ -16,7 +16,13 @@ import static android.content.ContentValues.TAG;
  */
 
 
-class InviteListListener extends ListenerBase<InviteListObserver> implements ChildEventListener{
+class InviteListListener implements ChildEventListener{
+
+    private InviteListObserver observer;
+
+    public InviteListListener(InviteListObserver observer) {
+        this.observer = observer;
+    }
 
     /**
      * Triggered when Firebase detects a new addition to the Invitation list
@@ -25,9 +31,7 @@ class InviteListListener extends ListenerBase<InviteListObserver> implements Chi
      */
     @Override
     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-        for (InviteListObserver observer : observers) {
-            observer.inviteAdded(dataSnapshot.getValue(Invitation.class), s);
-        }
+        observer.inviteAdded(dataSnapshot.getValue(Invitation.class), s);
     }
 
     /**
@@ -37,9 +41,7 @@ class InviteListListener extends ListenerBase<InviteListObserver> implements Chi
      */
     @Override
     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-        for (InviteListObserver observer : observers) {
-            observer.inviteChanged(dataSnapshot.getValue(Invitation.class), s);
-        }
+        observer.inviteChanged(dataSnapshot.getValue(Invitation.class), s);
     }
 
     /**
@@ -48,9 +50,7 @@ class InviteListListener extends ListenerBase<InviteListObserver> implements Chi
      */
     @Override
     public void onChildRemoved(DataSnapshot dataSnapshot) {
-        for (InviteListObserver observer : observers) {
-            observer.inviteRemoved(dataSnapshot.getValue(Invitation.class));
-        }
+        observer.inviteRemoved(dataSnapshot.getValue(Invitation.class));
     }
 
     /**
