@@ -12,14 +12,13 @@ import java.util.ArrayList;
 
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
-import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListListener;
 
 /**
  * Created by thenotoriousrog on 10/15/17.
  *
  * This fragment will be in control of adding, removing, and sending invites to users that the player wants to use.
  *
- * WARNING** This class is in progress and not to be used yet! todo: @Miles, you will be using SendNotificationsUI for now until SendInvitesUI is finished ~Roger
+ * WARNING** TODO: team, this class is going to be removed I will not be using this class because I'm going to change the entire UI
  */
 
 public class SendInvitesUI extends Fragment {
@@ -28,7 +27,6 @@ public class SendInvitesUI extends Fragment {
     // TODO: remember that whatever the user decides to send as the list of users also has to be sent to the InGameUI for us to be able to create the games with the accurate users names and whatnot.
 
     // these are the junk arraylists here.
-    UsernameListListener allUsernames;
     ArrayList<String> usersToInvite = new ArrayList<String>(); // this needs to hold a whole bunch of users to be able to add for us to be able to work on.
 
     ListView availableUsersList; // holds the list of the available players that the user could invite.
@@ -43,8 +41,6 @@ public class SendInvitesUI extends Fragment {
         // TODO: @Roger need to pull in the arguments here from the list. Part of the arguments is that we need to be able to have an instance of the database so that we can make pulls of the database for the user.
 
         // This sets up the usernames list, to retrieve the list of usernames do allUsernames.getUsernameList()
-        allUsernames = new UsernameListListener();
-        DBIOCore.registerToUsernameList(allUsernames);
     }
 
     // this method sets up the searchUsersButton and let's us be able to make changes to the system correctly.

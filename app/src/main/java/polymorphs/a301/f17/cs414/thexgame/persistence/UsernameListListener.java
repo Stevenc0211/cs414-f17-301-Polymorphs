@@ -10,67 +10,66 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
+import polymorphs.a301.f17.cs414.thexgame.Invitation;
+
 import static android.content.ContentValues.TAG;
 
 /**
- * Created by Miles on 10/18/2017. This is a wrapper to handle data retrieval for a list of usernames.
- * It is used in conjunction with the DBIOCore when a register method calls for UsernameListListener.
- * The list of invitations may be retrieved using getInviteList()
- * Synchronicity Notes:
- * 1. The invites retrieved by getUsernameList() will be up to data when the call is run if it is not run in the same method as the UsernameListListener was registered
- * (the method that registers the UsernameListListener must finish so the UsernameListListener may update)
- * 2. If the return of getUsernameList() is saved to another variable that variable is NOT ensured to be up to data.
- * The recommendation is to use the data once then discard the data or refresh the data every time it is used.
+ * Created by Miles on 10/18/2017.
+ * This is used by the DBIOCore to organize all observers to the Username list in the database.
  */
 
-public class UsernameListListener {
-    private HashMap<String, String> inviteList;
+class UsernameListListener implements ChildEventListener {
 
-    public ArrayList<String> getUsernameList() {
-        ArrayList<String> list = new ArrayList<>();
-        Set<String> keys = inviteList.keySet();
-        for (String key : keys) {
-            list.add(inviteList.get(key));
-        }
-        return list;
+    private UsernameListObserver observer;
+
+    public UsernameListListener(UsernameListObserver observer) {
+        this.observer = observer;
     }
 
-    // Package private listener to be used by DBIOCore
-    ChildEventListener listener = new ChildEventListener() {
-        @Override
-        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            inviteList.put(s, dataSnapshot.getValue(String.class));
-        }
+    /**
+     * Triggered when Firebase detects a new addition to the username list
+     * @param dataSnapshot - the data for the new username
+     * @param s - the key of the preceding username in the list
+     */
+    @Override
+    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+        observer.usernameAdded(dataSnapshot.getValue(String.class), s);
+    }
 
-        @Override
-        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            inviteList.put(s, dataSnapshot.getValue(String.class));
-        }
+    /**
+     * Triggered when Firebase detects change in one of the usernames in the list
+     * @param dataSnapshot - the data for the changed username
+     * @param s - the key of the preceding username in the list
+     */
+    @Override
+    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+        observer.usernameChanged(dataSnapshot.getValue(String.class), s);
+    }
 
-        @Override
-        public void onChildRemoved(DataSnapshot dataSnapshot) {
-            String removedUsername = dataSnapshot.getValue(String.class);
-            Set<String> keys = inviteList.keySet();
-            String rmKey = "";
-            for (String key : keys) {
-                if (inviteList.get(key).equals(removedUsername)) {
-                    rmKey = key;
-                }
-            }
-            if (rmKey != "") {
-                inviteList.remove(rmKey);
-            }
-        }
+    /**
+     * Triggered when Firebase detects one of the usernames in the list is removed
+     * @param dataSnapshot - the data for the removed username
+     */
+    @Override
+    public void onChildRemoved(DataSnapshot dataSnapshot) {
+        observer.usernameRemoved(dataSnapshot.getValue(String.class));
+    }
 
-        @Override
-        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            inviteList.put(dataSnapshot.getKey(), dataSnapshot.getValue(String.class));
-            inviteList.remove(s);
-        }
+    /**
+     * Not used for this Listener
+     */
+    @Override
+    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+        // usernames are non ordered data so this method is not used
+    }
 
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-            Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-        }
-    };
+    /**
+     * Called when a Firebase data update is interrupted
+     * @param databaseError - the error that caused the cancel
+     */
+    @Override
+    public void onCancelled(DatabaseError databaseError) {
+        Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+    }
 }

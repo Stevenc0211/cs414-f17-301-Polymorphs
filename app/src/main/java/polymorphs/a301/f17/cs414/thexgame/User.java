@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Miles on 10/14/2017.
+ * TODO: @TEAM, I think we should remove this class and use only the one User class in the AppBackend.
  */
 
 public class User {

@@ -10,7 +10,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import polymorphs.a301.f17.cs414.thexgame.Invitation;
-import polymorphs.a301.f17.cs414.thexgame.User;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
+
 
 import static android.content.ContentValues.TAG;
 
@@ -22,23 +23,37 @@ import static android.content.ContentValues.TAG;
 public class DBIOCore {
     private static DatabaseReference baseReference = FirebaseDatabase.getInstance().getReference();
     private static String currentUser;
+    private static String userEmail;
+    private static String userNickname;
 
     /**
-     * Sets the current user, i.e. the user who in running the app. Should only be used in the StartupScreen
-     * @param userName - a username, if this is a first time user a new user object will be added to the database
+     * Sets up the database to begin serving data for the current user. Should be called from the
+     * start screen only. If the user is new a new user object will be added to the database with a black username (nickname)
+     * @param name - the google display name for the user, will be the primary key of the current user
+     * @param email - the users email
      */
-    public static void setCurrentUser(String userName) {
-        currentUser = userName;
+    public static void setCurrentUser(String name, String email) {
+        currentUser = name;
+        userEmail = email;
         DatabaseReference tmp = getUserReference();
+
+        System.out.println("name of person we are adding: " + name);
+        System.out.println("email of person we are adding: " + email);
         tmp.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 User testUser = dataSnapshot.getValue(User.class);
                 if (testUser == null) {
-                    getUserReference().setValue(new User(currentUser));
-                    String key = baseReference.child("usernameList").push().getKey();
-                    baseReference.child("usernameList").child(key).setValue(currentUser);
+                    System.out.println("We are adding the user now!");
+                    getUserReference().setValue(new User(currentUser, userEmail, ""));
                 }
+                else
+                {
+                    userNickname = testUser.getNickname();
+                    System.out.println("Nothing was added to the database!");
+                }
+
             }
 
             @Override
@@ -47,6 +62,7 @@ public class DBIOCore {
             }
         });
     }
+
 
     /**
      * This returns a reference to the current users user object in the database.
@@ -58,21 +74,30 @@ public class DBIOCore {
     }
 
     /**
-     * This method registers the passed UserListener to the current users data. The UserListener will be kept
-     * up to data with any changes to the current users data
-     * @param listener - the listener to register
+     * This method registers the passed Observer to the current users data. The Observers update methods
+     * will be called if there is any change in the user data
+     * @param observer - the observer to register
      */
-    public static void registerToCurrentUser(UserListener listener) {
-        getUserReference().addValueEventListener(listener.listener);
+    public static void registerToCurrentUser(UserObserver observer) {
+        getUserReference().addValueEventListener(new UserListener(observer));
     }
 
     /**
-     * This method registers the passed InviteListListener to the current users invitation list.
-     * The InviteListListener will be kept up to data with any changes to the current users invitation list
-     * @param listener - the listener to register
+     * This method registers the passed Observer to the current users invitation list.
+     * The Observers update methods will be called if there is any change in the list data
+     * @param observer - the observer to register
      */
-    public static void registerToCurrentUserInviteList(InviteListListener listener) {
-        baseReference.child("invites").child(currentUser).addChildEventListener(listener.listener);
+    public static void registerToCurrentUserInviteList(InviteListObserver observer) {
+        baseReference.child("invites").child(userNickname).addChildEventListener(new InviteListListener(observer));
+    }
+
+    /**
+     * This method registers the passed Observer to the master username list.
+     * The Observers update methods will be called if there is any change in the list data
+     * @param observer - the observer to register
+     */
+    public static void registerToUsernameList(UsernameListObserver observer) {
+        baseReference.child("usernameList").addChildEventListener(new UsernameListListener(observer));
     }
 
     /**
@@ -83,15 +108,21 @@ public class DBIOCore {
      */
     public static void sendInvite(Invitation invite) {
         String key = baseReference.child("invites").child(invite.getInvitedUser()).push().getKey();
+        invite.setDbKeyKey(key);
         baseReference.child("invites").child(invite.getInvitedUser()).child(key).setValue(invite);
     }
 
+    public static void removeInvite(Invitation invite) {
+        baseReference.child("invites").child(invite.getInvitedUser()).child(invite.getDbKey()).removeValue();
+    }
+
     /**
-     * This method registers the passed UsernameListListener to the master list of usernames.
-     * The UsernameListListener will be kept up to data with any changes master list of usernames.
-     * @param listener - the listener to register
+     * This should be used when the username (nickname) of the current user needs to be set.
+     * @param username - the new username (nickname)
      */
-    public static void registerToUsernameList(UsernameListListener listener) {
-        baseReference.child("usernameList").addChildEventListener(listener.listener);
+    public static void setCurrentUserUsername(String username) {
+        getUserReference().child("nickname").setValue(username);
+        String key = baseReference.child("usernameList").push().getKey();
+        baseReference.child("usernameList").child(key).setValue(username);
     }
 }

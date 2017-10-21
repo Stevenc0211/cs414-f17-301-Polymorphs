@@ -10,11 +10,28 @@ public class User {
     private String nickname;
     private Profile profile;
 
+    public User() {}
+
     public User(String name,String email,String nickname){
         this.name = name;
         this.email = email;
         this.nickname = nickname;
         profile = new Profile(nickname);
+    }
+
+    public void setEmail(String email)
+    {
+        this.email = email;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public void setNickname(String nickname)
+    {
+        this.nickname = nickname;
     }
 
     public String getEmail(){
