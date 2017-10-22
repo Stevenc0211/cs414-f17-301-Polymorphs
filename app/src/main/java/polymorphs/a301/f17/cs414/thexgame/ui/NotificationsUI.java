@@ -8,8 +8,12 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import polymorphs.a301.f17.cs414.thexgame.Invitation;
 import polymorphs.a301.f17.cs414.thexgame.R;
+import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
+import polymorphs.a301.f17.cs414.thexgame.persistence.InviteListObserver;
 
 /**
  * Created by thenotoriousrog on 10/13/17.
@@ -17,9 +21,9 @@ import polymorphs.a301.f17.cs414.thexgame.R;
  * This class is in charge of setting up the UI for Notifications when the user clicks the button!
  */
 
-public class NotificationsUI extends Fragment {
+public class NotificationsUI extends Fragment implements InviteListObserver{
 
-    private ArrayList<String> invitationsData = new ArrayList<>(); // todo: we will likely want to change this to an invitations class. For now I am going to use strings just for us to have a UI up and running!
+    private HashMap<String, Invitation> invitationsData = new HashMap<>(); // todo: we will likely want to change this to an invitations class. For now I am going to use strings just for us to have a UI up and running!
     private ArrayList<String> eventsData = new ArrayList<>(); // TODO: This needs to be pulled from the database so that users can be able to get information which is pretty important for us to get this working!
 
     private ListView invitationsList;  // holds the invitations list.
@@ -35,7 +39,7 @@ public class NotificationsUI extends Fragment {
 
         Bundle args = getArguments(); // get the arguments for the fragment activity.
         // TODO: we should grab any arguments that we have sent to the Notifications UI pretty important!!
-
+        DBIOCore.registerToCurrentUserInviteList(this);
     }
 
     // sets up the events list view.
@@ -60,14 +64,7 @@ public class NotificationsUI extends Fragment {
     protected void setupInvitationsListView(View notificationsView)
     {
         invitationsList = (ListView) notificationsView.findViewById(R.id.invitationsListView); // grab the inviations list.
-
-        // again for testing, remove this once we are finished!
-        for(int i = 0; i < 15; i++)
-        {
-            invitationsData.add("Steven sent an invitation!");
-        }
-
-        invitationsListAdapter = new InvitationsListAdapter(notificationsView.getContext(), R.layout.invitation_item, invitationsData); // create the invitations adapter that we need to use.
+        invitationsListAdapter = new InvitationsListAdapter(notificationsView.getContext(), R.layout.invitation_item,new ArrayList<>(invitationsData.values()) , (MainGameUI) getActivity()); // create the invitations adapter that we need to use.
         invitationsList.setAdapter(invitationsListAdapter);
         invitationsListAdapter.notifyDataSetChanged();
         invitationsList.setDivider(null);
@@ -86,4 +83,32 @@ public class NotificationsUI extends Fragment {
         return notificationsView; // display the fragment for the users to see.
     }
 
+    @Override
+    public void inviteAdded(Invitation addedInvite, String precedingInviteKey) {
+        invitationsListAdapter.add(addedInvite);
+        invitationsData.put(precedingInviteKey, addedInvite);
+        invitationsListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void inviteChanged(Invitation changedInvite, String precedingInviteKey) {
+        invitationsListAdapter.remove(invitationsData.get(precedingInviteKey));
+        invitationsData.put(precedingInviteKey, changedInvite);
+        invitationsListAdapter.add(changedInvite);
+        invitationsListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void inviteRemoved(Invitation removedInvite) {
+        invitationsListAdapter.remove(removedInvite);
+        String rmKey = "";
+        for (String key : invitationsData.keySet()) {
+            if (invitationsData.get(key).equals(removedInvite)) {
+                rmKey = key;
+                break;
+            }
+        }
+        invitationsData.remove(rmKey);
+        invitationsListAdapter.notifyDataSetChanged();
+    }
 }

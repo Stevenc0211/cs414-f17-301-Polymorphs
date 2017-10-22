@@ -6,13 +6,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import polymorphs.a301.f17.cs414.thexgame.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.Invitation;
 import polymorphs.a301.f17.cs414.thexgame.R;
+import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 
 /**
  * Created by steve-0 on 10/17/17. Updated and commented by Roger.
@@ -23,11 +22,9 @@ import polymorphs.a301.f17.cs414.thexgame.R;
 public class SendNotificationsUI extends Activity  {
 
     // TODO: miles you will want to send the data base stuff here you will want to send in the list from the data base, i.e. an ArrayList of whatever object. It does have to be an arraylist.
-    private ArrayList<Invitation> peopleToInvite = new ArrayList<Invitation>(); // list of database items that we are working with.
+    private ArrayList<Invitation> allInvites = new ArrayList<>(); // list of database items that we are working with.
     private InviteListAdapter inviteListAdapter; // the adapter that will populate the invite list.
     // removed for now --> private final int SEND_INVITES = 4000; // this is the request code for sending invites to players very important.
-
-    private DBIOCore database; // the database that we want to be using.
 
     // this method simply generates the UI that we created for the SendNotificationsUI.
     protected void setupUI(final ArrayList<Invitation> usersToSendto)
@@ -38,18 +35,10 @@ public class SendNotificationsUI extends Activity  {
             @Override
             public void onClick(View view) {
 
-                // TODO: send invitations to each of the users in here. This will involve having to write to the DataBase meaning we will have to send in our DataBase object.
-
-                String testMessage = database.testDatabaseCreation(); // run the test and see if the database was created successfully.
-
-                // This is merely to check whether or not the database would receive a NotSerializableError. You may remove once you know it's working and have the real invitations working.
-                if(testMessage != null)
-                {
-                    Toast.makeText(getApplicationContext(), "Database sent back result: " + testMessage ,Toast.LENGTH_SHORT).show(); // show the message
-                }
-                else
-                {
-                    Toast.makeText(getApplicationContext(), "Database failed its test..." ,Toast.LENGTH_SHORT).show(); // show the message
+                for (int idx = 0; idx < allInvites.size(); idx++) {
+                    if (inviteListAdapter.getItem(idx).isSelected()) {
+                        DBIOCore.sendInvite(allInvites.get(idx));
+                    }
                 }
 
                 finish(); // end the Activity.
@@ -77,28 +66,17 @@ public class SendNotificationsUI extends Activity  {
 
         Intent sendInvitesIntent = getIntent();
         Bundle args = sendInvitesIntent.getBundleExtra("args");
-        database = (DBIOCore) args.getSerializable("database"); // grab the serialized object
-
-        // TODO: @Miles, okay so I have made the database serializable so we can have our database object. I also made Invitation serializable so we shouldn't have anymore problems from now on.
-        // TODO: All you need to do now is populate the database with something.
+        String currentUser = args.getString("currentUser");
+        ArrayList<String> people = args.getStringArrayList("usernames"); // grab the set of usernames from InGameUI
 
 
+        for(int i = 0; i < people.size(); i++)
+        {
+            if (people.get(i).equals(currentUser)) continue;
+            Invitation invite = new Invitation(currentUser, people.get(i));
+            allInvites.add(invite);
+        }
 
-        // Important to note: the person who is sending the invites should be the same.
-        // TODO: @Miles, @Andy, you guys should try to figure out how to send in the name of the user who is sending in the invite. If not, I can figure it out, but for right now I hardcoded it for you to test!
-        Invitation inv1 = new Invitation("Roger", "Miles");
-        Invitation inv2 = new Invitation("Roger", "Andy");
-        Invitation inv3 = new Invitation("Roger", "Steven");
-        Invitation inv4 = new Invitation("Roger", "Badr");
-        Invitation inv5 = new Invitation("Roger", "Miles");
-        Invitation inv6 = new Invitation("Roger", "Ezio"); // I had to.
-        peopleToInvite.add(inv1);
-        peopleToInvite.add(inv2);
-        peopleToInvite.add(inv3);
-        peopleToInvite.add(inv4);
-        peopleToInvite.add(inv5);
-        peopleToInvite.add(inv6);
-
-        setupUI(peopleToInvite);
+        setupUI(allInvites);
     }
 }

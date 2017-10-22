@@ -15,9 +15,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-import polymorphs.a301.f17.cs414.thexgame.DBIOCore;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
 import polymorphs.a301.f17.cs414.thexgame.R;
+import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
+import polymorphs.a301.f17.cs414.thexgame.persistence.UserObserver;
+import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListObserver;
 
 /**
  * Created by thenotoriousrog on 10/13/17.
@@ -26,7 +30,7 @@ import polymorphs.a301.f17.cs414.thexgame.R;
  * destroyed relatively easily and we want this to be built and destroyed relativly easy which is very important for us to do correctly!
  */
 
-public class InGameUI extends Fragment {
+public class InGameUI extends Fragment implements UsernameListObserver, UserObserver {
 
     private ArrayList<String> currentGames; // the list of current games.
     private ViewPager gamePager; // this holds the game view pager which essentially is a list of horizontal list items of the game, which is pretty awesome!
@@ -40,7 +44,8 @@ public class InGameUI extends Fragment {
     private boolean startNewGame = false; // tells the inGameUI that we want to start a new game, which involves sending a list of invite(s) to other player(s).
     private boolean openCurrentGames = false; // tells inGameUI to just open the current list of games.
 
-    private DBIOCore database = new DBIOCore(); // grab a copy of our database to allow us to be able to grab information from the database.
+    HashMap<String, String> usernames; // holds the list of people to invite keyed by the previous usernames database key
+    User currentUser;
 
     // this method sets up our game pager.
     protected void setupGamePager(View gameUIView) {
@@ -86,6 +91,10 @@ public class InGameUI extends Fragment {
         currentGames = args.getStringArrayList("currentGames"); // grab the ArrayList of current games. // todo: perhaps grabbed from database? If not, remove this line.
         startNewGame = args.getBoolean("Start new game"); // grab the boolean argument.
         openCurrentGames = args.getBoolean("Open current games"); // grab the boolean argument.
+
+        usernames = new HashMap<>();
+        DBIOCore.registerToUsernameList(this);
+        DBIOCore.registerToCurrentUser(this);
     }
 
     // Pops up a dialog box and asks if users want to send invites, upon yes, inflate the send_invitations.xml
@@ -96,7 +105,6 @@ public class InGameUI extends Fragment {
         invitePlayersDialog.setContentView(R.layout.invite_players_dialog); // set the dialog that we want the users to see.
         invitePlayersDialog.setTitle("Do you want to invite players?");
         invitePlayersDialog.show(); // show the dialog asking if players want to send invite to players or not.
-
         Button yesButton = (Button) invitePlayersDialog.findViewById(R.id.dialogYesButton); // get the yes button for the dialog
         yesButton.setOnClickListener(new View.OnClickListener()
         {
@@ -108,8 +116,11 @@ public class InGameUI extends Fragment {
 
                 Intent sendInvitesIntent = new Intent(getActivity(), SendNotificationsUI.class);
                 Bundle args = new Bundle(); // bundle to send to SendNotificationsUI
-                args.putSerializable("database", database); // send in a copy of our data base which will allow us to be able to use the database to extract information.
+                ArrayList<String> users = new ArrayList<>( usernames.values() );
+                args.putStringArrayList("usernames", users);
+                args.putString("currentUser", currentUser.getNickname());
                 sendInvitesIntent.putExtra("args", args); // put the bundle into the intent to be grabbed.
+
 
                 startActivity(sendInvitesIntent); // start the activity.
             }
@@ -131,6 +142,8 @@ public class InGameUI extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+
+
         View gameUIView = inflater.inflate(R.layout.in_game_ui, container, false); // inflate our view of our main game.
 
         inGameUI = gameUIView; // set out global value to be GameUIView <-- yes this is horrible coding, I will fix it later, I'm tired at the moment haha
@@ -147,7 +160,6 @@ public class InGameUI extends Fragment {
         for (int i = 0; i < 15; i++) {
             events.add("Event to notify...");
         }
-
         setupActivityListView(gameUIView); // setup the activity list for users to get news on what is happening with the game! TODO: this also should be shown in real time!
 
         TextView userVSOpponent = (TextView) gameUIView.findViewById(R.id.playersField); // get the text with the user and the player.
@@ -176,4 +188,31 @@ public class InGameUI extends Fragment {
         return gameUIView; // return the view that we are working with.
     }
 
+    @Override
+    public void usernameAdded(String addedUsername, String precedingUsernameKey) {
+        usernames.put(precedingUsernameKey, addedUsername);
+    }
+
+    @Override
+    public void usernameChanged(String changedUsername, String precedingUsernameKey) {
+        usernames.put(precedingUsernameKey, changedUsername);
+    }
+
+    @Override
+    public void usernameRemoved(String removedUsername) {
+        String rmKey = "";
+        for (String key : usernames.keySet()) {
+            if (usernames.get(key).equals(removedUsername)) {
+                rmKey = key;
+            }
+        }
+        if (rmKey != "") {
+            usernames.remove(rmKey);
+        }
+    }
+
+    @Override
+    public void userUpdated(User u) {
+        currentUser = u;
+    }
 }

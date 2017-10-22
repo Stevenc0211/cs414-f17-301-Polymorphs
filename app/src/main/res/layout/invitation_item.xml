@@ -7,11 +7,10 @@
     <TextView
         android:id="@+id/invitationMessage"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="Steven sent an invite!"
-        android:textSize="25sp"
+        android:layout_height="60dp"
+        android:text="adddd invites you to a game of chad"
         android:textColor="@color/black"
-        />
+        android:textSize="18sp" />
 
     <RelativeLayout
         android:layout_width="300dp"
