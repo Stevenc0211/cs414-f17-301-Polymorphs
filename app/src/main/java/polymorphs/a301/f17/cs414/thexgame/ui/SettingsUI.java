@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Switch;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 
 import polymorphs.a301.f17.cs414.thexgame.R;
 
@@ -15,7 +17,7 @@ import polymorphs.a301.f17.cs414.thexgame.R;
  */
 
 public class SettingsUI extends Fragment {
-
+    private GoogleApiClient mGoogleApiClient;
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -31,8 +33,10 @@ public class SettingsUI extends Fragment {
         signout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mGoogleApiClient.disconnect();
+                mGoogleApiClient.connect();
+                //TODO: signout button Steven
 
-                //TODO: signout button Roger
             }
         });
 
