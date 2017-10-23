@@ -138,6 +138,8 @@ public class StartupScreen extends AppCompatActivity implements GoogleApiClient.
         }
         else // Signed out, show unauthenticated UI.
         {
+            Intent mainGameUIIntent = new Intent(StartupScreen.this, MainGameUI.class); // main game ui intent that is sent when the app is started.
+            startActivity(mainGameUIIntent);
             // TODO: look into whether this case needs to be handled or not.
         }
     }

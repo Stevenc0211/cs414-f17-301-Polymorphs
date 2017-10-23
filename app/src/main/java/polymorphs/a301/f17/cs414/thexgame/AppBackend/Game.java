@@ -7,17 +7,37 @@ import java.lang.reflect.Array;
  */
 
 public class Game {
-    private User player1;
-    private User player2;
+    private User user1;
+    private User user2;
     private Player p1;
     private Player p2;
     private Board board;
 
-    public Game(User player1,User player2){
-        this.player1 = player1;
-        this.player2 = player2;
-        p1 = new Player(player1.getNickname());
-        p2 = new Player(player2.getNickname());
+    public Game(User user1,User user2){
+        this.user1 = user1;
+        this.user2 = user2;
+        p1 = new Player(user1,Color.WHITE);
+        p2 = new Player(user2,Color.BLACK);
         this.board = new Board();
+    }
+
+    public User getUser1(){
+        return user1;
+    }
+
+    public User getUser2(){
+        return user2;
+    }
+
+    public Player getP1(){
+        return p1;
+    }
+
+    public Player getP2(){
+        return p2;
+    }
+
+    public Board getBoard(){
+        return board;
     }
 }

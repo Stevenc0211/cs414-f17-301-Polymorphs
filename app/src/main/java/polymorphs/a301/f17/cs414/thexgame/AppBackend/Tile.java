@@ -5,10 +5,31 @@ package polymorphs.a301.f17.cs414.thexgame.AppBackend;
  */
 
 public class Tile {
-    private String type;
-    //Location?????
+    private int x;
+    private int y;
+    private Piece piece;
 
-    public Tile(){
-
+    public Tile(int x,int y){
+        this.x = x;
+        this.y = y;
+        piece = null;
     }
+
+    public boolean isOccupied(){
+        if(piece == null){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    public void occupyTile(Piece piece){
+        //if tile is currently occupied with another piece and is not the same color
+        if(this.piece != null && this.piece.getColor() != piece.getColor()){
+            this.piece.setAvailable(false);
+        }
+        this.piece = piece;
+    }
+
 }
