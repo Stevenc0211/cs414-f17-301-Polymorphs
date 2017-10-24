@@ -1,7 +1,7 @@
 package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 
 import java.util.ArrayList;
-
+import java.util.Date;
 /**
  * Created by athai on 10/18/17.
  */
@@ -12,11 +12,12 @@ public class Player {
     private ArrayList<Piece> pieces = new ArrayList<Piece>();
     public int King = 1;
     public int Rook = 8;
-    //Hold date and time of last move made
+    public String timestamp = "";
 
     public Player(User user,Enum color){
         this.nickname = user.getNickname();
         this.color = color;
+        initializePieces();
     }
 
     public String getNickname(){
@@ -29,6 +30,21 @@ public class Player {
 
     public void setColor(Enum color){
         this.color = color;
+    }
+
+    public String getTimestamp(){
+        //Use java.sql.Timestamp
+        return timestamp;
+    }
+
+    public boolean equals(Object o) {
+        if (!(o instanceof User)) return false;
+        Player otherPlayer = (Player) o;
+        return (nickname.equals(otherPlayer.nickname));
+    }
+
+    public ArrayList<Piece> getPieces(){
+        return pieces;
     }
 
     public void initializePieces(){

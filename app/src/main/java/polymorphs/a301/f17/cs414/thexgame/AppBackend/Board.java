@@ -24,4 +24,8 @@ public class Board {
     public Tile getTile(int x,int y){
         return board[x][y];
     }
+
+    public Tile[][] getBoard(){
+        return board;
+    }
 }

@@ -15,6 +15,10 @@ public class Tile {
         piece = null;
     }
 
+    public Piece getPiece(){
+        return piece;
+    }
+
     public boolean isOccupied(){
         if(piece == null){
             return false;

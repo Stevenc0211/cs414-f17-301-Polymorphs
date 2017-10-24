@@ -6,25 +6,24 @@ package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 
 public class Queen extends Piece {
 
-    public Queen(int x,int y,boolean available,Enum color){
-        super(x,y,available,color);
+    public Queen(int myX,int myY,boolean available,Enum color){
+        super(myX,myY,available,color);
     }
 
     @Override
-    public boolean isValid(Board board,int fromX,int fromY,int toX,int toY){
-        if(!super.isValid(board,fromX,fromY,toX,toY)){
+    public boolean isValidMove(Board board,int toX,int toY){        //return Tile arraylist
+        if(!super.isValidMove(board,toX,toY)){
             return false;
         }
 
-
-        if(fromX == toX){
+        if(super.getX() == toX){
             return true;
         }
-        if(fromY == toY){
+        if(super.getY() == toY){
             return true;
         }
         //check if move is diagonal
-        if(fromX - toX == fromY - toY){
+        if(super.getX() - toX == super.getY() - toY){
             return true;
         }
         return false;

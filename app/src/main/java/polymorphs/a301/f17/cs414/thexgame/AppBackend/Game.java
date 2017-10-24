@@ -40,4 +40,6 @@ public class Game {
     public Board getBoard(){
         return board;
     }
+
+    //public void move(board,player,piece,int toX,int toY);
 }

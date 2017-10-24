@@ -6,13 +6,21 @@ import java.util.ArrayList;
  * Created by athai on 10/18/17.
  */
 
-public class Driver {
+public final class Driver {
     private ArrayList users;    //list of registered users
     private ArrayList games;
 
     public Driver(){
         this.users = new ArrayList<User>();
         this.games = new ArrayList<Game>();
+    }
+
+    public ArrayList<User> getUsers(){
+        return users;
+    }
+
+    public ArrayList<Game> getGames(){
+        return games;
     }
 
     //Creates a game
