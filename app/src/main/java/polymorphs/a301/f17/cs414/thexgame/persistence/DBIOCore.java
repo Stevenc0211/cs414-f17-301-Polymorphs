@@ -56,7 +56,6 @@ public class DBIOCore {
 
             }
 
-            @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
             }
@@ -122,7 +121,16 @@ public class DBIOCore {
      */
     public static void setCurrentUserUsername(String username) {
         getUserReference().child("nickname").setValue(username);
+        baseReference.child("usernameList").push();
         String key = baseReference.child("usernameList").push().getKey();
         baseReference.child("usernameList").child(key).setValue(username);
+    }
+
+    /**
+     * ONLY for junit tests to bypass errors with firebase not initializing
+     * @param database
+     */
+    static void setDatabase(FirebaseDatabase database) {
+        baseReference = database.getReference();
     }
 }
