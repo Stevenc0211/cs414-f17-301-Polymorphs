@@ -29,6 +29,12 @@ dependencies {
     compile 'com.android.support:design:22.2.0'
     compile 'com.google.firebase:firebase-database:10.2.1'
     testCompile 'junit:junit:4.12'
+    // https://mvnrepository.com/artifact/org.powermock/powermock-mockito-release-full
+//    testCompile "org.powermock:powermock-module-junit4:1.6.4"
+//    testCompile "org.powermock:powermock-module-junit4-rule:1.6.4"
+//    testCompile "org.powermock:powermock-api-mockito:1.6.4"
+//    testCompile "org.powermock:powermock-classloading-xstream:1.6.4"
+
 }
 
 
