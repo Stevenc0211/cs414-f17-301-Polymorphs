@@ -1,43 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="polymorphs.a301.f17.cs414.thexgame">
 
-    <!-- DO NOT FOR ANY REASON MODIFY THE ANDROID MANIFEST UNLESS YOU HAVE CREATED AN ACTIVITY AND HAVE TALKED WITH ROGER HANNAGAN.
-       DOING SO COULD RESULT IN THE APP BEING BROKEN. -->
+    <!--
+       DO NOT FOR ANY REASON MODIFY THE ANDROID MANIFEST UNLESS YOU HAVE CREATED AN ACTIVITY AND HAVE TALKED WITH ROGER HANNAGAN.
+       DOING SO COULD RESULT IN THE APP BEING BROKEN.
+    -->
 
-  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-  <uses-permission android:name="android.permission.STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.STORAGE" />
 
-  <!-- Details everything that will be used on the app itself, modify this is very dangerous and only should be done to add newly created activities like below -->
-  <application
-      android:allowBackup="true"
-      android:icon="@drawable/appicon"
-      android:label="@string/app_name"
-      android:supportsRtl="true"
-      android:theme="@style/AppTheme">
+    <!-- Details everything that will be used on the app itself, modify this is very dangerous and only should be done to add newly created activities like below -->
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/appicon"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
 
-      <!-- Details the main activity so Android knows to look for this activity. -->
-      <activity android:name=".MainActivity"
-          android:screenOrientation="landscape"
-          android:launchMode="singleInstance">
+        <!-- Details the main activity so Android knows to look for this activity. -->
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape">
 
-          <!-- Used to define the default activity, DO NOT MODIFY -->
-          <intent-filter>
-              <action android:name="android.intent.action.MAIN" />
-              <category android:name="android.intent.category.LAUNCHER" />
-          </intent-filter>
-      </activity>
+            <!-- Used to define the default activity, DO NOT MODIFY -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <!-- Details the startup screen activity for users to see the login screen every time that they start the app again -->
-        <activity android:name=".ui.StartupScreen"
+        <activity
+            android:name=".ui.StartupScreen"
             android:screenOrientation="landscape" />
-
-      <activity android:name=".ui.MainGameUI"
-          android:screenOrientation="landscape" />
-
-      <activity android:name=".ui.SendNotificationsUI"
-          android:screenOrientation="landscape" />
-
+        <activity
+            android:name=".ui.SendNotificationsUI"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".HomescreenActivity"
+            android:label="@string/title_activity_homescreen"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".SetUsernameActivity"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

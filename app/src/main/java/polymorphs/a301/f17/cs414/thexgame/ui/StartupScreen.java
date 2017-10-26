@@ -16,6 +16,7 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
+import polymorphs.a301.f17.cs414.thexgame.HomescreenActivity;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.R;
 
@@ -125,22 +126,20 @@ public class StartupScreen extends AppCompatActivity implements GoogleApiClient.
             GoogleSignInAccount acct = result.getSignInAccount(); // grabs this users account which can be used to assign the name to accounts in our game!!
             String userGoogleDisplayName = acct.getDisplayName(); // get this user's display name, pretty awesome!
             String email = acct.getEmail(); // get this user's email
+
             DBIOCore.setCurrentUser(userGoogleDisplayName, email); // Starting DBIOCore, removed for now to follow the general flow of adding users to the database.
 
-            // TODO: start the main game activity here!!!
-            Intent mainGameUIIntent = new Intent(StartupScreen.this, MainGameUI.class); // main game ui intent that is sent when the app is started.
-            // Removed by Miles. I don't think we need this in the new version
-//            Bundle args = new Bundle();
-//            args.putString("GoogleDisplayName", userGoogleDisplayName); // put the user's google display name
-//            args.putString("email", email); // put the email as an argument too.
-//            mainGameUIIntent.putExtra("args", args); // send in the arguments for the MainGameUI
+            System.out.println("Log in was a success");
+
+            Intent mainGameUIIntent = new Intent(StartupScreen.this, HomescreenActivity.class); // main game ui intent that is sent when the app is started.
             startActivity(mainGameUIIntent);
         }
         else // Signed out, show unauthenticated UI.
         {
-            Intent mainGameUIIntent = new Intent(StartupScreen.this, MainGameUI.class); // main game ui intent that is sent when the app is started.
-            startActivity(mainGameUIIntent);
-            // TODO: look into whether this case needs to be handled or not.
+
+            System.out.println("Log in was a failure");
+           // Intent mainGameUIIntent = new Intent(StartupScreen.this, HomescreenActivity.class); // main game ui intent that is sent when the app is started.
+            //startActivity(mainGameUIIntent);
         }
     }
 

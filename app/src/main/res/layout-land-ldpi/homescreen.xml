@@ -7,7 +7,6 @@
     android:id="@+id/homescreenLayout"
     >
 
-
     <!-- Create game button -->
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/createGameButton"

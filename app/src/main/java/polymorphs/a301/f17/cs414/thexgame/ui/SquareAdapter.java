@@ -36,22 +36,22 @@ public class SquareAdapter extends BaseAdapter {
 
     // The chessboard
     private Integer[] chessboardSquares = {
-            R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare,
-            R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare,
-            R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare,
-            R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare,
-            R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare,
-            R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare,
-            R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare,
-            R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare,
-            R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare,
-            R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare,
-            R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare,
-            R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare,
-            R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare,
-            R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare,
-            R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare,
-            R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare,
+            R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare,
+            R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare,
+            R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare,
+            R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare,
+            R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare,
+            R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare,
+            R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare,
+            R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare,
+            R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare,
+            R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare,
+            R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare,
+            R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare,
+            R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare,
+            R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare,
+            R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare,
+            R.drawable.blacksquare, R.drawable.whitesquare, R.drawable.blacksquare, R.drawable.whitesquare,
     };
 
     static class ViewHolder
@@ -91,12 +91,14 @@ public class SquareAdapter extends BaseAdapter {
             viewHolder.square.setImageResource(R.drawable.boardsquare); // set the image to be whatever position is called on getView.
             viewHolder.piece = (ImageView) rowView.findViewById(R.id.chessPiece); // set the ImageView for the chess piece, however we do not have a chess piece yet.
 
+            /*
             if(position == 8 || position == 9 || position == 10
                     || position == 19 || position == 23 || position == 31 || position == 35 || position == 43 || position == 47 ||
                     position == 56 || position == 57 || position == 58)
             {
                 viewHolder.square.setImageResource(R.drawable.castlesquare);
             }
+            */
 
             final int pos = position;
             viewHolder.square.setOnClickListener(new View.OnClickListener() {

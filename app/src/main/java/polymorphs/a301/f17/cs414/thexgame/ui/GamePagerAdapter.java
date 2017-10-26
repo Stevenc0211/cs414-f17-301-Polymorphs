@@ -7,6 +7,8 @@ import android.widget.GridView;
 
 import java.util.ArrayList;
 
+import polymorphs.a301.f17.cs414.thexgame.Chessboard;
+
 /**
  * Created by thenotoriousrog on 10/13/17.
  *
@@ -15,15 +17,15 @@ import java.util.ArrayList;
 
 public class GamePagerAdapter extends PagerAdapter {
 
-    private ArrayList<GridView> games; // this arraylist holds the GridView of the games that we are working with here.
-    private GridView currentGame; // holds the current game that the user has swiped to.
-    private GridView chessboard; // holds the chess board that we are going to be working on.
+    private ArrayList<Chessboard> games; // this arraylist holds the GridView of the games that we are working with here.
+    private Chessboard currentGame; // holds the current game that the user has swiped to.
+    private Chessboard chessboard; // holds the chess board that we are going to be working on.
     private ArrayList<String> events = new ArrayList<>(); // todo: this should filled out after a call to our database. This will allow us to be able to get events about the game for the user to look at.
     private ActivityListAdapter eventsListAdapter; // the events adapter here for us to update, very important!
     private SquareAdapter squareAdapter; // holds our square adapter which will allow us to be able to work on our lists and update the information for the players to be able to play a game!
     private View inGameUI;
 
-    public GamePagerAdapter(ArrayList<GridView> gamesList, View ui) {
+    public GamePagerAdapter(ArrayList<Chessboard> gamesList, View ui) {
         games = gamesList;
         inGameUI = ui;
     }
@@ -39,7 +41,8 @@ public class GamePagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position)
     {
-        GridView game = games.get(position); // grab a game for a user to be able to work with.
+        Chessboard game = games.get(position); // grab a game for a user to be able to work with.
+        container.removeView(game); // removes the old view (but still keeps the data contained)
         container.addView(game); // add the game to the view group.
         return game; // return the instantiated game.
     }
@@ -59,6 +62,6 @@ public class GamePagerAdapter extends PagerAdapter {
     @Override
     public void destroyItem(ViewGroup container, int position, Object object)
     {
-        container.removeView((GridView) object); // remove this view completely.
+        container.removeView((Chessboard) object); // remove this view completely.
     }
 }

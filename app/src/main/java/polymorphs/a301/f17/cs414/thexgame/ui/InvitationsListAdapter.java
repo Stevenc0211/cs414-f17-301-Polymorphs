@@ -11,7 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import polymorphs.a301.f17.cs414.thexgame.HomescreenActivity;
 import polymorphs.a301.f17.cs414.thexgame.Invitation;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
@@ -24,11 +26,11 @@ import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 
 public class InvitationsListAdapter extends ArrayAdapter {
 
-    private MainGameUI primaryActivity;
+    private HomescreenActivity primaryActivity;
 
-    public InvitationsListAdapter(Context context, int resource, ArrayList<Invitation> invitations, MainGameUI primaryActivity)
+    public InvitationsListAdapter(Context context, int resource, ArrayList<Invitation> invitations, HomescreenActivity primaryActivity)
     {
-        super(context, resource, invitations); // todo: again we would likely want to create our own Inviations class
+        super(context, resource, invitations);
         this.primaryActivity = primaryActivity;
     }
 
@@ -54,9 +56,10 @@ public class InvitationsListAdapter extends ArrayAdapter {
             @Override
             public void onClick(View view) {
 
-                // TODO: after clicking accept, this item will be removed from the list and will also take the user into another game! Important to get that thing working correctly!!!
                 DBIOCore.removeInvite((Invitation)getItem(position));
-                primaryActivity.openCurrentGamesFragment();
+                //primaryActivity.openCurrentGamesFragment();
+                // TODO: after clicking accept, a game will be added to the ViewPager in HomescreenActivity.
+                // TODO: @Miles if you can't figure it out it doesn't matter at this point, just focus on getting those invitations working right again.
             }
         });
 

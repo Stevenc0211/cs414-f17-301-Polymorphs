@@ -5,10 +5,13 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import polymorphs.a301.f17.cs414.thexgame.HomescreenActivity;
+import polymorphs.a301.f17.cs414.thexgame.SetUsernameActivity;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 
 /**
  * Created by thenotoriousrog on 10/20/17.
+ * Click listener for the submit button!
  */
 
 public class SubmitButtonClickListener implements View.OnClickListener {
@@ -17,14 +20,14 @@ public class SubmitButtonClickListener implements View.OnClickListener {
     private String email;
     private String username;
     TextView usernameField;
-    MainGameUI mainGameUI;
+    SetUsernameActivity setUsernameActivity;
 
-    public SubmitButtonClickListener(String name, String email, TextView usernameField, MainGameUI mainGameUI)
+    public SubmitButtonClickListener(String name, String email, TextView usernameField, SetUsernameActivity setUsernameActivity)
     {
         this.name = name;
         this.email = email;
         this.usernameField = usernameField;
-        this.mainGameUI = mainGameUI;
+        this.setUsernameActivity = setUsernameActivity;
     }
 
     public String getName()
@@ -49,7 +52,7 @@ public class SubmitButtonClickListener implements View.OnClickListener {
         // TODO: if users enter a number instead of text we must ask them to enter another
         // Adds the username to the user object of the new user
         DBIOCore.setCurrentUserUsername(username);
-        mainGameUI.createMainGameUI();
+        setUsernameActivity.sendUserData(); // send the user data back to the SetUsernameActivity.
     }
 
 }

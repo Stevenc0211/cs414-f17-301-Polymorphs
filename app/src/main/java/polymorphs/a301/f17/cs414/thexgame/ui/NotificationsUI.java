@@ -10,6 +10,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import polymorphs.a301.f17.cs414.thexgame.HomescreenActivity;
 import polymorphs.a301.f17.cs414.thexgame.Invitation;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
@@ -45,6 +46,7 @@ public class NotificationsUI extends Fragment implements InviteListObserver{
     // sets up the events list view.
     protected void setupEventsListView(View notificationsView)
     {
+        /*
         eventsList = (ListView) notificationsView.findViewById(R.id.eventsListView); // grab the events list.
 
         // todo: this is only for testing. Remove this once we are pulling data from the database.
@@ -58,13 +60,14 @@ public class NotificationsUI extends Fragment implements InviteListObserver{
         eventListAdapter.notifyDataSetChanged(); // tell the adapter that we have some information to show here!
         eventsList.setDivider(null);
         eventsList.setDividerHeight(10);
+        */
     }
 
     // set up the invitations list view.
     protected void setupInvitationsListView(View notificationsView)
     {
         invitationsList = (ListView) notificationsView.findViewById(R.id.invitationsListView); // grab the inviations list.
-        invitationsListAdapter = new InvitationsListAdapter(notificationsView.getContext(), R.layout.invitation_item,new ArrayList<>(invitationsData.values()) , (MainGameUI) getActivity()); // create the invitations adapter that we need to use.
+        invitationsListAdapter = new InvitationsListAdapter(notificationsView.getContext(), R.layout.invitation_item,new ArrayList<>(invitationsData.values()) , (HomescreenActivity) getActivity()); // create the invitations adapter that we need to use.
         invitationsList.setAdapter(invitationsListAdapter);
         invitationsListAdapter.notifyDataSetChanged();
         invitationsList.setDivider(null);

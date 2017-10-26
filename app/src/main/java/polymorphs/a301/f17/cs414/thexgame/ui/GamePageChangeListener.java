@@ -1,8 +1,11 @@
 package polymorphs.a301.f17.cs414.thexgame.ui;
 
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.widget.GridView;
 
+import polymorphs.a301.f17.cs414.thexgame.Chessboard;
+import polymorphs.a301.f17.cs414.thexgame.HomescreenActivity;
 import polymorphs.a301.f17.cs414.thexgame.R;
 
 /**
@@ -14,13 +17,13 @@ import polymorphs.a301.f17.cs414.thexgame.R;
 
 public class GamePageChangeListener implements ViewPager.OnPageChangeListener {
 
-    private InGameUI inGameUI; // holds a copy of the ingameui to allow the snackbar to have a view of what game they are on for the user to be able to work on which will be awesome looking!!
-    private GridView game; // holds a copy of the game that the user is working on which is pretty important!!!
+    private HomescreenActivity homescreenActivity; // a copy of the homescreen layout.
+    private Chessboard game; // holds a copy of the game that the user is working on which is pretty important!!!
 
-    public GamePageChangeListener(InGameUI inGame)
+    public GamePageChangeListener(HomescreenActivity homescreenActivity)
     {
-        inGameUI = inGame; // sets a copy of the game that we are working with. Mainly used for the Snackbar!
-        game = inGame.getActivity().findViewById(R.id.chessboard); // grabs the chessboard that we are working with.
+        this.homescreenActivity = homescreenActivity;
+        game = (Chessboard) homescreenActivity.findViewById(R.id.chessboard); // grabs the chessboard that we are working with.
     }
 
     // do not pay attention to this.
@@ -35,7 +38,7 @@ public class GamePageChangeListener implements ViewPager.OnPageChangeListener {
     public void onPageSelected(int position)
     {
         // removed this as it is causing issues on the phone for Andy, need to find a new way to inform users that are being used by Roger, pretty important!
-       // Snackbar.make(inGameUI.getView(), "GAME " + (position+1), Snackbar.LENGTH_SHORT).show(); // show the snackbar plus the game for the users to see, this is actually pretty cool!!! You'll see
+       Snackbar.make(homescreenActivity.findViewById(R.id.mainContentScreen), "GAME " + (position+1), Snackbar.LENGTH_SHORT).show(); // show the snackbar plus the game for the users to see, this is actually pretty cool!!! You'll see
     }
 
 
