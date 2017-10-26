@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -17,8 +19,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -198,29 +202,6 @@ public class HomescreenActivity extends AppCompatActivity
         DBIOCore.registerToCurrentUser(this);
 
         setContentView(R.layout.homescreen2);
-        /*
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-    */
-
         usernames = new HashMap<>();
         // Create our chessboard which is very important!
         //chessboard = (GridView) findViewById(R.id.chessboard); // find the chess board that we want to be working with.
@@ -263,17 +244,7 @@ public class HomescreenActivity extends AppCompatActivity
         // TODO: @Miles for some weird reason, we are getting a null reference for the current user. This likely means the same for usernames. This is why sendInvites Don't work, try to get that fixed and we are golden.
         CreateNewGameButtonListener newGameButtonListener = new CreateNewGameButtonListener(HomescreenActivity.this, usernames, currentUser);
         createNewGameButton.setOnClickListener(newGameButtonListener);
-        /*
-        createNewGameButton.setOnClickListener(new View.OnClickListener()
-        {
-            // Clicking this button will start a new game.
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        */
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -284,12 +255,9 @@ public class HomescreenActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // TODO: once we have the ability to send invites, and get the user able to do things, we need to be able to change the name for the user to see their name while playing.
+
         usernames = new HashMap<>();
-        // Create our chessboard which is very important!
-        //chessboard = (GridView) findViewById(R.id.chessboard); // find the chess board that we want to be working with.
-        //squareAdapter = new SquareAdapter(getApplicationContext());
-        //chessboard.setAdapter(squareAdapter);
-        //squareAdapter.notifyDataSetChanged(); // tell the square adapter to update the dataset to show the correct items in the gridview.
         setupGamePager(); // setup our game pager, pretty important.
     }
 
@@ -365,9 +333,13 @@ public class HomescreenActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        item.setIcon(R.drawable.quit);
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+            RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
+            Snackbar.make(homescreenLayout, "This feature isn't available yet ¯\\_(ツ)_/¯ ", Snackbar.LENGTH_LONG).show();
             return true;
         }
 
@@ -411,18 +383,21 @@ public class HomescreenActivity extends AppCompatActivity
     {
         Bundle fragmentArgs = new Bundle(); // the Bundle here allows us to send arguments to our fragment!
 
-        RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.homescreenLayout); // get the relative layout of the homescreen.
+        RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
         homescreenLayout.removeAllViews();
         homescreenLayout.setBackground(null); // this should remove all views from the main view to allow us to show the fragment properly.
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction(); // get the Fragment transaction to allow us to display the fragment properly
-        transaction.replace(R.id.homescreenLayout, settingsUI); // replace the current fragment with our games
+        transaction.replace(R.id.mainContentScreen, settingsUI); // replace the current fragment with our games
         transaction.commit(); // commit the fragment to be loaded.
     }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+
+        RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen);
+
         int id = item.getItemId();
 
         if (id == R.id.notifications)
@@ -431,11 +406,11 @@ public class HomescreenActivity extends AppCompatActivity
         }
         else if (id == R.id.History)
         {
-            Toast.makeText(getBaseContext(), "This feature is not implemented yet!", Toast.LENGTH_SHORT).show();
+            Snackbar.make(homescreenLayout, "This feature isn't available yet ¯\\_(ツ)_/¯ ", Snackbar.LENGTH_LONG).show();
         }
         else if (id == R.id.messages)
         {
-            Toast.makeText(getBaseContext(), "This feature is not implemented yet!", Toast.LENGTH_SHORT).show();
+            Snackbar.make(homescreenLayout, "This feature isn't available yet ¯\\_(ツ)_/¯ ", Snackbar.LENGTH_LONG).show();
 
         } else if (id == R.id.settings)
         {

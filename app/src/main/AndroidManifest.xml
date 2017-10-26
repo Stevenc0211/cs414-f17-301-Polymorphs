@@ -23,7 +23,7 @@
         <activity
             android:name=".MainActivity"
             android:launchMode="singleInstance"
-            android:screenOrientation="landscape">
+            android:screenOrientation="portrait">
 
             <!-- Used to define the default activity, DO NOT MODIFY -->
             <intent-filter>
@@ -36,10 +36,10 @@
         <!-- Details the startup screen activity for users to see the login screen every time that they start the app again -->
         <activity
             android:name=".ui.StartupScreen"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.SendNotificationsUI"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".HomescreenActivity"
             android:label="@string/title_activity_homescreen"
