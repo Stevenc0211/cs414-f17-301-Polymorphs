@@ -13,22 +13,22 @@ import java.util.HashMap;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
 import polymorphs.a301.f17.cs414.thexgame.HomescreenActivity;
 import polymorphs.a301.f17.cs414.thexgame.R;
+import polymorphs.a301.f17.cs414.thexgame.persistence.UserObserver;
+import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListObserver;
 
 /**
  * Created by thenotoriousrog on 10/26/17.
  */
 
-public class CreateNewGameButtonListener implements View.OnClickListener {
+public class CreateNewGameButtonListener implements View.OnClickListener, UserObserver, UsernameListObserver {
 
     private HomescreenActivity homescreenActivity;
     HashMap<String, String> usernames;
     User currentUser;
 
-    public CreateNewGameButtonListener(HomescreenActivity homescreenActivity, HashMap<String, String> usernames, User currentUser)
+    public CreateNewGameButtonListener(HomescreenActivity homescreenActivity)
     {
         this.homescreenActivity = homescreenActivity;
-        this.usernames = usernames;
-        this.currentUser = currentUser;
     }
 
     // Pops up a dialog box and asks if users want to send invites, upon yes, inflate the send_invitations.xml
@@ -49,11 +49,11 @@ public class CreateNewGameButtonListener implements View.OnClickListener {
                 invitePlayersDialog.dismiss(); // close the invitePlayersDialog box.
 
                 Intent sendInvitesIntent = new Intent(homescreenActivity, SendNotificationsUI.class);
-                Bundle args = new Bundle(); // bundle to send to SendNotificationsUI
-                ArrayList<String> users = new ArrayList<>( usernames.values() );
-                args.putStringArrayList("usernames", users);
-                args.putString("currentUser", currentUser.getNickname());
-                sendInvitesIntent.putExtra("args", args); // put the bundle into the intent to be grabbed.
+//                Bundle args = new Bundle(); // bundle to send to SendNotificationsUI
+//                ArrayList<String> users = new ArrayList<>( usernames.values() );
+//                args.putStringArrayList("usernames", users);
+//                args.putString("currentUser", currentUser.getNickname());
+//                sendInvitesIntent.putExtra("args", args); // put the bundle into the intent to be grabbed.
 
 
                 homescreenActivity.startActivity(sendInvitesIntent); // start the activity.
@@ -76,5 +76,32 @@ public class CreateNewGameButtonListener implements View.OnClickListener {
     public void onClick(View view)
     {
         askToSendInvites();
+    }
+
+    @Override
+    public void userUpdated(User u) {
+        currentUser = u;
+    }
+
+    @Override
+    public void usernameAdded(String addedUsername, String precedingUsernameKey) {
+        usernames.put(precedingUsernameKey, addedUsername);
+    }
+
+    @Override
+    public void usernameChanged(String changedUsername, String precedingUsernameKey) {
+        usernames.put(precedingUsernameKey, changedUsername);
+    }
+
+    @Override
+    public void usernameRemoved(String removedUsername) {
+        String rmKey = "";
+        for (String key : usernames.keySet()) {
+            if (usernames.get(key).equals(removedUsername)) {
+                rmKey = key;
+                break;
+            }
+        }
+        usernames.remove(rmKey);
     }
 }

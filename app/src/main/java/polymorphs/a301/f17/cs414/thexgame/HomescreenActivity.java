@@ -199,7 +199,6 @@ public class HomescreenActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        DBIOCore.registerToCurrentUser(this);
 
         setContentView(R.layout.homescreen2);
         usernames = new HashMap<>();
@@ -242,7 +241,7 @@ public class HomescreenActivity extends AppCompatActivity
         FloatingActionButton createNewGameButton = (FloatingActionButton) findViewById(R.id.createNewGameButton);
 
         // TODO: @Miles for some weird reason, we are getting a null reference for the current user. This likely means the same for usernames. This is why sendInvites Don't work, try to get that fixed and we are golden.
-        CreateNewGameButtonListener newGameButtonListener = new CreateNewGameButtonListener(HomescreenActivity.this, usernames, currentUser);
+        CreateNewGameButtonListener newGameButtonListener = new CreateNewGameButtonListener(HomescreenActivity.this);
         createNewGameButton.setOnClickListener(newGameButtonListener);
 
 
