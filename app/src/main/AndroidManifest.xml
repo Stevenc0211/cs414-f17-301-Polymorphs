@@ -35,16 +35,16 @@
 
         <!-- Details the startup screen activity for users to see the login screen every time that they start the app again -->
         <activity
-            android:name=".ui.StartupScreen"
+            android:name=".ui.activities.StartupScreenActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.SendNotificationsUI"
+            android:name=".ui.activities.SendInvitationsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".HomescreenActivity"
+            android:name=".ui.activities.HomescreenActivity"
             android:label="@string/title_activity_homescreen"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".SetUsernameActivity"
+        <activity android:name=".ui.activities.SetUsernameActivity"
             android:screenOrientation="portrait">
         </activity>
     </application>

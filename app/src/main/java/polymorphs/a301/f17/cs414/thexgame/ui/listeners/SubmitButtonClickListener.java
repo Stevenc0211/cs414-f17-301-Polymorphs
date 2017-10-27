@@ -1,13 +1,10 @@
-package polymorphs.a301.f17.cs414.thexgame.ui;
+package polymorphs.a301.f17.cs414.thexgame.ui.listeners;
 
 import android.view.View;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import polymorphs.a301.f17.cs414.thexgame.HomescreenActivity;
-import polymorphs.a301.f17.cs414.thexgame.SetUsernameActivity;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
+import polymorphs.a301.f17.cs414.thexgame.ui.activities.SetUsernameActivity;
 
 /**
  * Created by thenotoriousrog on 10/20/17.

@@ -1,13 +1,14 @@
-package polymorphs.a301.f17.cs414.thexgame.ui;
+package polymorphs.a301.f17.cs414.thexgame.ui.adapters;
 
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 
 import java.util.ArrayList;
 
 import polymorphs.a301.f17.cs414.thexgame.Chessboard;
+import polymorphs.a301.f17.cs414.thexgame.ui.adapters.ActivityListAdapter;
+import polymorphs.a301.f17.cs414.thexgame.ui.adapters.SquareAdapter;
 
 /**
  * Created by thenotoriousrog on 10/13/17.

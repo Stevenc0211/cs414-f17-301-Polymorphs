@@ -1,4 +1,4 @@
-package polymorphs.a301.f17.cs414.thexgame.ui;
+package polymorphs.a301.f17.cs414.thexgame.ui.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -21,7 +21,7 @@ import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
  * WARNING** TODO: team, this class is going to be removed I will not be using this class because I'm going to change the entire UI
  */
 
-public class SendInvitesUI extends Fragment {
+public class SendInvitesFragment extends Fragment {
 
     // TODO: we need to have the correct variables here. I am only using simple ones for testing. We want an actual instance of our database object for us to be able to grab data easily.
     // TODO: remember that whatever the user decides to send as the list of users also has to be sent to the InGameUI for us to be able to create the games with the accurate users names and whatnot.

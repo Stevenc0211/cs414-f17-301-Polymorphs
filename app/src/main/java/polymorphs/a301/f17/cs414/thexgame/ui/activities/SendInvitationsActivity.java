@@ -1,7 +1,6 @@
-package polymorphs.a301.f17.cs414.thexgame.ui;
+package polymorphs.a301.f17.cs414.thexgame.ui.activities;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,16 +12,15 @@ import java.util.HashMap;
 import polymorphs.a301.f17.cs414.thexgame.Invitation;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
-import polymorphs.a301.f17.cs414.thexgame.persistence.UserObserver;
 import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListObserver;
+import polymorphs.a301.f17.cs414.thexgame.ui.adapters.InviteListAdapter;
 
 /**
  * Created by steve-0 on 10/17/17. Updated and commented by Roger.
  * This class is likely to remain but the code in it is going to change when Roger finishes the new way of sending invites out to users.
- * Todo: Miles, Andy, Badr the code you add in here will not be removed. It's crucial that we get the database in here and populating a list of users. This class sends the invites to users.
  */
 
-public class SendNotificationsUI extends Activity implements UsernameListObserver {
+public class SendInvitationsActivity extends Activity implements UsernameListObserver {
 
     // TODO: miles you will want to send the data base stuff here you will want to send in the list from the data base, i.e. an ArrayList of whatever object. It does have to be an arraylist.
     private ArrayList<Invitation> allInvites = new ArrayList<>(); // list of database items that we are working with.
@@ -30,7 +28,7 @@ public class SendNotificationsUI extends Activity implements UsernameListObserve
     private HashMap<String, Integer> inviteIdxByDBKey = new HashMap<>();
     // removed for now --> private final int SEND_INVITES = 4000; // this is the request code for sending invites to players very important.
 
-    // this method simply generates the UI that we created for the SendNotificationsUI.
+    // this method simply generates the UI that we created for the SendInvitationsActivity.
     protected void setupUI()
     {
         // the send button that we need to be working with.
@@ -63,23 +61,7 @@ public class SendNotificationsUI extends Activity implements UsernameListObserve
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-       // /Bundle args = getArguments(); // get the arguments sent in rom the list.
-
-        //ArrayList<String> dataBase = new ArrayList<>(); // todo: we will want to get the items from the base
         setContentView(R.layout.send_invitations); // this will display our UI
-//        Intent sendInvitesIntent = getIntent();
-//        Bundle args = sendInvitesIntent.getBundleExtra("args");
-//        String currentUser = args.getString("currentUser");
-//        ArrayList<String> people = args.getStringArrayList("usernames"); // grab the set of usernames from InGameUI
-
-
-//        for(int i = 0; i < people.size(); i++)
-//        {
-//            if (people.get(i).equals(currentUser)) continue;
-//            Invitation invite = new Invitation(currentUser, people.get(i));
-//            allInvites.add(invite);
-//        }
-
         setupUI();
         DBIOCore.registerToUsernameList(this);
     }

@@ -1,4 +1,4 @@
-package polymorphs.a301.f17.cs414.thexgame;
+package polymorphs.a301.f17.cs414.thexgame.ui.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,9 +7,10 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
+import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.persistence.UserObserver;
-import polymorphs.a301.f17.cs414.thexgame.ui.SubmitButtonClickListener;
+import polymorphs.a301.f17.cs414.thexgame.ui.listeners.SubmitButtonClickListener;
 
 /**
  * Created by thenotoriousrog on 10/26/17. This activity is for our users to be able to sign in with. Pretty important!

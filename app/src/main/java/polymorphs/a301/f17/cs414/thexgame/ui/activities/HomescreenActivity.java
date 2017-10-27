@@ -1,4 +1,4 @@
-package polymorphs.a301.f17.cs414.thexgame;
+package polymorphs.a301.f17.cs414.thexgame.ui.activities;
 
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -18,33 +17,32 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
+import polymorphs.a301.f17.cs414.thexgame.Chessboard;
+import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.persistence.UserObserver;
 import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListObserver;
-import polymorphs.a301.f17.cs414.thexgame.ui.ActivityListAdapter;
-import polymorphs.a301.f17.cs414.thexgame.ui.CreateNewGameButtonListener;
-import polymorphs.a301.f17.cs414.thexgame.ui.GamePageChangeListener;
-import polymorphs.a301.f17.cs414.thexgame.ui.GamePagerAdapter;
-import polymorphs.a301.f17.cs414.thexgame.ui.NotificationsUI;
-import polymorphs.a301.f17.cs414.thexgame.ui.SettingsUI;
-import polymorphs.a301.f17.cs414.thexgame.ui.SquareAdapter;
-import polymorphs.a301.f17.cs414.thexgame.ui.SubmitButtonClickListener;
+import polymorphs.a301.f17.cs414.thexgame.ui.adapters.ActivityListAdapter;
+import polymorphs.a301.f17.cs414.thexgame.ui.adapters.GamePagerAdapter;
+import polymorphs.a301.f17.cs414.thexgame.ui.adapters.SquareAdapter;
+import polymorphs.a301.f17.cs414.thexgame.ui.fragments.NotificationsFragment;
+import polymorphs.a301.f17.cs414.thexgame.ui.fragments.SettingsFragment;
+import polymorphs.a301.f17.cs414.thexgame.ui.listeners.CreateNewGameButtonListener;
+import polymorphs.a301.f17.cs414.thexgame.ui.listeners.GamePageChangeListener;
+import polymorphs.a301.f17.cs414.thexgame.ui.listeners.SubmitButtonClickListener;
 
 public class HomescreenActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, UsernameListObserver, UserObserver {
 
-    private NotificationsUI  notificationsUI = new NotificationsUI(); // a copy of the notifications UI that should be built for the user.
+    private NotificationsFragment notificationsFragment = new NotificationsFragment(); // a copy of the notifications UI that should be built for the user.
     private ArrayList<String> currentGames; // the list of current games.
     private ViewPager gamePager; // this holds the game view pager which essentially is a list of horizontal list items of the game, which is pretty awesome!
     private GamePagerAdapter gamePagerAdapter; // holds the gamePagerAdapter that we need to be working on here.
@@ -57,7 +55,7 @@ public class HomescreenActivity extends AppCompatActivity
     private boolean startNewGame = false; // tells the inGameUI that we want to start a new game, which involves sending a list of invite(s) to other player(s).
     private boolean openCurrentGames = false; // tells inGameUI to just open the current list of games.
     private SubmitButtonClickListener submitClickListener;
-    private SettingsUI settingsUI = new SettingsUI(); // holds a copy of our settingsUI.
+    private SettingsFragment settingsUI = new SettingsFragment(); // holds a copy of our settingsUI.
     private final int SET_USERNAME = 9001; // details what we are doing for the username.
 
 
@@ -97,22 +95,6 @@ public class HomescreenActivity extends AppCompatActivity
 
     }
 
-    // This method will update the events adapter to show the updated information which is helps when showing the information in real time! Can be used inside and outside the class!
-    public void updateEvents() {
-        eventsListAdapter.notifyDataSetChanged();
-    }
-
-    // sets up the ActivityListView. TODO: This data should be pulled from the database
-    protected void setupActivityListView(View gameUIView) {
-        ListView activities = (ListView) gameUIView.findViewById(R.id.EventsList); // grabs the events that we are working with.
-        eventsListAdapter = new ActivityListAdapter(gameUIView.getContext(), R.layout.activity_item, events); // holds the game Event lists which is pretty important!
-
-        activities.setAdapter(eventsListAdapter);
-        eventsListAdapter.notifyDataSetChanged(); // let the adapter know we have new items to update.
-        activities.setDivider(null); // set no dividers.
-        activities.setDividerHeight(10); // set the spacing between our invisible dividers.
-    }
-
     // checks the SharedPreferences to see if the username has correctly been set. If so, proceed to maingameui, otherwise show newusername layout.
     protected boolean isUsernameSet()
     {
@@ -122,98 +104,44 @@ public class HomescreenActivity extends AppCompatActivity
         return usernameCreated;
     }
 
-    protected boolean isUserCreated()
+
+
+    /*
+        This reads what was written from SharedPreferences and restores it into our global variables.
+     */
+    private void resetBasicInfoFromMainMemory()
     {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        boolean userCreated = preferences.getBoolean("userCreated", false); // grabs the boolean named usernameCreated, if the boolean does not exist, the default boolean is false.
-        return userCreated;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        name = prefs.getString("name", "");
+        email = prefs.getString("email", "");
+        username = prefs.getString("username", "");
+
+        /*
+            NOTE: If we really wanted to we could reset the current user's info doing so below
+            currentUser.setName(name);
+            currentUser.setEmail(email);
+            currentUser.setUsername(username);
+            But the idea is that is should be read from the database, and if not, we could definitely reset it from the main memory so that we could have it because current user gone after app is killed.
+          */
+
     }
 
-    // When this method is called, the mainGameUI is created along with all of the adapters and button listeners with the homescreenlayout created.
-    public void createMainGameUI()
-    {
-        setContentView(R.layout.homescreen); // set the homescreen layout.
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-
-        if(isUserCreated() == false)
-        {
-            name = submitClickListener.getName();
-            email = submitClickListener.getEmail();
-            username = submitClickListener.getUsername();
-
-            System.out.println("name we want to send = " + name);
-            System.out.println("email we want to send = " + email);
-            System.out.println("username we want to send = " + username);
-
-        }
-        else
-        {
-            preferences.edit().putBoolean("userCreated", true).commit(); // IGNORE THIS!
-        }
-
-
-        Button createGameButton = (Button) findViewById(R.id.createGameButton); // grab the button we are working with.
-        createGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-               // createInGameUIFragment(); // have the InGameUI created in here!!
-            }
-        });
-
-
-        Button currentGameButton = (Button) findViewById(R.id.currentGamesButton); // grab our button here.
-        currentGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                //openCurrentGamesFragment(); // have the fragment open and show the current games to the user! Very important!
-
-                // TODO: we can also pull from the database here and update current games if we wanted.
-            }
-        });
-
-
-        Button notificationsButton = (Button) findViewById(R.id.NotificationsButton); // grab our notifications button.
-        notificationsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-               // openNotificationsFragment(); // open up the notifications fragment!
-            }
-        });
-
-        Button settingsButton = (Button) findViewById(R.id.SettingsButton); // grab our settings button.
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                //openSettingsFragment(); // opens the settings fragment!
-
-                // some of the features inside the settings fragment do not work yet and will be updated when some more of the main features of the game have been implemented.
-            }
-        });
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.homescreen2);
+        setContentView(R.layout.homescreen);
         usernames = new HashMap<>();
-        // Create our chessboard which is very important!
-        //chessboard = (GridView) findViewById(R.id.chessboard); // find the chess board that we want to be working with.
-        //squareAdapter = new SquareAdapter(getApplicationContext());
-        //chessboard.setAdapter(squareAdapter);
-        //squareAdapter.notifyDataSetChanged(); // tell the square adapter to update the dataset to show the correct items in the gridview.
         setupGamePager(); // setup our game pager, pretty important.
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
         if(isUsernameSet() == false)
         {
-            preferences.edit().putBoolean("usernameCreated", true).commit();
-            preferences.edit().putBoolean("userCreated", true).commit();
+            preferences.edit().putBoolean("usernameCreated", true).apply(); // sets this in main memory in a background thread.
+            preferences.edit().putBoolean("userCreated", true).apply(); // sets this in main memory in a background thread.
 
             // Start the activity for setting a username.
             Intent setUsernameIntent = new Intent(this, SetUsernameActivity.class);
@@ -229,12 +157,59 @@ public class HomescreenActivity extends AppCompatActivity
 
     }
 
+    // This method sets up the header for the navigation view which will show the user's nickname and email so they know that they are logged in.
+    private void setupHeader(NavigationView navigationView)
+    {
+        LinearLayout navHeaderView = (LinearLayout) navigationView.getHeaderView(0); // gets the header view of the nav_header_homescreen.
+        TextView nameText = (TextView) navHeaderView.findViewById(R.id.nameText);
+        nameText.setText(username); // display the user's nickname in the navheader.
+
+        TextView textView = (TextView) navHeaderView.findViewById(R.id.textView); // get the text view out of our header.
+        textView.setText(email);
+    }
+
+    // this reads the number of notifications from main memory for this user and updats the text for the notifications.
+    public void updateNotificationsCount()
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        int notsCount = preferences.getInt("NotificationsCount", 0); // 0 is default if nothing is there.
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        Menu navMenu = navigationView.getMenu();
+
+        MenuItem notificationsText = navMenu.findItem(R.id.notifications);
+
+        // TODO: the noficiations counter is not perfect but it works in every case except for on app startup and notifications already exist. The reason is because we need the notificationFragment to be
+        // todo (cont): started and we can't start it until we touch the notifications, however, removal of a notification does work.
+        // TODO: @Miles, is there a way we can read invites for the currentUser from the database (assuming that we get that null currentuser situation handled)?
+        if(notsCount == 0) {
+            notificationsText.setTitle("Notifications"); // don't have a count if notifications show nothing.
+        }
+        else {
+            notificationsText.setTitle("Notifications (" + notsCount + ")"); // have a counter if there are notifications.
+        }
+
+    }
+
+    /*
+       This writes the user's information to main memory. It's a bit of a hack, but for some reason when the app is killed, we can no longer get the current user, it's not updated from the database.
+       This will work for now because each person who has a phone will be logged in with one account and this will show the name of that person in local memory and what we are saving is small so it works.
+    */
+    private void writeBasicInfoToMemory(String name, String email, String username)
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        preferences.edit().putString("name", name).commit();
+        preferences.edit().putString("email", email).commit();
+        preferences.edit().putString("username", username).commit();
+    }
+
     /*
         This method set's up our homescreen which is pretty important!
      */
     protected void displayHomescreen()
     {
-        setContentView(R.layout.homescreen2);
+        setContentView(R.layout.homescreen);
+        resetBasicInfoFromMainMemory(); // resets all of the basic info from main memory.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -244,7 +219,6 @@ public class HomescreenActivity extends AppCompatActivity
         CreateNewGameButtonListener newGameButtonListener = new CreateNewGameButtonListener(HomescreenActivity.this);
         createNewGameButton.setOnClickListener(newGameButtonListener);
 
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -253,15 +227,16 @@ public class HomescreenActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        // TODO: once we have the ability to send invites, and get the user able to do things, we need to be able to change the name for the user to see their name while playing.
+        setupHeader(navigationView); // setup the header of the navigation view.
+        updateNotificationsCount(); // update the count of notifications.
 
         usernames = new HashMap<>();
         setupGamePager(); // setup our game pager, pretty important.
+
     }
 
     /*
-        This method is called when the user set's up their username.
+        This method is called when the user set's up their username. The information is passed back from the SetUsernameActivity which is sent here.
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intentResult)
@@ -271,9 +246,11 @@ public class HomescreenActivity extends AppCompatActivity
         if(requestCode == SET_USERNAME) // if the request code came from SetUsernameActivity.
         {
             Bundle data = intentResult.getBundleExtra("results");
-            name = data.getString("name");
-            email = data.getString("email");
-            username = data.getString("username");
+            name = data.getString("name"); // this comes back as null
+            email = data.getString("email"); // this comes back as null.
+            username = data.getString("username"); // this comes back fine.
+            // note: in the very first run, we have our current user and we can grab their name and email, but when the app is closed we lose our current user.
+            writeBasicInfoToMemory(currentUser.getName(), currentUser.getEmail(), username); // write the user's basic info to main memory.
             displayHomescreen();
         }
 
@@ -309,12 +286,15 @@ public class HomescreenActivity extends AppCompatActivity
         currentUser = u;
     }
 
+    // Controls the actions when the back button is pressed, in this case, we make it so that the sliding drawer closes
     @Override
-    public void onBackPressed() {
+    public void onBackPressed()
+    {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            updateNotificationsCount();
             super.onBackPressed();
         }
     }
@@ -350,19 +330,15 @@ public class HomescreenActivity extends AppCompatActivity
     protected void openNotificationsFragment()
     {
         Bundle fragmentArgs = new Bundle(); // the Bundle here allows us to send arguments to our fragment!
-        // we should pull items from the data base including all of the users current games.
-        // we should then send the information to the games here by attaching the games to the user which is pretty important!
 
         // TODO: we should pull data from the database to get the users notifications. We also need to update the notifications counter as well!!
-
-        //inGameUI.setArguments(fragmentArgs); // set the arguments of the fragment.
 
         RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
         homescreenLayout.removeAllViews();
         homescreenLayout.setBackground(null); // this should remove all views from the main view to allow us to show the fragment properly.
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction(); // get the Fragment transaction to allow us to display the fragment properly
-        transaction.replace(R.id.mainContentScreen, notificationsUI); // replace the current fragment with our games
+        transaction.replace(R.id.mainContentScreen, notificationsFragment); // replace the current fragment with our games
         transaction.commit(); // commit the fragment to be loaded.
     }
 
@@ -389,6 +365,7 @@ public class HomescreenActivity extends AppCompatActivity
         FragmentTransaction transaction = getFragmentManager().beginTransaction(); // get the Fragment transaction to allow us to display the fragment properly
         transaction.replace(R.id.mainContentScreen, settingsUI); // replace the current fragment with our games
         transaction.commit(); // commit the fragment to be loaded.
+        updateNotificationsCount(); // update the notifications as soon as something is pressed.
     }
 
     @Override

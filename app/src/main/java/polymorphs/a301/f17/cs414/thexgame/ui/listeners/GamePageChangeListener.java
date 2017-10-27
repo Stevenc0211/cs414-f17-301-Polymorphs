@@ -1,12 +1,11 @@
-package polymorphs.a301.f17.cs414.thexgame.ui;
+package polymorphs.a301.f17.cs414.thexgame.ui.listeners;
 
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
-import android.widget.GridView;
 
 import polymorphs.a301.f17.cs414.thexgame.Chessboard;
-import polymorphs.a301.f17.cs414.thexgame.HomescreenActivity;
 import polymorphs.a301.f17.cs414.thexgame.R;
+import polymorphs.a301.f17.cs414.thexgame.ui.activities.HomescreenActivity;
 
 /**
  * Created by thenotoriousrog on 10/13/17.

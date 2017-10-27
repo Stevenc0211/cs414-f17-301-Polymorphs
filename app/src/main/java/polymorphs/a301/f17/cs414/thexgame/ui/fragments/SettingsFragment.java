@@ -1,4 +1,4 @@
-package polymorphs.a301.f17.cs414.thexgame.ui;
+package polymorphs.a301.f17.cs414.thexgame.ui.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -14,7 +14,7 @@ import polymorphs.a301.f17.cs414.thexgame.R;
  * Created by steve-0 on 10/15/17.
  */
 
-public class SettingsUI extends Fragment {
+public class SettingsFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState)

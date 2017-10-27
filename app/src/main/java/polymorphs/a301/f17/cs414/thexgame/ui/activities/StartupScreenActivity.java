@@ -1,4 +1,4 @@
-package polymorphs.a301.f17.cs414.thexgame.ui;
+package polymorphs.a301.f17.cs414.thexgame.ui.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -16,7 +16,6 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
-import polymorphs.a301.f17.cs414.thexgame.HomescreenActivity;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.R;
 
@@ -27,7 +26,7 @@ import polymorphs.a301.f17.cs414.thexgame.R;
  *** Note: Logging in will be automatic once the database is started. ***
  */
 
-public class StartupScreen extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class StartupScreenActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private View googleSignInButton; // holds the google sign-in button.
 
@@ -131,14 +130,14 @@ public class StartupScreen extends AppCompatActivity implements GoogleApiClient.
 
             System.out.println("Log in was a success");
 
-            Intent mainGameUIIntent = new Intent(StartupScreen.this, HomescreenActivity.class); // main game ui intent that is sent when the app is started.
+            Intent mainGameUIIntent = new Intent(StartupScreenActivity.this, HomescreenActivity.class); // main game ui intent that is sent when the app is started.
             startActivity(mainGameUIIntent);
         }
         else // Signed out, show unauthenticated UI.
         {
 
             System.out.println("Log in was a failure");
-           // Intent mainGameUIIntent = new Intent(StartupScreen.this, HomescreenActivity.class); // main game ui intent that is sent when the app is started.
+           // Intent mainGameUIIntent = new Intent(StartupScreenActivity.this, HomescreenActivity.class); // main game ui intent that is sent when the app is started.
             //startActivity(mainGameUIIntent);
         }
     }

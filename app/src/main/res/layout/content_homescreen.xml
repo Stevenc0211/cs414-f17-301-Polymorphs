@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="polymorphs.a301.f17.cs414.thexgame.HomescreenActivity"
+    tools:context="polymorphs.a301.f17.cs414.thexgame.ui.activities.HomescreenActivity"
     tools:showIn="@layout/app_bar_homescreen">
 
     <!-- This right here allows the users to be able to swipe between games as they please!

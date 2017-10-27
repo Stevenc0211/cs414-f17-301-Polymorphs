@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
-import polymorphs.a301.f17.cs414.thexgame.ui.StartupScreen;
+import polymorphs.a301.f17.cs414.thexgame.ui.activities.StartupScreenActivity;
 
 /**
  * Created by Roger Hannagan on 9/13/17.
@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    Intent startupActivity = new Intent(MainActivity.this, StartupScreen.class); // create the intent that will be needed for the starting the login activity!
+                    Intent startupActivity = new Intent(MainActivity.this, StartupScreenActivity.class); // create the intent that will be needed for the starting the login activity!
                     startActivity(startupActivity); // start the activity now.
 
                 } else {
@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
 
                     // app will gracefully start, but the user will have to manually reenter all of their login info each time, how lame!
 
-                    Intent startupActivity = new Intent(MainActivity.this, StartupScreen.class); // create the intent that will be needed for the starting the login activity!
+                    Intent startupActivity = new Intent(MainActivity.this, StartupScreenActivity.class); // create the intent that will be needed for the starting the login activity!
                     startActivity(startupActivity); // start the activity now.
                 }
 
@@ -77,7 +77,7 @@ public class MainActivity extends Activity {
     {
         super.onResume();
 
-        Intent startupActivity = new Intent(MainActivity.this, StartupScreen.class); // create the intent that will be needed for the starting the login activity!
+        Intent startupActivity = new Intent(MainActivity.this, StartupScreenActivity.class); // create the intent that will be needed for the starting the login activity!
         startActivity(startupActivity); // start the activity now.
     }
 }

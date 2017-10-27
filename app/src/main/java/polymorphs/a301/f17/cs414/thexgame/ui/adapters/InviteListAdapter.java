@@ -1,4 +1,4 @@
-package polymorphs.a301.f17.cs414.thexgame.ui;
+package polymorphs.a301.f17.cs414.thexgame.ui.adapters;
 
 import android.content.Context;
 import android.graphics.Color;

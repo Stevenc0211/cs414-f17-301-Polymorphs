@@ -74,7 +74,7 @@ public class DBIOCore {
         baseReference.child("usernameList").child(key).setValue(username);
     }
 
-    // TODO: we need to sort out the no check for existing nickname and implement a check for an existing user on start. Also ensure the username gets set either way - Miles
+    // TODO: we need to sort out the no check for existing nickname and implement a check for an existing user on start. Also ensure the username gets set either way - Miles <- I believe I got it, ~ Roger
 
     /**
      * This can be used to retrieve the current users username (nickname).
