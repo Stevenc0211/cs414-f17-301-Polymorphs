@@ -67,7 +67,6 @@ public class SendNotificationsUI extends Activity implements UsernameListObserve
 
         //ArrayList<String> dataBase = new ArrayList<>(); // todo: we will want to get the items from the base
         setContentView(R.layout.send_invitations); // this will display our UI
-
 //        Intent sendInvitesIntent = getIntent();
 //        Bundle args = sendInvitesIntent.getBundleExtra("args");
 //        String currentUser = args.getString("currentUser");
@@ -82,45 +81,52 @@ public class SendNotificationsUI extends Activity implements UsernameListObserve
 //        }
 
         setupUI();
+        DBIOCore.registerToUsernameList(this);
     }
 
 
     @Override
     public void usernameAdded(String addedUsername, String precedingUsernameKey) {
-        Invitation invite = new Invitation(DBIOCore.getCurrentUserUsername(), addedUsername);
-        allInvites.add(invite);
-        inviteListAdapter.add(invite);
-        int idx = allInvites.size()-1;
-        inviteIdxByDBKey.put(precedingUsernameKey, idx);
-        inviteListAdapter.notifyDataSetChanged();
+        if (!addedUsername.equals(DBIOCore.getCurrentUserUsername())) {
+            Invitation invite = new Invitation(DBIOCore.getCurrentUserUsername(), addedUsername);
+            allInvites.add(invite);
+            inviteListAdapter.add(invite);
+            int idx = allInvites.size()-1;
+            inviteIdxByDBKey.put(precedingUsernameKey, idx);
+            inviteListAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
     public void usernameChanged(String changedUsername, String precedingUsernameKey) {
-        allInvites.get(inviteIdxByDBKey.get(precedingUsernameKey)).setInvitedUser(changedUsername);
-        inviteListAdapter.getItem(inviteIdxByDBKey.get(precedingUsernameKey)).setInvitedUser(changedUsername);
-        inviteListAdapter.notifyDataSetChanged();
+        if (!changedUsername.equals(DBIOCore.getCurrentUserUsername())) {
+            allInvites.get(inviteIdxByDBKey.get(precedingUsernameKey)).setInvitedUser(changedUsername);
+            inviteListAdapter.getItem(inviteIdxByDBKey.get(precedingUsernameKey)).setInvitedUser(changedUsername);
+            inviteListAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
     public void usernameRemoved(String removedUsername) {
-        int idx = 0;
-        for (; idx < allInvites.size(); idx++) {
-            if (allInvites.get(idx).getInvitedUser().equals(removedUsername)) {
-                break;
+        if (!removedUsername.equals(DBIOCore.getCurrentUserUsername())) {
+            int idx = 0;
+            for (; idx < allInvites.size(); idx++) {
+                if (allInvites.get(idx).getInvitedUser().equals(removedUsername)) {
+                    break;
+                }
             }
-        }
-        inviteListAdapter.remove(allInvites.get(idx));
-        allInvites.remove(allInvites.get(idx));
-        String rmKey = "";
-        for (String key : inviteIdxByDBKey.keySet()) {
-            if (inviteIdxByDBKey.get(key) == idx) {
-                rmKey = key;
-            } else if (inviteIdxByDBKey.get(key) > idx) {
-                inviteIdxByDBKey.put(key, inviteIdxByDBKey.get(key) - 1);
+            inviteListAdapter.remove(allInvites.get(idx));
+            allInvites.remove(allInvites.get(idx));
+            String rmKey = "";
+            for (String key : inviteIdxByDBKey.keySet()) {
+                if (inviteIdxByDBKey.get(key) == idx) {
+                    rmKey = key;
+                } else if (inviteIdxByDBKey.get(key) > idx) {
+                    inviteIdxByDBKey.put(key, inviteIdxByDBKey.get(key) - 1);
+                }
             }
+            inviteIdxByDBKey.remove(rmKey);
+            inviteListAdapter.notifyDataSetChanged();
         }
-        inviteIdxByDBKey.remove(rmKey);
-        inviteListAdapter.notifyDataSetChanged();
     }
 }
