@@ -7,7 +7,7 @@
 
     <!-- Layout to allow us to set our Invitations bar -->
     <RelativeLayout
-        android:id="@+id/InvitationsTitleBar"
+        android:id="@+id/HistoryTitleBar"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_alignParentLeft="true"
@@ -15,10 +15,10 @@
         >
 
         <TextView
-            android:id="@+id/invitationsList"
+            android:id="@+id/historyList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Invitations"
+            android:text="History"
             android:textSize="25dp"
             android:textAlignment="center"
             android:textColor="@color/white"
@@ -28,7 +28,7 @@
 
     <!-- This is the list view for invitations! -->
     <ListView
-        android:id="@+id/invitationsListView"
+        android:id="@+id/historyListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/InvitationsTitleBar"

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <!-- Allows users to be able to enter their new username -->
+    <EditText
+        android:id="@+id/usernameField"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:hint="Enter a new username..."
+        />
+
+    <!-- The submit button where a username check will be triggered in the database -->
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/ButtonBlue"
+        android:textColor="@color/white"
+        android:text="submit"
+        android:textSize="20sp"
+        />
+
+</RelativeLayout>

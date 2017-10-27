@@ -35,6 +35,10 @@ public class Invitation implements Serializable {
         return dbKey;
     }
 
+    public void setInvitedUser(String username) {
+        invitedUser = username;
+    }
+
     public String getInvitedUser() {
         return invitedUser;
     }
