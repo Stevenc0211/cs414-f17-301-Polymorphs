@@ -8,10 +8,13 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import polymorphs.a301.f17.cs414.thexgame.Invitation;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
+import polymorphs.a301.f17.cs414.thexgame.persistence.UserObserver;
+import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListObserver;
 
 /**
  * Created by steve-0 on 10/17/17. Updated and commented by Roger.
@@ -19,15 +22,16 @@ import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
  * Todo: Miles, Andy, Badr the code you add in here will not be removed. It's crucial that we get the database in here and populating a list of users. This class sends the invites to users.
  */
 
-public class SendNotificationsUI extends Activity  {
+public class SendNotificationsUI extends Activity implements UsernameListObserver {
 
     // TODO: miles you will want to send the data base stuff here you will want to send in the list from the data base, i.e. an ArrayList of whatever object. It does have to be an arraylist.
     private ArrayList<Invitation> allInvites = new ArrayList<>(); // list of database items that we are working with.
     private InviteListAdapter inviteListAdapter; // the adapter that will populate the invite list.
+    private HashMap<String, Integer> inviteIdxByDBKey = new HashMap<>();
     // removed for now --> private final int SEND_INVITES = 4000; // this is the request code for sending invites to players very important.
 
     // this method simply generates the UI that we created for the SendNotificationsUI.
-    protected void setupUI(final ArrayList<Invitation> usersToSendto)
+    protected void setupUI()
     {
         // the send button that we need to be working with.
         Button send = (Button) findViewById(R.id.sendButton);
@@ -47,7 +51,7 @@ public class SendNotificationsUI extends Activity  {
 
         // Setup the listview.
         ListView inviteList = (ListView) findViewById(R.id.inviteList);
-        inviteListAdapter = new InviteListAdapter(getApplicationContext(), R.layout.item, usersToSendto);
+        inviteListAdapter = new InviteListAdapter(getApplicationContext(), R.layout.item, new ArrayList<Invitation>());
         inviteList.setAdapter(inviteListAdapter);
         inviteListAdapter.notifyDataSetChanged(); // tell the list that the items have updated.
     }
@@ -63,20 +67,66 @@ public class SendNotificationsUI extends Activity  {
 
         //ArrayList<String> dataBase = new ArrayList<>(); // todo: we will want to get the items from the base
         setContentView(R.layout.send_invitations); // this will display our UI
+//        Intent sendInvitesIntent = getIntent();
+//        Bundle args = sendInvitesIntent.getBundleExtra("args");
+//        String currentUser = args.getString("currentUser");
+//        ArrayList<String> people = args.getStringArrayList("usernames"); // grab the set of usernames from InGameUI
 
-        Intent sendInvitesIntent = getIntent();
-        Bundle args = sendInvitesIntent.getBundleExtra("args");
-        String currentUser = args.getString("currentUser");
-        ArrayList<String> people = args.getStringArrayList("usernames"); // grab the set of usernames from InGameUI
+
+//        for(int i = 0; i < people.size(); i++)
+//        {
+//            if (people.get(i).equals(currentUser)) continue;
+//            Invitation invite = new Invitation(currentUser, people.get(i));
+//            allInvites.add(invite);
+//        }
+
+        setupUI();
+        DBIOCore.registerToUsernameList(this);
+    }
 
 
-        for(int i = 0; i < people.size(); i++)
-        {
-            if (people.get(i).equals(currentUser)) continue;
-            Invitation invite = new Invitation(currentUser, people.get(i));
+    @Override
+    public void usernameAdded(String addedUsername, String precedingUsernameKey) {
+        if (!addedUsername.equals(DBIOCore.getCurrentUserUsername())) {
+            Invitation invite = new Invitation(DBIOCore.getCurrentUserUsername(), addedUsername);
             allInvites.add(invite);
+            inviteListAdapter.add(invite);
+            int idx = allInvites.size()-1;
+            inviteIdxByDBKey.put(precedingUsernameKey, idx);
+            inviteListAdapter.notifyDataSetChanged();
         }
+    }
 
-        setupUI(allInvites);
+    @Override
+    public void usernameChanged(String changedUsername, String precedingUsernameKey) {
+        if (!changedUsername.equals(DBIOCore.getCurrentUserUsername())) {
+            allInvites.get(inviteIdxByDBKey.get(precedingUsernameKey)).setInvitedUser(changedUsername);
+            inviteListAdapter.getItem(inviteIdxByDBKey.get(precedingUsernameKey)).setInvitedUser(changedUsername);
+            inviteListAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void usernameRemoved(String removedUsername) {
+        if (!removedUsername.equals(DBIOCore.getCurrentUserUsername())) {
+            int idx = 0;
+            for (; idx < allInvites.size(); idx++) {
+                if (allInvites.get(idx).getInvitedUser().equals(removedUsername)) {
+                    break;
+                }
+            }
+            inviteListAdapter.remove(allInvites.get(idx));
+            allInvites.remove(allInvites.get(idx));
+            String rmKey = "";
+            for (String key : inviteIdxByDBKey.keySet()) {
+                if (inviteIdxByDBKey.get(key) == idx) {
+                    rmKey = key;
+                } else if (inviteIdxByDBKey.get(key) > idx) {
+                    inviteIdxByDBKey.put(key, inviteIdxByDBKey.get(key) - 1);
+                }
+            }
+            inviteIdxByDBKey.remove(rmKey);
+            inviteListAdapter.notifyDataSetChanged();
+        }
     }
 }
