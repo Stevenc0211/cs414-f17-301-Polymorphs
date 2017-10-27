@@ -1,10 +1,11 @@
 package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 
+import java.util.ArrayList;
+
 /**
  * Created by athai on 10/18/17.
  */
-
-public class Piece {
+abstract class Piece {
     private int myX;
     private int myY;
     private boolean available;
@@ -45,7 +46,13 @@ public class Piece {
         return color;
     }
 
-    public boolean isValidMove(Board board,int toX,int toY){
+    /**
+     * Checks that the move will stay inside the board and will not land on the same square
+     * @param toX the x coordinate of the move
+     * @param toY the y coordinate of the move
+     * @return true if the move stays inbounds and does not end on the start square
+     */
+    public boolean isValidMove(int toX,int toY){
         //Stayed in the same spot
         if(myX == toX && myY == toY){
             return false;
@@ -56,5 +63,14 @@ public class Piece {
         }
         return true;
     }
+
+    /**
+     * This is used to derive all the tiles the piece will travel over to get to the to position.
+     * Used by Board to decide if a move is valid
+     * @param toX the x coordinate of the move
+     * @param toY the y cooordinate of the move
+     * @return a list of Tiles the piece would move over to acomplish the move
+     */
+    public abstract ArrayList<Tile> getMovePath(int toX, int toY);
 
 }
