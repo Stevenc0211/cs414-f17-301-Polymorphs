@@ -6,22 +6,20 @@ import java.util.Date;
  * Created by athai on 10/18/17.
  */
 
-public class Player {
-    private String nickname;
+class Player {
+    private User user; // saving the user instead to match between UI and backend
     private Enum color;
     private ArrayList<Piece> pieces = new ArrayList<Piece>();
-    public int King = 1;
-    public int Rook = 8;
     public String timestamp = "";
 
     public Player(User user,Enum color){
-        this.nickname = user.getNickname();
+        this.user = user;
         this.color = color;
         initializePieces();
     }
 
     public String getNickname(){
-        return nickname;
+        return user.getNickname();
     }
 
     public Enum getColor(){
@@ -40,7 +38,7 @@ public class Player {
     public boolean equals(Object o) {
         if (!(o instanceof User)) return false;
         Player otherPlayer = (Player) o;
-        return (nickname.equals(otherPlayer.nickname));
+        return (user.equals(otherPlayer.user) && color == otherPlayer.color);
     }
 
     public ArrayList<Piece> getPieces(){
@@ -71,5 +69,18 @@ public class Player {
             pieces.add(new Rook(8,4,true,Color.BLACK));
             pieces.add(new Rook(9,4,true,Color.BLACK));
         }
+    }
+
+    /**
+     * This is used by the board to determine if the players king is in check.
+     * @return the players king, null if the king is not in pieces (SHOULD NOT HAPPEN)
+     */
+    public King getKing() {
+        for (Piece piece : pieces) {
+            if (piece instanceof King) {
+                return (King) piece;
+            }
+        }
+        return null;
     }
 }
