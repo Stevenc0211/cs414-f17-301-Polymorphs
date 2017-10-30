@@ -41,6 +41,15 @@ class Board {
     boolean isValidMove(Player player, int fromX, int fromY, int toX, int toY) {
         // sanity checks should include, from coord contains a piece, that piece is the same color
         //  as the player, that players king is not in check or the move puts the king out of check
+        Piece p = getTile(fromX,fromY).getPiece();
+        //check if there is a piece on the tile
+        if(p == null){
+            return false;
+        }
+        //check if piece moving is same color as player
+        if(p.getColor() != player.getColor()){
+            return false;
+        }
 
         // Logic check should follow the pattern, get starting tile, if piece is on tile check if to coordinate
         //  is valid with piece.isValidMove(), then ask for the pieces move path and validate that the

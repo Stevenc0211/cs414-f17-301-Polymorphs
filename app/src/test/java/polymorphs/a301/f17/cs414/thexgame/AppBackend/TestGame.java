@@ -1,4 +1,4 @@
-package polymorphs.a301.f17.cs414.thexgame;
+package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
