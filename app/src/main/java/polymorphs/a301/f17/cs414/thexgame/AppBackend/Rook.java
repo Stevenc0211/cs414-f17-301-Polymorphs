@@ -13,9 +13,29 @@ class Rook extends Piece {
     }
 
     @Override
-    public ArrayList<Tile> getMovePath(int toX, int toY) {
+    public ArrayList<Tile> getMovePath(Board board,int toX, int toY) {
         // implement
-        return null;
+        ArrayList<Tile> validTiles = new ArrayList<Tile>();
+        int myX = super.getX();
+        int myY = super.getY();
+
+        //check if valid move first
+        if(!isValidMove(toX,toY)){
+            return null;
+        }
+
+        for(int i = 0; i < board.getBoard().length; i++){
+            for(int j = 0; j < board.getBoard()[i].length; j++){
+                if(isValidMove(i,j)){
+                    //check if tile[i,j] in between two points
+                    if(distance(myX,myY,i,j) + distance(toX,toY,i,j) == distance(myX,myY,toX,toY)){
+                        validTiles.add(board.getTile(i,j));
+                    }
+                }
+            }
+        }
+
+        return validTiles;
     }
 
     @Override

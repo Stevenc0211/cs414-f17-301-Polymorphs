@@ -46,6 +46,10 @@ abstract class Piece {
         return color;
     }
 
+    public double distance(int fromX,int fromY,int toX,int toY){
+        return Math.hypot((double)fromX - (double)toX,(double)fromY - (double)toY);
+    }
+
     /**
      * Checks that the move will stay inside the board and will not land on the same square
      * @param toX the x coordinate of the move
@@ -71,6 +75,6 @@ abstract class Piece {
      * @param toY the y cooordinate of the move
      * @return a list of Tiles the piece would move over to acomplish the move
      */
-    public abstract ArrayList<Tile> getMovePath(int toX, int toY);
+    public abstract ArrayList<Tile> getMovePath(Board board,int toX, int toY);
 
 }
