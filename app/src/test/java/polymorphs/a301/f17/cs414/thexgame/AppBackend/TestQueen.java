@@ -36,22 +36,25 @@ public class TestQueen {
 
     @Test
     public void testGetMovePathDiagonal(){
+        Board b = new Board();
         Queen q = new Queen(4,5,true,Color.WHITE);
-        ArrayList<Tile> temp = q.getMovePath(2,3);
+        ArrayList<Tile> temp = q.getMovePath(b,2,3);
         assertEquals(2,temp.size());
     }
 
     @Test
     public void testGetMovePathRow(){
+        Board b = new Board();
         Queen q = new Queen(4,5,true,Color.WHITE);
-        ArrayList<Tile> temp = q.getMovePath(4,0);
+        ArrayList<Tile> temp = q.getMovePath(b,4,0);
         assertEquals(5,temp.size());
     }
 
     @Test
     public void testGetMovePathNull(){
+        Board b = new Board();
         Queen q = new Queen(4,5,true,Color.WHITE);
-        ArrayList<Tile> temp = q.getMovePath(7,0);
+        ArrayList<Tile> temp = q.getMovePath(b,7,0);
         assertNull(temp);
     }
 }

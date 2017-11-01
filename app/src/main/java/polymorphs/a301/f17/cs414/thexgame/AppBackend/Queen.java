@@ -13,7 +13,7 @@ class Queen extends Piece {
     }
 
     @Override
-    public ArrayList<Tile> getMovePath(int toX, int toY) {
+    public ArrayList<Tile> getMovePath(Board board,int toX, int toY) {
         // implement
         ArrayList<Tile> validTiles = new ArrayList<Tile>();
         int myX = super.getX();
@@ -24,13 +24,12 @@ class Queen extends Piece {
             return null;
         }
 
-        for(int i = 0; i < 12; i++){
-            for(int j = 0; j < 12; j++){
+        for(int i = 0; i < board.getBoard().length; i++){
+            for(int j = 0; j < board.getBoard()[i].length; j++){
                 if(isValidMove(i,j)){
                     //check if tile[i,j] in between two points
                     if(distance(myX,myY,i,j) + distance(toX,toY,i,j) == distance(myX,myY,toX,toY)){
-                        Tile t = new Tile(i,j);
-                        validTiles.add(t);
+                        validTiles.add(board.getTile(i,j));
                     }
                 }
             }
@@ -58,7 +57,4 @@ class Queen extends Piece {
         return false;
     }
 
-    public double distance(int fromX,int fromY,int toX,int toY){
-        return Math.hypot((double)fromX - (double)toX,(double)fromY - (double)toY);
-    }
 }

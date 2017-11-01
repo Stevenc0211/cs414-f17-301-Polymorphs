@@ -13,7 +13,7 @@ class King extends Piece {
     }
 
     @Override
-    public ArrayList<Tile> getMovePath(int toX, int toY) {
+    public ArrayList<Tile> getMovePath(Board board,int toX, int toY) {
         // implement should be only two tiles since knights move does not touch tiles other then start and end
         return null;
     }

@@ -34,4 +34,11 @@ public class TestPiece {
         //Piece p = new Piece(5,5,true, Color.WHITE);
         //assertTrue("Should be true",p.isValidMove(b,2,10));
     }
+
+    @Test
+    public void testDistance(){
+        Queen q = new Queen(4,5,true,Color.WHITE);
+        double temp = q.distance(4,5,4,10);
+        assertEquals(5,temp,0);
+    }
 }
