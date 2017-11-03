@@ -1,14 +1,14 @@
 package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 
 /**
- * Created by athai on 10/18/17.
+ * Created by athai on 10/18/17. edited and modified by Steven
  */
 
 public class User {
     private String email;
     private String name;
     private String nickname;
-//    private Profile profile;
+    private Profile profile;
 
     public User() {}
 
@@ -16,7 +16,7 @@ public class User {
         this.name = name;
         this.email = email;
         this.nickname = nickname;
-//        profile = new Profile(nickname);
+        this.profile = new Profile(nickname);
     }
 
     public void setEmail(String email)
@@ -43,7 +43,8 @@ public class User {
         return nickname;
     }
 
-//    public Profile getProfile(){ return profile; }
+    public Profile getProfile(){ return profile; }
+
 
     public boolean equals(Object o) {
         if (!(o instanceof User)) return false;
