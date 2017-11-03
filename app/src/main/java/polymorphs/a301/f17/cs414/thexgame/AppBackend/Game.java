@@ -61,7 +61,6 @@ public class Game {
      */
     public boolean makeMove(User user, int fromRow, int fromCol, int toRow,int toCol)
     {
-
         Player currentPlayer;
         if (user.equals(user1)) {
             currentPlayer = p1;
