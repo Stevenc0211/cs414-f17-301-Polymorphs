@@ -8,28 +8,31 @@ import java.util.ArrayList;
 
 class Queen extends Piece {
 
-    public Queen(int myX,int myY,boolean available,Enum color){
-        super(myX,myY,available,color);
+    public Queen(int myRow,int myCol,boolean available,Enum color){
+        super(myRow,myCol,available,color);
     }
 
     @Override
-    public ArrayList<Tile> getMovePath(Board board,int toX, int toY) {
+    /**
+     * @return a list of tiles on the path to destination tile
+     */
+    public ArrayList<Tile> getMovePath(Board board,int toRow, int toCol) {
         // implement
         ArrayList<Tile> validTiles = new ArrayList<Tile>();
-        int myX = super.getX();
-        int myY = super.getY();
+        int myRow = super.getRow();
+        int myCol = super.getCol();
 
         //check if valid move first
-        if(!isValidMove(toX,toY)){
+        if(!isValidMove(toRow,toCol)){
             return null;
         }
 
-        for(int i = 0; i < board.getBoard().length; i++){
-            for(int j = 0; j < board.getBoard()[i].length; j++){
-                if(isValidMove(i,j)){
+        for(int row = 0; row < board.getBoard().length; row++){
+            for(int col = 0; col < board.getBoard()[row].length; col++){
+                if(isValidMove(row,col)){
                     //check if tile[i,j] in between two points
-                    if(distance(myX,myY,i,j) + distance(toX,toY,i,j) == distance(myX,myY,toX,toY)){
-                        validTiles.add(board.getTile(i,j));
+                    if(distance(myRow,myCol,row,col) + distance(toRow,toCol,row,col) == distance(myRow,myCol,toRow,toCol)){
+                        validTiles.add(board.getTile(row,col));
                     }
                 }
             }
@@ -39,19 +42,22 @@ class Queen extends Piece {
     }
 
     @Override
-    public boolean isValidMove(int toX,int toY){        //return Tile arraylist
-        if(!super.isValidMove(toX,toY)){
+    /**
+     * @return true if valid Queen move, false otherwise
+     */
+    public boolean isValidMove(int toRow,int toCol){
+        if(!super.isValidMove(toRow,toCol)){
             return false;
         }
 
-        if(super.getX() == toX){
+        if(super.getRow() == toRow){
             return true;
         }
-        if(super.getY() == toY){
+        if(super.getCol() == toCol){
             return true;
         }
         //check if move is diagonal
-        if(super.getX() - toX == super.getY() - toY){
+        if(super.getRow() - toRow == super.getCol() - toCol){
             return true;
         }
         return false;

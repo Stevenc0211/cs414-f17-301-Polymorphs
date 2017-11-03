@@ -5,14 +5,16 @@ package polymorphs.a301.f17.cs414.thexgame.AppBackend;
  */
 
 class Tile {
-    private int x;
-    private int y;
+    private int row;
+    private int col;
     private Piece piece;
+    private Status status;
 
-    public Tile(int x,int y){
-        this.x = x;
-        this.y = y;
+    public Tile(int row,int col){
+        this.row = row;
+        this.col = col;
         piece = null;
+        status = Status.OUTSIDE;
     }
 
     public Piece getPiece(){
@@ -28,12 +30,28 @@ class Tile {
         }
     }
 
+    public void setTileStatus(Status status){
+        this.status = status;
+    }
+
+    public Status getTileStatus(){
+        return status;
+    }
+
     public void occupyTile(Piece piece){
         //if tile is currently occupied with another piece and is not the same color
         if(this.piece != null && this.piece.getColor() != piece.getColor()){
             this.piece.setAvailable(false);
+            this.piece = piece;
         }
-        this.piece = piece;
+
+        else if(this.piece != null && this.piece.getColor() == piece.getColor()){
+            //do nothing, same color pieces cannnot occupy same tile
+        }
+
+        else{
+            this.piece = piece;
+        }
     }
 
 }

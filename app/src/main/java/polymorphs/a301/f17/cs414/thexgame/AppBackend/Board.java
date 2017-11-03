@@ -19,6 +19,58 @@ class Board {
                 this.board[i][j] = new Tile(i,j);
             }
         }
+        inititalizeCastleWall();
+        initializeInsideCastle();
+    }
+
+    private void inititalizeCastleWall(){
+        getTile(1,7).setTileStatus(Status.CASTLE);
+        getTile(1,8).setTileStatus(Status.CASTLE);
+        getTile(1,9).setTileStatus(Status.CASTLE);
+        getTile(2,6).setTileStatus(Status.CASTLE);
+        getTile(2,10).setTileStatus(Status.CASTLE);
+        getTile(3,6).setTileStatus(Status.CASTLE);
+        getTile(3,10).setTileStatus(Status.CASTLE);
+        getTile(4,6).setTileStatus(Status.CASTLE);
+        getTile(4,10).setTileStatus(Status.CASTLE);
+        getTile(5,7).setTileStatus(Status.CASTLE);
+        getTile(5,8).setTileStatus(Status.CASTLE);
+        getTile(5,9).setTileStatus(Status.CASTLE);
+
+        getTile(6,2).setTileStatus(Status.CASTLE);
+        getTile(6,3).setTileStatus(Status.CASTLE);
+        getTile(6,4).setTileStatus(Status.CASTLE);
+        getTile(7,1).setTileStatus(Status.CASTLE);
+        getTile(7,5).setTileStatus(Status.CASTLE);
+        getTile(8,1).setTileStatus(Status.CASTLE);
+        getTile(8,5).setTileStatus(Status.CASTLE);
+        getTile(9,1).setTileStatus(Status.CASTLE);
+        getTile(9,5).setTileStatus(Status.CASTLE);
+        getTile(10,2).setTileStatus(Status.CASTLE);
+        getTile(10,3).setTileStatus(Status.CASTLE);
+        getTile(10,4).setTileStatus(Status.CASTLE);
+    }
+
+    private void initializeInsideCastle(){
+        getTile(2,7).setTileStatus(Status.INSIDE);
+        getTile(2,8).setTileStatus(Status.INSIDE);
+        getTile(2,9).setTileStatus(Status.INSIDE);
+        getTile(3,7).setTileStatus(Status.INSIDE);
+        getTile(3,8).setTileStatus(Status.INSIDE);
+        getTile(3,9).setTileStatus(Status.INSIDE);
+        getTile(4,7).setTileStatus(Status.INSIDE);
+        getTile(4,8).setTileStatus(Status.INSIDE);
+        getTile(4,9).setTileStatus(Status.INSIDE);
+
+        getTile(7,2).setTileStatus(Status.INSIDE);
+        getTile(7,3).setTileStatus(Status.INSIDE);
+        getTile(7,4).setTileStatus(Status.INSIDE);
+        getTile(8,2).setTileStatus(Status.INSIDE);
+        getTile(8,3).setTileStatus(Status.INSIDE);
+        getTile(8,4).setTileStatus(Status.INSIDE);
+        getTile(9,2).setTileStatus(Status.INSIDE);
+        getTile(9,3).setTileStatus(Status.INSIDE);
+        getTile(9,4).setTileStatus(Status.INSIDE);
     }
 
     public Tile getTile(int x,int y){
