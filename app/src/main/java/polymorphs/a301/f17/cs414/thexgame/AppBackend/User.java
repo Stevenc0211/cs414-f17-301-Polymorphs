@@ -8,7 +8,7 @@ public class User {
     private String email;
     private String name;
     private String nickname;
-    private Profile profile;
+//    private Profile profile;
 
     public User() {}
 
@@ -16,7 +16,7 @@ public class User {
         this.name = name;
         this.email = email;
         this.nickname = nickname;
-        profile = new Profile(nickname);
+//        profile = new Profile(nickname);
     }
 
     public void setEmail(String email)
@@ -29,10 +29,7 @@ public class User {
         this.name = name;
     }
 
-    public void setNickname(String nickname)
-    {
-        this.nickname = nickname;
-    }
+    public void setNickname(String nickname) { this.nickname = nickname; }
 
     public String getEmail(){
         return email;
@@ -45,6 +42,8 @@ public class User {
     public String getNickname(){
         return nickname;
     }
+
+//    public Profile getProfile(){ return profile; }
 
     public boolean equals(Object o) {
         if (!(o instanceof User)) return false;

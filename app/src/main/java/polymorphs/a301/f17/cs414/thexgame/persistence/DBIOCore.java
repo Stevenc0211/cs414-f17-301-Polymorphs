@@ -26,6 +26,7 @@ public class DBIOCore {
     private static String userEmail;
     private static String userNickname;
 
+
     /**
      * Sets up the database to begin serving data for the current user. Should be called from the
      * start screen only. If the user is new a new user object will be added to the database with a black username (nickname)
@@ -56,13 +57,32 @@ public class DBIOCore {
 
             }
 
-            @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
             }
         });
     }
 
+    /**
+     * This should be used when the username (nickname) of the current user needs to be set.
+     * @param username - the new username (nickname)
+     */
+    public static void setCurrentUserUsername(String username) {
+        getUserReference().child("nickname").setValue(username);
+        baseReference.child("usernameList").push();
+        String key = baseReference.child("usernameList").push().getKey();
+        baseReference.child("usernameList").child(key).setValue(username);
+    }
+
+    // TODO: we need to sort out the no check for existing nickname and implement a check for an existing user on start. Also ensure the username gets set either way - Miles <- I believe I got it, ~ Roger
+
+    /**
+     * This can be used to retrieve the current users username (nickname).
+     * @return the current users username (nickname)
+     */
+    public static String getCurrentUserUsername()  {
+        return userNickname;
+    }
 
     /**
      * This returns a reference to the current users user object in the database.
@@ -117,12 +137,10 @@ public class DBIOCore {
     }
 
     /**
-     * This should be used when the username (nickname) of the current user needs to be set.
-     * @param username - the new username (nickname)
+     * ONLY for junit tests to bypass errors with firebase not initializing
+     * @param database
      */
-    public static void setCurrentUserUsername(String username) {
-        getUserReference().child("nickname").setValue(username);
-        String key = baseReference.child("usernameList").push().getKey();
-        baseReference.child("usernameList").child(key).setValue(username);
+    static void setDatabase(FirebaseDatabase database) {
+        baseReference = database.getReference();
     }
 }
