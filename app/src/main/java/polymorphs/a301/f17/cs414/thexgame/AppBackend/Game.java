@@ -10,13 +10,14 @@ import java.util.ArrayList;
  * TODO: needs the code written in the Board class from Steven and Badr so that we the game will work as expected!
  */
 
-public class Game {
+class Game {
     private User user1;
     private User user2;
     private Player p1;
     private Player p2;
     private Player currentPlayer;
     private Board board;
+    // not sure these are needed. A game record object should be created when the game ends that will capture this info - Miles
     private Player winner; // holds the winner of the game.
     private Player loser; //
 
@@ -50,51 +51,47 @@ public class Game {
     }
 
     /**
-     * This is the method the UI will use to validate moves the player is attempting. This method will
-     * decide if the move is valid and if so will update the game state and return true.
+     * This is the method the driver will use to validate moves the player is attempting. This method will
+     * decide if the move is valid and if so will update the game state and return 1.
      * @param user - the current user making the move
      * @param fromRow - the x coordinate of the moves starting tile
      * @param fromCol- the y coordinate of the moves starting tile
      * @param toRow- the x coordinate of the moves ending tile
      * @param toCol- the y coordinate of the moves ending tile
-     * @return true if the move is valid, false if not
+     * @return -1 if the move was invalid, 1 if the move was successful, 0 if the move ended the game
      */
-    public boolean makeMove(User user, int fromRow, int fromCol, int toRow,int toCol)
+    public int makeMove(User user, int fromRow, int fromCol, int toRow,int toCol)
     {
-        Player currentPlayer;
+        Player activePlayer;
         if (user.equals(user1)) {
-            currentPlayer = p1;
+            activePlayer = p1;
         } else if (user.equals(user2)) {
-            currentPlayer = p2;
+            activePlayer = p2;
         } else {
-            return false;
+            return -1;
         }
 
 
-        if (!this.currentPlayer.equals(currentPlayer)) return false;
+        if (!this.currentPlayer.equals(activePlayer)) return -1;
 
-        if (board.isValidMove(currentPlayer , fromRow, fromCol, toRow, toCol))
+        if (board.isValidMove(activePlayer , fromRow, fromCol, toRow, toCol))
         {
-            // iterate through rows.
-            for(int rows = 0; rows < 12; rows++)
-            {
-                // iterate through cols.
-                for(int cols = 0; cols < 12; cols++)
-                {
-                    Piece piece = board.getTile(rows, cols).getPiece();
 
-                    if( (piece.getRow() == fromRow) && (piece.getCol() == fromCol) && piece.isAvailable()) // check that this piece matches that of the row and column and ensure that the piece is good to use.
-                    {
-                        piece.setRow(toRow); // set row.
-                        piece.setCol(toCol); // set col.
-                    }
-                }
+            Tile from = board.getTile(fromRow, fromCol);
+            Tile to = board.getTile(toRow, toCol);
+            to.occupyTile(from.getPiece()); // this will also update the coordinates of the piece
+            from.occupyTile(null);
+            if (currentPlayer == p1) {
+                currentPlayer = p2;
+            } else {
+                currentPlayer = p1;
             }
-
-            return true;
-
+            if (board.kingInCheckmate(currentPlayer.getKing())) {
+                return 0;
+            }
+            return 1;
         } else {
-            return false;
+            return -1;
         }
     }
 

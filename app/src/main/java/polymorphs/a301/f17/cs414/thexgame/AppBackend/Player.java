@@ -36,7 +36,7 @@ class Player {
     }
 
     public boolean equals(Object o) {
-        if (!(o instanceof User)) return false;
+        if (!(o instanceof Player)) return false;
         Player otherPlayer = (Player) o;
         return (user.equals(otherPlayer.user) && color == otherPlayer.color);
     }
