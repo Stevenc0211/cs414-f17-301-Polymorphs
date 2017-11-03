@@ -7,4 +7,15 @@ package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 enum Color {
     WHITE,
     BLACK;
+
+    public Color opposingColor(Color color){
+        if(Color.WHITE == color){
+            return Color.BLACK;
+        }
+
+        else{
+            return Color.WHITE;
+        }
+
+    }
 }
