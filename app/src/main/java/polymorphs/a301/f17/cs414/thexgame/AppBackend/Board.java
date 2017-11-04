@@ -3,25 +3,26 @@ package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 import java.util.ArrayList;
 
 /**
- * Created by athai on 10/18/17.
+ * Created by athai on 10/18/17. Edited and Modified by Budhr and Steven.
  */
 
 class Board {
-    private Tile[][] board;
+    private Tile[][] boardTiles;
     private ArrayList <Piece> pieces;
 
     public Board(){
         super();
-        board = new Tile[12][12];
+        boardTiles = new Tile[12][12];
 
         for(int i = 0; i < 12; i++){
             for(int j = 0; j < 12; j++){
-                this.board[i][j] = new Tile(i,j);
+                this.boardTiles[i][j] = new Tile(i,j);
             }
         }
         inititalizeCastleWall();
         initializeInsideCastle();
     }
+    //todo @Andy, do we still need to initialize the castle wall from within Board? -Steven
 
     private void inititalizeCastleWall(){
         getTile(1,7).setTileStatus(Status.CASTLE);
@@ -73,27 +74,27 @@ class Board {
         getTile(9,4).setTileStatus(Status.INSIDE);
     }
 
-    public Tile getTile(int x,int y){
-        return board[x][y];
+    public Tile getTile(int fromRow,int fromCol){
+        return boardTiles[fromRow][fromCol];
     }
 
     public Tile[][] getBoard(){
-        return board;
+        return boardTiles;
     }
 
     /**
      * This will validate a move based on board logic, e.g. does it run into another piece etc.
      * @param player - the player attempting the move
-     * @param fromX - the x coordinate of the moves starting tile
-     * @param fromY - the y coordinate of the moves starting tile
-     * @param toX - the x coordinate of the moves ending tile
-     * @param toY - the y coordinate of the moves ending tile
+     * @param fromRow - moves from the row essentially acts as the x coordinate of the moves starting/current tile
+     * @param fromCol - moves from the row essentially acts as the y coordinate of the moves starting/current tile
+     * @param toRow - the x coordinate of the moves ending tile
+     * @param toCol - the y coordinate of the moves ending tile
      * @return true if the move is valid. false if not
      */
-    boolean isValidMove(Player player, int fromX, int fromY, int toX, int toY) {
+    public boolean isValidMove(Player player, int fromRow,int fromCol,int toRow,int toCol) {
         // sanity checks should include, from coord contains a piece, that piece is the same color
         //  as the player, that players king is not in check or the move puts the king out of check
-        Piece p = getTile(fromX,fromY).getPiece();
+        Piece p = getTile(fromRow, fromCol).getPiece();
         //check if there is a piece on the tile
         if(p == null){
             return false;
@@ -116,8 +117,28 @@ class Board {
      * @param king - the king to check
      * @return true if the king is in check, false if otherwise
      */
-    private boolean kingInCheck(King king) {
-        if (kingInCheckmate(king)) return true;
+    public boolean kingInCheck(King king) {
+        //king.getColor();
+        Color  opponentColor;
+        if (king.getColor()==Color.WHITE ) {
+            opponentColor = Color.BLACK;
+        }
+        else {
+            opponentColor = Color.WHITE;
+        }
+
+        for(int i = 0; i < 12; i++){  // iterate through every tile in board
+            for(int j = 0; j < 12; j++) {
+                Piece p = getTile(i, j).getPiece();  // get a piece from a tile at a time
+                if (p != null){
+                    if (p.getColor().equals(opponentColor)) {// if current piece is not the opponent piece
+                        if (p.isValidMove(king.getRow(), king.getCol())) { //check if current piece can reach the king's tile, if so its in check
+                            return true;
+                        }
+                    }
+            }
+            }
+        }
         return false;
     }
 
@@ -126,8 +147,40 @@ class Board {
      * @param king - the king to check
      * @return true if the king is in checkmate, false if otherwise
      */
-    private boolean kingInCheckmate(King king) {
+    public boolean kingInCheckmate(King king) {
         // for moves in king.getAllMoves() if move is valid (standard valid + not in check) return true, return false on done
+
+
+        int counter = 0; // counter to keep a track of moves that result in check
+        ArrayList<Tile> allMoves = king.getAllMoves(this); // get all moves the king can // make
+        Color  opponentColor;     // checks for opponent's piece and get a the opponent color
+        if (king.getColor()==Color.WHITE ) {
+            opponentColor = Color.BLACK;
+        }
+        else {
+            opponentColor = Color.WHITE;
+        }
+        //System.out.println("kingallmoveslength: "+allMoves.size());
+
+        for(int i = 0; i <boardTiles.length; i++){    //king.getallmoves return x,y coordinates
+            for(int j = 0; j < boardTiles.length; j++) {
+                Piece p = getTile(i, j).getPiece();  //   problem here I don't understand what to do?
+                if (p != null){
+                    if (p.getColor().equals(opponentColor)) {
+                        if ((p.isValidMove(allMoves.get(i).getPiece().getRow(), allMoves.get(i).getPiece().getCol())) || (kingInCheck(king))) {
+                            counter = counter + 1;
+                            if (counter == allMoves.size()) {
+                                return true;
+                            }
+
+                        }
+                    }
+            }
+            }
+        }
+        // getallmoves
+        // have no valid moves and in check, return false;
+
         return false;
     }
 
@@ -136,7 +189,35 @@ class Board {
      * moving out of the castle and other king only logic.
      * @return true if the kings restraints are not being violated
      */
-    private boolean isValidKingMove(int fromX, int fromY, int toX, int toY) {
+    private boolean isValidKingMove(int fromRow,int fromCol,int toRow,int toCol) {
+
+        Piece p = getTile(fromRow, fromCol).getPiece();
+        if(p instanceof King)
+        {
+            King king = (King) p;
+            if(king == null)
+                System.out.println("King is null and typecasting to king in isValidKingMove failed");
+            if(kingInCheck(king) == false || kingInCheckmate(king) == false)
+            {
+                if(king.isValidMove(toRow,toCol))
+                    king.setRow(toRow);
+                king.setCol(toCol);
+            }
+        }
         return false;
     }
+
+    public boolean withinCastle(int fromRow, int fromCol)
+    {
+
+        if(getTile(fromRow, fromCol).getTileStatus()== Status.CASTLE)
+        {
+            return true;
+        }
+        else
+            return false;
+
+    }
+
+
 }
