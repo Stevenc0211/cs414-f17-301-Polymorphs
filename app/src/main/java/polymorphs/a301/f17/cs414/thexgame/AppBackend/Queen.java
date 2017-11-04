@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 class Queen extends Piece {
 
-    public Queen(int myRow,int myCol,boolean available,Enum color){
+    public Queen(int myRow,int myCol,boolean available,Color color){
         super(myRow,myCol,available,color);
     }
 

@@ -39,17 +39,7 @@ public class TestBoard {
         // @Miles, @Andy, still not sure on this one, will implement if I have time to, but if you can get it done that would be great.
     }
 
-    @Test
-    public void testKingCheck()
-    {
-        Board board = new Board();
-        Rook rookz = new Rook(0,0,true,Color.WHITE);
-        King kingz = new King(0,1,true,Color.BLACK);
-        boolean check = board.kingInCheck(kingz);
-        assertEquals(true, check); // check to see if the board is in check
 
-
-    }
 
     @Test
     public void testKingInCheckmate()
@@ -62,15 +52,5 @@ public class TestBoard {
 
 
     }
-
-    @Test
-    public void testWithinCastle()
-    {
-        Board board = new Board();
-        boolean check = board.withinCastle(1,7);
-        assertEquals(true, check);
-    }
-
-
 
 }

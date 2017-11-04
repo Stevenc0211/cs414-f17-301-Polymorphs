@@ -83,4 +83,12 @@ class Player {
         }
         return null;
     }
+
+    public Queen promoteRook(Rook rook) {
+        int idx = pieces.indexOf(rook);
+        if (idx == -1) return null;
+        Queen newQueen = new Queen(rook.getRow(), rook.getCol(), rook.isAvailable(), rook.getColor());
+        pieces.set(idx, newQueen);
+        return newQueen;
+    }
 }

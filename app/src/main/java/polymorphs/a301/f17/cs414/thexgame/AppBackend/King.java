@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 class King extends Piece {
 
-    public King(int myRow, int myCol, boolean available, Enum color) {
+    public King(int myRow, int myCol, boolean available, Color color) {
         super(myRow, myCol, available, color);
     }
 
@@ -17,7 +17,6 @@ class King extends Piece {
      * @return a list of tiles on the path to destination tile
      */
     public ArrayList<Tile> getMovePath(Board board, int toRow, int toCol) {
-        // implement should be only two tiles since knights move does not touch tiles other then start and end
         ArrayList<Tile> validTiles = new ArrayList<Tile>();
         int myRow = super.getRow();
         int myCol = super.getCol();

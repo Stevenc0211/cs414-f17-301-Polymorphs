@@ -92,52 +92,115 @@ class Board {
      * @return true if the move is valid. false if not
      */
     public boolean isValidMove(Player player, int fromRow,int fromCol,int toRow,int toCol) {
-        // sanity checks should include, from coord contains a piece, that piece is the same color
-        //  as the player, that players king is not in check or the move puts the king out of check
         Piece p = getTile(fromRow, fromCol).getPiece();
-        //check if there is a piece on the tile
-        if(p == null){
-            return false;
-        }
-        //check if piece moving is same color as player
-        if(p.getColor() != player.getColor()){
-            return false;
+        // check if there is a piece on the tile
+        if(p == null) return false;
+
+        // check if piece moving is same color as player
+        if(p.getColor() != player.getColor()) return false;
+
+        // check if the piece can make the move given an empty board
+        if (!p.isValidMove(toRow, toCol)) return false;
+
+        if ((p instanceof King) && !isValidKingMove(fromRow,fromCol,toRow,toCol)) return false;
+
+        if (kingInCheck(player.getKing()))  { // move must remove check as well as move path being valid
+            if (moveResultsInCheck(player.getKing(),fromRow,fromCol,toRow,toCol)) return false;
         }
 
-        // Logic check should follow the pattern, get starting tile, if piece is on tile check if to coordinate
-        //  is valid with piece.isValidMove(), then ask for the pieces move path and validate that the
-        //  path is correct, e.g. doesn't move through pieces and ends on an empty tile or opposing players piece
-
-        // NOTE: for kings the move must additionally be validated by isValidKingMove
-        return false;
+        return validateMovePath(p.getMovePath(this,toRow,toCol), p.getColor());
     }
 
     /**
+     * Checks a given movePath to see if the move is valid. A move path is invalid if it moves through a piece or if the ending
+     * tile is occupied by a friendly piece
+     * @param movePath - a move path from a call to Piece.getMovePath
+     * @return true if the move path is valid
+     */
+    private boolean validateMovePath(ArrayList<Tile> movePath, Color friendlyColor) {
+        for (int idx = 0; idx < movePath.size()-1; idx++) { // for all save last tile
+            if (movePath.get(idx).isOccupied()) return false;
+        }
+        if (movePath.get(movePath.size()-1).getPiece().getColor() == friendlyColor) return false;
+        return true;
+    }
+
+    /** BASE METHOD, does not rely on other methods
      * Given a king piece decides if the king is in check.
      * @param king - the king to check
      * @return true if the king is in check, false if otherwise
      */
-    public boolean kingInCheck(King king) {
-        king.getColor();
-        Color  opponentColor;
-        if (king.getColor()==Color.WHITE ) {
-            opponentColor = Color.BLACK;
-        }
-        else {
-            opponentColor = Color.WHITE;
-        }
+    private boolean kingInCheck(King king) {
+        if (checkEngine(king,1,0)) return true; // check for threat below king (col +)
+        if (checkEngine(king,-1,0)) return true; // check for threat above king (col -)
+        if (checkEngine(king,0,1)) return true; // check for threat right of king (row +)
+        if (checkEngine(king,0,-1)) return true; // check for threat left of king (row -)
+        if (checkEngine(king,1,1)) return true; // check for threat down right diagonal (col +, row +)
+        if (checkEngine(king,-1,-1)) return true; // check for threat up left diagonal (col -, row -)
+        if (checkEngine(king,1,1)) return true; // check for threat down right diagonal (col +, row +)
+        if (checkEngine(king,1,-1)) return true; // check for threat up right diagonal (col +, row -)
+        if (checkEngine(king,-1,1)) return true; // check for threat down left diagonal (col -, row +)
+        return false;
+    }
 
-        for(int i = 0; i < 12; i++){  // iterate through every tile in board
-            for(int j = 0; j < 12; j++){
-                Piece p = getTile(i,j).getPiece();  // get a piece from a tile at a time
-                if (p.getColor().equals(opponentColor)){  // if current piece is not the opponent piece
-                    if (p.isValidMove(king.getRow(), king.getCol())) { //check if current piece can reach the king's tile, if so its in check
-                        return true;
-                    }
-                }
+    /**
+     * Backend for kingInCheck, starts at the kings row and column and moves out the tile space by
+     * adding colInc to column and rowInc to row.
+     * @param king - the king to check
+     * @param colInc - the amount to increment the column by, should be -1, 0 or 1
+     * @param rowInc - the amount to increment the row by, should be -1, 0 or 1
+     * @return true if there is a piece placing the king in check in the direction specified, false if not
+     */
+    private boolean checkEngine(King king, int colInc, int rowInc) {
+        Tile currentTile;
+        for (int col = king.getCol()+colInc, row = king.getRow()+rowInc;
+             col >=0 && col < 12 && row >=0 && row < 12;
+             col+=colInc, row+=rowInc)
+        {
+            currentTile = boardTiles[row][col];
+            if (!currentTile.isOccupied()) continue;
+            if (currentTile.getPiece().getColor() == king.getColor()) {
+                break;
+            } else {
+                if (currentTile.getPiece() instanceof King) break; // kings can't check each other
+                return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Temporarily makes the proposed move and checks if the move resulted in the king being in check.
+     * NOTE: this does not check that the move is valid only that the result is not check.
+     * @param king - the active players king
+     * @param fromRow - the row where the move starts
+     * @param fromCol - the column where the move starts
+     * @param toRow - the row where the move ends
+     * @param toCol - the column where the move ends
+     * @return true if after the move the players king is in check, false if otherwise
+     */
+    private boolean moveResultsInCheck(King king, int fromRow, int fromCol, int toRow, int toCol) {
+        Tile from = boardTiles[fromRow][fromCol];
+        Tile to = boardTiles[toRow][toCol];
+        Piece savedFromPiece = from.getPiece();
+        Piece savedToPiece = to.getPiece();
+
+        boolean result;
+
+        to.occupyTile(from.getPiece());
+        from.occupyTile(null);
+        if (kingInCheck(king)) {
+            result = false;
+        } else {
+            result = true;
+        }
+
+        from.occupyTile(savedFromPiece);
+        to.occupyTile(savedToPiece);
+        if (savedToPiece != null) {
+            savedToPiece.setAvailable(true);
+        }
+        return result;
     }
 
     /**
@@ -146,75 +209,51 @@ class Board {
      * @return true if the king is in checkmate, false if otherwise
      */
     public boolean kingInCheckmate(King king) {
-        // for moves in king.getAllMoves() if move is valid (standard valid + not in check) return true, return false on done
+        if (!kingInCheck(king)) return false;
 
+        ArrayList<Tile> allMoves = king.getAllMoves(this); // get all moves the king can make
 
-        int counter = 0; // counter to keep a track of moves that result in check
-        ArrayList<Tile> allMoves = king.getAllMoves(this); // get all moves the king can // make
-        Color  opponentColor;     // checks for opponent's piece and get a the opponent color
-        if (king.getColor()==Color.WHITE ) {
-            opponentColor = Color.BLACK;
-        }
-        else {
-            opponentColor = Color.WHITE;
-        }
-        //System.out.println("kingallmoveslength: "+allMoves.size());
-
-        for(int i = 0; i <boardTiles.length; i++){    //king.getallmoves return x,y coordinates
-            for(int j = 0; j < boardTiles.length; j++){
-
-                Piece p = getTile(i,j).getPiece();  //   problem here I don't understand what to do?
-                if (p.getColor().equals(opponentColor)) {
-                    if ((p.isValidMove(allMoves.get(i).getPiece().getRow(), allMoves.get(i).getPiece().getCol()))  || (kingInCheck(king))){
-                        counter = counter + 1;
-                        if (counter == allMoves.size()) {
-                            return true;
-                        }
-
-                    }
+        for (Tile tile : allMoves) {
+            if (isValidKingMove(king.getRow(),king.getCol(),tile.getRow(),tile.getCol())) {
+                if (!moveResultsInCheck(king, king.getRow(), king.getCol(), tile.getRow(), tile.getCol())) {
+                    return false;
                 }
             }
         }
-        // getallmoves
-        // have no valid moves and in check, return false;
-
-        return false;
+        return true;
     }
 
     /**
      * This is used to check for additional restraints for kings. This will handle moving into check,
      * moving out of the castle and other king only logic.
+     * NOTE: does NOT check standard isValidMove for the king piece, this should be used in addition to such a call
      * @return true if the kings restraints are not being violated
      */
     private boolean isValidKingMove(int fromRow,int fromCol,int toRow,int toCol) {
-
+        Tile to = boardTiles[toRow][toCol];
+        if (to.getTileStatus() != Status.INSIDE) return false;
         Piece p = getTile(fromRow, fromCol).getPiece();
         if(p instanceof King)
         {
             King king = (King) p;
-            if(king == null)
-                System.out.println("King is null and typecasting to king in isValidKingMove failed");
-            if(kingInCheck(king) == false || kingInCheckmate(king) == false)
-            {
-                if(king.isValidMove(toRow,toCol))
-                    king.setRow(toRow);
-                king.setCol(toCol);
-            }
+            if (!king.isValidMove(toRow,toCol)) return false;
+            if (moveResultsInCheck(king,fromRow,fromCol,toRow,toCol)) return false;
+            return true;
         }
         return false;
     }
 
-    public boolean withinCastle(int fromRow, int fromCol)
-    {
-
-        if(getTile(fromRow, fromCol).getTileStatus()== Status.CASTLE)
-        {
-            return true;
-        }
-        else
-            return false;
-
-    }
+//    public boolean withinCastle(int fromRow, int fromCol)
+//    {
+//
+//        if(getTile(fromRow, fromCol).getTileStatus()== Status.CASTLE)
+//        {
+//            return true;
+//        }
+//        else
+//            return false;
+//
+//    }
 
 
 }

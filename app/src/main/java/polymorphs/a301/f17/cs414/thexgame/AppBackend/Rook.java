@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 class Rook extends Piece {
 
-    public Rook(int myRow,int myCol,boolean available,Enum color){
+    public Rook(int myRow,int myCol,boolean available,Color color){
         super(myRow,myCol,available,color);
     }
 

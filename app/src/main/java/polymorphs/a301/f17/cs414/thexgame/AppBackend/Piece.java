@@ -9,9 +9,9 @@ abstract class Piece {
     private int myRow;
     private int myCol;
     private boolean available;
-    private Enum color;
+    private Color color;
 
-    public Piece(int row,int col,boolean available,Enum color){
+    public Piece(int row,int col,boolean available,Color color){
         myRow = row;
         myCol = col;
         this.available = available;
@@ -42,7 +42,7 @@ abstract class Piece {
         this.available = available;
     }
 
-    public Enum getColor(){
+    public Color getColor(){
         return color;
     }
 

@@ -81,6 +81,9 @@ class Game {
             Tile to = board.getTile(toRow, toCol);
             to.occupyTile(from.getPiece()); // this will also update the coordinates of the piece
             from.occupyTile(null);
+            if (from.getTileStatus() == Status.INSIDE && from.getPiece() instanceof Rook) { // Rook promotes
+                from.occupyTile(currentPlayer.promoteRook((Rook)from.getPiece()));
+            }
             if (currentPlayer == p1) {
                 currentPlayer = p2;
             } else {
@@ -95,109 +98,5 @@ class Game {
         }
     }
 
-    // checks if player one is in check.
-    public boolean isPlayerOneInCheck()
-    {
-        if(board.kingInCheck(p1.getKing())) // check if player two is in check.
-        {
-            return true;
-        }
-        else {
-            return false; // player one is not in check.
-        }
-    }
 
-    // checks if player one is in check.
-    public boolean isPlayerTwoInCheck()
-    {
-        if(board.kingInCheck(p2.getKing())) // check if player two is in check.
-        {
-            return true;
-        }
-        else {
-            return false; // player two is not in check.
-        }
-    }
-
-    // check is player one is in checkmate
-    public boolean isPlayerOneInCheckmate()
-    {
-        if(board.kingInCheckmate(p1.getKing()))
-        {
-            winner = p2; // set player 2 as the winner of the game.
-            loser = p1; // set player 1 as the loser of the game.
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    // check is player one is in checkmate
-    public boolean isPlayerTwoInCheckmate()
-    {
-        if(board.kingInCheckmate(p2.getKing()))
-        {
-            winner = p1; // set player 1 as the winner of the game.
-            loser = p2; // set player 2 as the loser of the game.
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    // goes through all pieces and looks for rooks on the castle wall. i.e. needs to be converted into a queen.
-    public ArrayList<Rook> getP1RooksOnCastle()
-    {
-        ArrayList<Rook> rooksOnCastle = new ArrayList<>(); // list of rooks that need to be turned in to queens for this player.
-        // TODO: @Miles, @Andy should we make this immediately convert all of the Rooks into Queens for this player?
-
-        // iterate through each piece and check if any rooks are on the castle walls.
-        for(int i = 0; i < p1.getPieces().size(); i++)
-        {
-            Piece piece = p1.getPieces().get(i); // grabs a piece from player 1's list of pieces.
-            // check if the piece is a rook.
-
-            if(piece instanceof Rook) // check to see if a piece is an instance of rook.
-            {
-                // Note: this rook is coming from player should be white based off of the rook.
-                Rook rook = (Rook) piece; // cast the piece to a rook.
-
-                if(board.withinCastle(rook.getRow(), rook.getCol()))
-                {
-                    rooksOnCastle.add(rook); // add the rook that is one the castle.
-                }
-            }
-        }
-
-        return rooksOnCastle; // return player one's rooks on the castle.
-    }
-
-    // goes through all pieces and looks for rooks on the castle wall. i.e. needs to be converted into a queen.
-    public ArrayList<Rook> getP2RooksOnCastle()
-    {
-        ArrayList<Rook> rooksOnCastle = new ArrayList<>(); // list of rooks that need to be turned in to queens for this player.
-        // TODO: @Miles, @Andy should we make this immediately convert all of the Rooks into Queens for this player?
-
-        // iterate through each piece and check if any rooks are on the castle walls.
-        for(int i = 0; i < p2.getPieces().size(); i++)
-        {
-            Piece piece = p2.getPieces().get(i); // grabs a piece from player 2's list of pieces.
-            // check if the piece is a rook.
-
-            if(piece instanceof Rook) // check to see if a piece is an instance of rook.
-            {
-                // Note: this rook is coming from player should be white based off of the rook.
-                Rook rook = (Rook) piece; // cast the piece to a rook.
-
-                if(board.withinCastle(rook.getRow(), rook.getCol()))
-                {
-                    rooksOnCastle.add(rook); // add the rook that is one the castle.
-                }
-            }
-        }
-
-        return rooksOnCastle; // return player one's rooks on the castle.
-    }
 }
