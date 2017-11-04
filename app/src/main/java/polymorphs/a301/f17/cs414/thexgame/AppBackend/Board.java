@@ -242,18 +242,4 @@ class Board {
         }
         return false;
     }
-
-//    public boolean withinCastle(int fromRow, int fromCol)
-//    {
-//
-//        if(getTile(fromRow, fromCol).getTileStatus()== Status.CASTLE)
-//        {
-//            return true;
-//        }
-//        else
-//            return false;
-//
-//    }
-
-
 }
