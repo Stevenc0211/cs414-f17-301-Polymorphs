@@ -21,6 +21,14 @@ class Tile {
         return piece;
     }
 
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
     public boolean isOccupied(){
         if(piece == null){
             return false;
@@ -38,20 +46,26 @@ class Tile {
         return status;
     }
 
-    public void occupyTile(Piece piece){
+
+    /**
+     * This method takes the given piece and adds it to the tile, if there is another piece of the opposing color on this tile
+     * that piece will be set to unavailable and will be replaced with the passed piece.
+     * NOTE: the piece row and column will be updated with this tiles row and column
+     * @param piece - the piece to place on the tile
+     * @throws IllegalArgumentException - if a piece of the same color as the passed piece is allready on the tile
+     */
+    public void occupyTile(Piece piece) throws IllegalArgumentException {
         //if tile is currently occupied with another piece and is not the same color
         if(this.piece != null && this.piece.getColor() != piece.getColor()){
             this.piece.setAvailable(false);
             this.piece = piece;
-        }
-
-        else if(this.piece != null && this.piece.getColor() == piece.getColor()){
-            //do nothing, same color pieces cannnot occupy same tile
-        }
-
-        else{
+        } else if(this.piece != null && this.piece.getColor() == piece.getColor()){
+            throw new IllegalArgumentException("ERROR: this tile contained a piece of the same color");
+        } else{
             this.piece = piece;
         }
+        this.piece.setRow(row);
+        this.piece.setCol(col);
     }
 
 }

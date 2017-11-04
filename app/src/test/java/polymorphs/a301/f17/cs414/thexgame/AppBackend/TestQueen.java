@@ -34,6 +34,7 @@ public class TestQueen {
         assertTrue("Should be true",q.isValidMove(2,3));
     }
 
+
     @Test
     public void testGetMovePathDiagonal(){
         Board b = new Board();
