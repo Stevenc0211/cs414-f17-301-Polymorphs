@@ -161,5 +161,7 @@
     <color name="Black">#000000</color>
     <color name="ButtonBlue">#3164A8</color> <!-- the color of our button to keep things matching nicely -->
     <color name="IconsOnColor">#9c27b0</color> <!-- the same color as the repeat and shuffle on buttons -->
+    <color name="CSUGReen">#1E4D2B</color> <!-- csu's green color -->
+    <color name="CSUYellow">#D7D392</color> <!-- csu's yellow color -->
 
 </resources>
