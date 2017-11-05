@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
-import polymorphs.a301.f17.cs414.thexgame.Chessboard;
+import polymorphs.a301.f17.cs414.thexgame.BoardUI;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.persistence.UserObserver;
@@ -46,8 +46,8 @@ public class HomescreenActivity extends AppCompatActivity
     private ArrayList<String> currentGames; // the list of current games.
     private ViewPager gamePager; // this holds the game view pager which essentially is a list of horizontal list items of the game, which is pretty awesome!
     private GamePagerAdapter gamePagerAdapter; // holds the gamePagerAdapter that we need to be working on here.
-    private Chessboard chessboard; // holds the chess board that we are going to be working on.
-    private ArrayList<Chessboard> games = new ArrayList<>(); // holds all of our games, mainly there boards, hence why we are containing GridViews
+    private BoardUI boardUI; // holds the chess board that we are going to be working on.
+    private ArrayList<BoardUI> games = new ArrayList<>(); // holds all of our games, mainly there boards, hence why we are containing GridViews
     private ArrayList<String> events = new ArrayList<>(); // todo: this should filled out after a call to our database. This will allow us to be able to get events about the game for the user to look at.
     private ActivityListAdapter eventsListAdapter; // the events adapter here for us to update, very important!
     private SquareAdapter squareAdapter; // holds our square adapter which will allow us to be able to work on our lists and update the information for the players to be able to play a game!
@@ -69,7 +69,7 @@ public class HomescreenActivity extends AppCompatActivity
 
 
     // adds a game to the game pager and also shows the person we are playing the game with.
-    public void addGameToPager(Chessboard boardToAdd, String opponent)
+    public void addGameToPager(BoardUI boardToAdd, String opponent)
     {
         games.add(boardToAdd);
         gamePagerAdapter.notifyDataSetChanged();
@@ -78,12 +78,12 @@ public class HomescreenActivity extends AppCompatActivity
     // this method sets up our game pager.
     protected void setupGamePager()  {
 
-        chessboard  = (Chessboard) findViewById(R.id.chessboard);
+        boardUI = (BoardUI) findViewById(R.id.chessboard);
         gamePager = (ViewPager) findViewById(R.id.gamesListPager); // get the game pager that will basically fill out the games!
 
         // todo: we should have a list of our boards pulled from our database with the information about the piece places. This is pretty important!
-        games.add(chessboard); // add once.
-        games.add(chessboard); // add twice.
+        games.add(boardUI); // add once.
+        games.add(boardUI); // add twice.
 
         gamePagerAdapter = new GamePagerAdapter(games, inGameUI); // send in the games that we want to work with that will allow us to send our games to the adapter to update the ViewPager (to swipe horizontally)
         // TODO: create the Gamepage listener that will be in charge of getting this thing working correctly.
@@ -131,6 +131,8 @@ public class HomescreenActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        // TODO: @Roger, the app is getting to the point where it is lagging now. When we pull games from the database we need to do an AsynTask to load them up so the users can look at a loading screen while it loads.
 
         setContentView(R.layout.homescreen);
         usernames = new HashMap<>();
