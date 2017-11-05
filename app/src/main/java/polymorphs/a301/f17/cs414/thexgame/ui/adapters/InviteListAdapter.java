@@ -1,7 +1,6 @@
 package polymorphs.a301.f17.cs414.thexgame.ui.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
