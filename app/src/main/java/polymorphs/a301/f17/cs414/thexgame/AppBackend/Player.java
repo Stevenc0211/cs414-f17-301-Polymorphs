@@ -2,6 +2,8 @@ package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 
 import java.util.ArrayList;
 import java.util.Date;
+import  android.text.TextUtils;
+
 /**
  * Created by athai on 10/18/17.
  */
@@ -82,5 +84,15 @@ class Player {
             }
         }
         return null;
+    }
+
+    public String toString(){
+        String temp = "";
+        for(int i = 0; i < pieces.size()-1; i++){
+            temp += pieces.get(i).toString();
+            temp += ", ";
+        }
+        temp += pieces.get(pieces.size()-1).toString();
+        return temp;
     }
 }

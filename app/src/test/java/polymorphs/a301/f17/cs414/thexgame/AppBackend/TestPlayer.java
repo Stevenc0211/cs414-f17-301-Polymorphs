@@ -37,4 +37,11 @@ public class TestPlayer {
         Player p = new Player(u, Color.WHITE);
         assertEquals(9,p.getPieces().size());
     }
+
+    @Test
+    public void testToString(){
+        User u = new User("a","b","c");
+        Player p = new Player(u, Color.WHITE);
+        assertEquals("3, 8, true, WHITE, 2, 7, true, WHITE, 3, 7, true, WHITE, 4, 7, true, WHITE, 2, 8, true, WHITE, 4, 8, true, WHITE, 2, 9, true, WHITE, 3, 9, true, WHITE, 4, 9, true, WHITE", p.toString());
+    }
 }

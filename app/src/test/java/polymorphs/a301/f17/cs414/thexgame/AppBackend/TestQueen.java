@@ -57,4 +57,10 @@ public class TestQueen {
         ArrayList<Tile> temp = q.getMovePath(b,7,0);
         assertNull(temp);
     }
+
+    @Test
+    public void testToString(){
+        Queen queen = new Queen(4,5,true,Color.WHITE);
+        assertEquals("4, 5, true, WHITE",queen.toString());
+    }
 }

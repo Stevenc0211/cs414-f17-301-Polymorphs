@@ -41,4 +41,9 @@ public class TestPiece {
         double temp = q.distance(4,5,4,10);
         assertEquals(5,temp,0);
     }
+
+    @Test
+    public void testToString(){
+
+    }
 }

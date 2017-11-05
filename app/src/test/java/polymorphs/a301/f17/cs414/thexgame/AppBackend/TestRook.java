@@ -57,4 +57,10 @@ public class TestRook {
         ArrayList<Tile> temp = r.getMovePath(b,7,0);
         assertNull(temp);
     }
+
+    @Test
+    public void testToString(){
+        Rook rook = new Rook(4,3,true,Color.WHITE);
+        assertEquals("4, 3, true, WHITE", rook.toString());
+    }
 }
