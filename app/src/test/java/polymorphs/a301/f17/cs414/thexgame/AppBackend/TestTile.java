@@ -23,7 +23,7 @@ public class TestTile {
             Tile tile = new Tile(0,4);
         }
         catch (Exception e){
-            fail("ERROR: Tile failed to instantiate");
+            fail("ERROR: TileUI failed to instantiate");
         }
     }
 

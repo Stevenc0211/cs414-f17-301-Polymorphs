@@ -6,9 +6,7 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-import polymorphs.a301.f17.cs414.thexgame.Chessboard;
-import polymorphs.a301.f17.cs414.thexgame.ui.adapters.ActivityListAdapter;
-import polymorphs.a301.f17.cs414.thexgame.ui.adapters.SquareAdapter;
+import polymorphs.a301.f17.cs414.thexgame.BoardUI;
 
 /**
  * Created by thenotoriousrog on 10/13/17.
@@ -18,15 +16,15 @@ import polymorphs.a301.f17.cs414.thexgame.ui.adapters.SquareAdapter;
 
 public class GamePagerAdapter extends PagerAdapter {
 
-    private ArrayList<Chessboard> games; // this arraylist holds the GridView of the games that we are working with here.
-    private Chessboard currentGame; // holds the current game that the user has swiped to.
-    private Chessboard chessboard; // holds the chess board that we are going to be working on.
+    private ArrayList<BoardUI> games; // this arraylist holds the GridView of the games that we are working with here.
+    private BoardUI currentGame; // holds the current game that the user has swiped to.
+    private BoardUI boardUI; // holds the chess board that we are going to be working on.
     private ArrayList<String> events = new ArrayList<>(); // todo: this should filled out after a call to our database. This will allow us to be able to get events about the game for the user to look at.
     private ActivityListAdapter eventsListAdapter; // the events adapter here for us to update, very important!
     private SquareAdapter squareAdapter; // holds our square adapter which will allow us to be able to work on our lists and update the information for the players to be able to play a game!
     private View inGameUI;
 
-    public GamePagerAdapter(ArrayList<Chessboard> gamesList, View ui) {
+    public GamePagerAdapter(ArrayList<BoardUI> gamesList, View ui) {
         games = gamesList;
         inGameUI = ui;
     }
@@ -42,7 +40,7 @@ public class GamePagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position)
     {
-        Chessboard game = games.get(position); // grab a game for a user to be able to work with.
+        BoardUI game = games.get(position); // grab a game for a user to be able to work with.
         container.removeView(game); // removes the old view (but still keeps the data contained)
         container.addView(game); // add the game to the view group.
         return game; // return the instantiated game.
@@ -63,6 +61,6 @@ public class GamePagerAdapter extends PagerAdapter {
     @Override
     public void destroyItem(ViewGroup container, int position, Object object)
     {
-        container.removeView((Chessboard) object); // remove this view completely.
+        container.removeView((BoardUI) object); // remove this view completely.
     }
 }
