@@ -14,35 +14,6 @@ class Queen extends Piece {
 
     @Override
     /**
-     * @return a list of tiles on the path to destination tile
-     */
-    public ArrayList<Tile> getMovePath(Board board,int toRow, int toCol) {
-        // implement
-        ArrayList<Tile> validTiles = new ArrayList<Tile>();
-        int myRow = super.getRow();
-        int myCol = super.getCol();
-
-        //check if valid move first
-        if(!isValidMove(toRow,toCol)){
-            return null;
-        }
-
-        for(int row = 0; row < board.getBoard().length; row++){
-            for(int col = 0; col < board.getBoard()[row].length; col++){
-                if(isValidMove(row,col)){
-                    //check if tile[i,j] in between two points
-                    if(distance(myRow,myCol,row,col) + distance(toRow,toCol,row,col) == distance(myRow,myCol,toRow,toCol)){
-                        validTiles.add(board.getTile(row,col));
-                    }
-                }
-            }
-        }
-
-        return validTiles;
-    }
-
-    @Override
-    /**
      * @return true if valid Queen move, false otherwise
      */
     public boolean isValidMove(int toRow,int toCol){
@@ -57,7 +28,7 @@ class Queen extends Piece {
             return true;
         }
         //check if move is diagonal
-        if(super.getRow() - toRow == super.getCol() - toCol){
+        if(Math.abs(super.getRow() - toRow) == Math.abs(super.getCol() - toCol)){
             return true;
         }
         return false;

@@ -52,7 +52,7 @@ public class TestKing {
     }
 
     @Test
-    public void testGetMovePath(){
+    public void testGetMovePathSize1(){
         Board board = new Board();
         King king = new King(3,8,true,Color.WHITE);
         ArrayList<Tile> temp = king.getMovePath(board,4,8);
@@ -60,7 +60,7 @@ public class TestKing {
     }
 
     @Test
-    public void testGetMovePath2(){
+    public void testGetMovePathSize2(){
         Board board = new Board();
         King king = new King(3,8,true,Color.WHITE);
         ArrayList<Tile> temp = king.getMovePath(board,1,9);
@@ -76,10 +76,20 @@ public class TestKing {
     }
 
     @Test
-    public void testGetAllMoves(){
+    public void testGetAllMovePathsSize(){
         Board board = new Board();
         King king = new King(3,8,true,Color.WHITE);
-        ArrayList<Tile> temp = king.getAllMoves(board);
+        ArrayList< ArrayList<Tile> > temp = king.getAllMovePaths(board);
         assertEquals(16,temp.size());
+    }
+
+    @Test
+    public void testGetAllMovesValid(){
+        Board board = new Board();
+        King king = new King(3,8,true,Color.WHITE);
+        ArrayList< ArrayList<Tile> > temp = king.getAllMovePaths(board);
+        for (ArrayList<Tile> movePath : temp) {
+            assertTrue("getAllMoves returned and invalid tile", king.isValidMove(movePath.get(movePath.size()-1).getRow(),movePath.get(movePath.size()-1).getCol()));
+        }
     }
 }

@@ -8,78 +8,88 @@ import java.util.ArrayList;
 
 class Board {
     private Tile[][] boardTiles;
-    private ArrayList <Piece> pieces;
 
     public Board(){
         super();
         boardTiles = new Tile[12][12];
 
-        for(int i = 0; i < 12; i++){
-            for(int j = 0; j < 12; j++){
+        for(int i = 0; i < getRows(); i++){
+            for(int j = 0; j < getColumns(); j++){
                 this.boardTiles[i][j] = new Tile(i,j);
             }
         }
-        inititalizeCastleWall();
+        initializeCastleWall();
         initializeInsideCastle();
     }
     //todo @Andy, do we still need to initialize the castle wall from within Board? -Steven
 
-    private void inititalizeCastleWall(){
-        getTile(1,7).setTileStatus(Status.CASTLE);
-        getTile(1,8).setTileStatus(Status.CASTLE);
-        getTile(1,9).setTileStatus(Status.CASTLE);
-        getTile(2,6).setTileStatus(Status.CASTLE);
-        getTile(2,10).setTileStatus(Status.CASTLE);
-        getTile(3,6).setTileStatus(Status.CASTLE);
-        getTile(3,10).setTileStatus(Status.CASTLE);
-        getTile(4,6).setTileStatus(Status.CASTLE);
-        getTile(4,10).setTileStatus(Status.CASTLE);
-        getTile(5,7).setTileStatus(Status.CASTLE);
-        getTile(5,8).setTileStatus(Status.CASTLE);
-        getTile(5,9).setTileStatus(Status.CASTLE);
+    private void initializeCastleWall(){
+        getTile(1,7).setTileStatus(Status.WALL_BLACK);
+        getTile(1,8).setTileStatus(Status.WALL_BLACK);
+        getTile(1,9).setTileStatus(Status.WALL_BLACK);
+        getTile(2,6).setTileStatus(Status.WALL_BLACK);
+        getTile(2,10).setTileStatus(Status.WALL_BLACK);
+        getTile(3,6).setTileStatus(Status.WALL_BLACK);
+        getTile(3,10).setTileStatus(Status.WALL_BLACK);
+        getTile(4,6).setTileStatus(Status.WALL_BLACK);
+        getTile(4,10).setTileStatus(Status.WALL_BLACK);
+        getTile(5,7).setTileStatus(Status.WALL_BLACK);
+        getTile(5,8).setTileStatus(Status.WALL_BLACK);
+        getTile(5,9).setTileStatus(Status.WALL_BLACK);
 
-        getTile(6,2).setTileStatus(Status.CASTLE);
-        getTile(6,3).setTileStatus(Status.CASTLE);
-        getTile(6,4).setTileStatus(Status.CASTLE);
-        getTile(7,1).setTileStatus(Status.CASTLE);
-        getTile(7,5).setTileStatus(Status.CASTLE);
-        getTile(8,1).setTileStatus(Status.CASTLE);
-        getTile(8,5).setTileStatus(Status.CASTLE);
-        getTile(9,1).setTileStatus(Status.CASTLE);
-        getTile(9,5).setTileStatus(Status.CASTLE);
-        getTile(10,2).setTileStatus(Status.CASTLE);
-        getTile(10,3).setTileStatus(Status.CASTLE);
-        getTile(10,4).setTileStatus(Status.CASTLE);
+        getTile(6,2).setTileStatus(Status.WALL_WHITE);
+        getTile(6,3).setTileStatus(Status.WALL_WHITE);
+        getTile(6,4).setTileStatus(Status.WALL_WHITE);
+        getTile(7,1).setTileStatus(Status.WALL_WHITE);
+        getTile(7,5).setTileStatus(Status.WALL_WHITE);
+        getTile(8,1).setTileStatus(Status.WALL_WHITE);
+        getTile(8,5).setTileStatus(Status.WALL_WHITE);
+        getTile(9,1).setTileStatus(Status.WALL_WHITE);
+        getTile(9,5).setTileStatus(Status.WALL_WHITE);
+        getTile(10,2).setTileStatus(Status.WALL_WHITE);
+        getTile(10,3).setTileStatus(Status.WALL_WHITE);
+        getTile(10,4).setTileStatus(Status.WALL_WHITE);
     }
 
     private void initializeInsideCastle(){
-        getTile(2,7).setTileStatus(Status.INSIDE);
-        getTile(2,8).setTileStatus(Status.INSIDE);
-        getTile(2,9).setTileStatus(Status.INSIDE);
-        getTile(3,7).setTileStatus(Status.INSIDE);
-        getTile(3,8).setTileStatus(Status.INSIDE);
-        getTile(3,9).setTileStatus(Status.INSIDE);
-        getTile(4,7).setTileStatus(Status.INSIDE);
-        getTile(4,8).setTileStatus(Status.INSIDE);
-        getTile(4,9).setTileStatus(Status.INSIDE);
+        getTile(2,7).setTileStatus(Status.INSIDE_BLACK);
+        getTile(2,8).setTileStatus(Status.INSIDE_BLACK);
+        getTile(2,9).setTileStatus(Status.INSIDE_BLACK);
+        getTile(3,7).setTileStatus(Status.INSIDE_BLACK);
+        getTile(3,8).setTileStatus(Status.INSIDE_BLACK);
+        getTile(3,9).setTileStatus(Status.INSIDE_BLACK);
+        getTile(4,7).setTileStatus(Status.INSIDE_BLACK);
+        getTile(4,8).setTileStatus(Status.INSIDE_BLACK);
+        getTile(4,9).setTileStatus(Status.INSIDE_BLACK);
 
-        getTile(7,2).setTileStatus(Status.INSIDE);
-        getTile(7,3).setTileStatus(Status.INSIDE);
-        getTile(7,4).setTileStatus(Status.INSIDE);
-        getTile(8,2).setTileStatus(Status.INSIDE);
-        getTile(8,3).setTileStatus(Status.INSIDE);
-        getTile(8,4).setTileStatus(Status.INSIDE);
-        getTile(9,2).setTileStatus(Status.INSIDE);
-        getTile(9,3).setTileStatus(Status.INSIDE);
-        getTile(9,4).setTileStatus(Status.INSIDE);
+        getTile(7,2).setTileStatus(Status.INSIDE_WHITE);
+        getTile(7,3).setTileStatus(Status.INSIDE_WHITE);
+        getTile(7,4).setTileStatus(Status.INSIDE_WHITE);
+        getTile(8,2).setTileStatus(Status.INSIDE_WHITE);
+        getTile(8,3).setTileStatus(Status.INSIDE_WHITE);
+        getTile(8,4).setTileStatus(Status.INSIDE_WHITE);
+        getTile(9,2).setTileStatus(Status.INSIDE_WHITE);
+        getTile(9,3).setTileStatus(Status.INSIDE_WHITE);
+        getTile(9,4).setTileStatus(Status.INSIDE_WHITE);
     }
 
-    public Tile getTile(int fromRow,int fromCol){
-        return boardTiles[fromRow][fromCol];
+    /**
+     * Returns the tile at the given coordinates.
+     * @param row - the row of the desired tile
+     * @param col- the column of the desired tile
+     * @return the tile if row and col are in the bounds of the board, null if not
+     */
+    public Tile getTile(int row,int col){
+        if (row < 0 || row > 11 || col < 0 || col > 11) return null;
+        return boardTiles[row][col];
     }
 
-    public Tile[][] getBoard(){
-        return boardTiles;
+    public int getRows() {
+        return 12;
+    }
+
+    public int getColumns(){
+        return 12;
     }
 
     /**
@@ -104,9 +114,7 @@ class Board {
 
         if ((p instanceof King) && !isValidKingMove(fromRow,fromCol,toRow,toCol)) return false;
 
-        if (kingInCheck(player.getKing()))  { // move must remove check as well as move path being valid
-            if (moveResultsInCheck(player.getKing(),fromRow,fromCol,toRow,toCol)) return false;
-        }
+        if (moveResultsInCheck(player.getKing(),fromRow,fromCol,toRow,toCol)) return false;
 
         return validateMovePath(p.getMovePath(this,toRow,toCol), p.getColor());
     }
@@ -118,11 +126,48 @@ class Board {
      * @return true if the move path is valid
      */
     private boolean validateMovePath(ArrayList<Tile> movePath, Color friendlyColor) {
-        for (int idx = 0; idx < movePath.size()-1; idx++) { // for all save last tile
+        if (movePath == null) return false;
+        Tile firstTile = movePath.get(0);
+        if (!firstTile.isOccupied()) return false;
+        for (int idx = 1; idx < movePath.size()-1; idx++) { // for all save first and last tile
             if (movePath.get(idx).isOccupied()) return false;
         }
-        if (movePath.get(movePath.size()-1).getPiece().getColor() == friendlyColor) return false;
-        return true;
+        Tile lastTile = movePath.get(movePath.size()-1);
+        return validCapture(firstTile,lastTile,friendlyColor);
+    }
+
+    /** Helper method for validateMovePath
+     * Checks if the move results in a valid capture. From our rules source (en.wikipedia.org/wiki/Chad_(chess_variant)):
+     * "A rook or queen may capture an opponent's rook or queen only when one of these pieces is on the enemy's wall,
+     *      and the other piece is in its own castle. Then either player having the turn to move may capture.
+     *      (In other situations rooks and queens cannot capture, and simply block one another's movement.
+     *      For example, a queen in an enemy castle is capturable only by the king.)"
+     * @param firstTile - the first tile of a move path
+     * @param lastTile - the last tile of a move path
+     * @param friendlyColor - the color of friendly pieces
+     * @return true if the capture is valid.
+     * NOTE: capturing a tile with no other piece is always valid
+     */
+    private boolean validCapture(Tile firstTile, Tile lastTile, Color friendlyColor) {
+        if (!lastTile.isOccupied()) return true;
+        if (!firstTile.isOccupied()) return false;
+        if (lastTile.getPiece().getColor() == friendlyColor) return false;
+        if (firstTile.getPiece() instanceof King) {
+            if (friendlyColor == Color.WHITE) {
+                if (lastTile.getTileStatus() == Status.INSIDE_WHITE) return true;
+            } else {
+                if (lastTile.getTileStatus() == Status.INSIDE_BLACK) return true;
+            }
+        } else {
+            if (friendlyColor == Color.WHITE) {
+                if (firstTile.getTileStatus() == Status.WALL_BLACK && lastTile.getTileStatus() == Status.INSIDE_BLACK) return true;
+                if (firstTile.getTileStatus() == Status.INSIDE_WHITE && lastTile.getTileStatus() == Status.WALL_WHITE) return true;
+            } else {
+                if (firstTile.getTileStatus() == Status.WALL_WHITE && lastTile.getTileStatus() == Status.INSIDE_WHITE) return true;
+                if (firstTile.getTileStatus() == Status.INSIDE_BLACK && lastTile.getTileStatus() == Status.WALL_BLACK) return true;
+            }
+        }
+        return false;
     }
 
     /** BASE METHOD, does not rely on other methods
@@ -182,17 +227,18 @@ class Board {
     private boolean moveResultsInCheck(King king, int fromRow, int fromCol, int toRow, int toCol) {
         Tile from = boardTiles[fromRow][fromCol];
         Tile to = boardTiles[toRow][toCol];
-        Piece savedFromPiece = from.getPiece();
-        Piece savedToPiece = to.getPiece();
+        if (!from.isOccupied()) return kingInCheck(king);
 
         boolean result;
+        Piece savedFromPiece = from.getPiece();
+        Piece savedToPiece = to.getPiece();
 
         to.occupyTile(from.getPiece());
         from.occupyTile(null);
         if (kingInCheck(king)) {
-            result = false;
-        } else {
             result = true;
+        } else {
+            result = false;
         }
 
         from.occupyTile(savedFromPiece);
@@ -204,21 +250,29 @@ class Board {
     }
 
     /**
-     * Given a king piece decides if the king is in checkmate.
-     * @param king - the king to check
-     * @return true if the king is in checkmate, false if otherwise
+     * Given a player determines if that player is in checkmate
+     * @param player - the player to check
+     * @return true if the player is in checkmate, false if otherwise
      */
-    public boolean kingInCheckmate(King king) {
+    public boolean inCheckmate(Player player) {
+        King king = player.getKing();
         if (!kingInCheck(king)) return false;
-
-        ArrayList<Tile> allMoves = king.getAllMoves(this); // get all moves the king can make
-
-        for (Tile tile : allMoves) {
-            if (isValidKingMove(king.getRow(),king.getCol(),tile.getRow(),tile.getCol())) {
-                if (!moveResultsInCheck(king, king.getRow(), king.getCol(), tile.getRow(), tile.getCol())) {
+        Tile lastTile;
+        ArrayList<ArrayList<Tile>> allMovePaths;
+        for (Piece piece : player.getPieces()) {
+            if (!piece.isAvailable()) continue;;
+            allMovePaths = piece.getAllMovePaths(this);
+            for (ArrayList<Tile> movePath : allMovePaths) {
+                if (!validateMovePath(movePath, player.getColor())) continue;
+                lastTile = movePath.get(movePath.size()-1);
+                if (piece instanceof King) {
+                    if(!isValidKingMove(piece.getRow(),piece.getCol(),lastTile.getRow(),lastTile.getCol())) continue;
+                }
+                if (!moveResultsInCheck(king,piece.getRow(),piece.getCol(),lastTile.getRow(),lastTile.getCol())) {
                     return false;
                 }
             }
+
         }
         return true;
     }
@@ -231,11 +285,15 @@ class Board {
      */
     private boolean isValidKingMove(int fromRow,int fromCol,int toRow,int toCol) {
         Tile to = boardTiles[toRow][toCol];
-        if (to.getTileStatus() != Status.INSIDE) return false;
         Piece p = getTile(fromRow, fromCol).getPiece();
         if(p instanceof King)
         {
             King king = (King) p;
+            if (king.getColor() == Color.WHITE) {
+                if (to.getTileStatus() != Status.INSIDE_WHITE) return false;
+            } else {
+                if (to.getTileStatus() != Status.INSIDE_BLACK) return false;
+            }
             if (!king.isValidMove(toRow,toCol)) return false;
             if (moveResultsInCheck(king,fromRow,fromCol,toRow,toCol)) return false;
             return true;

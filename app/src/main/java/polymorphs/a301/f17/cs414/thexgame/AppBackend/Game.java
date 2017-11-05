@@ -1,8 +1,5 @@
 package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-
 /**
  * Created by athai on 10/18/17, edited, modified, and implemented by Roger.
  *
@@ -62,15 +59,9 @@ class Game {
      */
     public int makeMove(User user, int fromRow, int fromCol, int toRow,int toCol)
     {
-        Player activePlayer;
-        if (user.equals(user1)) {
-            activePlayer = p1;
-        } else if (user.equals(user2)) {
-            activePlayer = p2;
-        } else {
-            return -1;
-        }
 
+        Player activePlayer = getActivePlayer(user);
+        if (activePlayer == null) return -1;
 
         if (!this.currentPlayer.equals(activePlayer)) return -1;
 
@@ -81,15 +72,23 @@ class Game {
             Tile to = board.getTile(toRow, toCol);
             to.occupyTile(from.getPiece()); // this will also update the coordinates of the piece
             from.occupyTile(null);
-            if (from.getTileStatus() == Status.INSIDE && from.getPiece() instanceof Rook) { // Rook promotes
-                from.occupyTile(currentPlayer.promoteRook((Rook)from.getPiece()));
+            if (from.getPiece() instanceof Rook) {
+                if (from.getPiece().getColor() == Color.WHITE) {
+                    if (from.getTileStatus() == Status.INSIDE_BLACK) {
+                        from.occupyTile(currentPlayer.promoteRook((Rook)from.getPiece()));
+                    }
+                } else {
+                    if (from.getTileStatus() == Status.INSIDE_WHITE) {
+                        from.occupyTile(currentPlayer.promoteRook((Rook)from.getPiece()));
+                    }
+                }
             }
             if (currentPlayer == p1) {
                 currentPlayer = p2;
             } else {
                 currentPlayer = p1;
             }
-            if (board.kingInCheckmate(currentPlayer.getKing())) {
+            if (board.inCheckmate(currentPlayer)) {
                 return 0;
             }
             return 1;
@@ -98,5 +97,17 @@ class Game {
         }
     }
 
+
+    private Player getActivePlayer(User user) {
+        Player activePlayer;
+        if (user.equals(user1)) {
+            activePlayer = p1;
+        } else if (user.equals(user2)) {
+            activePlayer = p2;
+        } else {
+            return null;
+        }
+        return activePlayer;
+    }
 
 }

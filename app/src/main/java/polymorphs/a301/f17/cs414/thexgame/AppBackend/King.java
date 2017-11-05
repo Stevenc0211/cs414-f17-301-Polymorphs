@@ -18,25 +18,13 @@ class King extends Piece {
      */
     public ArrayList<Tile> getMovePath(Board board, int toRow, int toCol) {
         ArrayList<Tile> validTiles = new ArrayList<Tile>();
-        int myRow = super.getRow();
-        int myCol = super.getCol();
 
         //check if valid move first
         if (!isValidMove(toRow, toCol)) {
             return null;
         }
-
-        for (int row = 0; row < board.getBoard().length; row++) {
-            for (int col = 0; col < board.getBoard()[row].length; col++) {
-                if (isValidMove(row, col)) {
-                    //check if tile[i,j] in between two points
-                    if (distance(myRow, myCol, row, col) + distance(toRow, toCol, row, col) == distance(myRow, myCol, toRow, toCol)) {
-                        validTiles.add(board.getTile(row, col));
-                    }
-                }
-            }
-        }
-
+        validTiles.add(board.getTile(getRow(), getCol()));
+        validTiles.add(board.getTile(toRow,toCol));
         return validTiles;
     }
 
@@ -67,23 +55,5 @@ class King extends Piece {
         return false;
     }
 
-    /**
-     * This is used by board to find if the king is in check/checkmate
-     *
-     * @return a list of available tiles to move to given an empty board
-     */
-    public ArrayList<Tile> getAllMoves(Board board) {
-        ArrayList<Tile> validTiles = new ArrayList<Tile>();
-
-        for (int row = 0; row < board.getBoard().length; row++) {
-            for (int col = 0; col < board.getBoard()[row].length; col++) {
-                if(isValidMove(row,col)){
-                    validTiles.add(board.getTile(row, col));
-                }
-            }
-        }
-
-        return validTiles;
-    }
 
 }

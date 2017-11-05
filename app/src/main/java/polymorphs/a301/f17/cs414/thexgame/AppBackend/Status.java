@@ -5,7 +5,9 @@ package polymorphs.a301.f17.cs414.thexgame.AppBackend;
  */
 
 enum Status {
-    INSIDE,
-    CASTLE,
-    OUTSIDE;
+    INSIDE_WHITE,
+    INSIDE_BLACK,
+    WALL_WHITE,
+    WALL_BLACK,
+    OUTSIDE
 }

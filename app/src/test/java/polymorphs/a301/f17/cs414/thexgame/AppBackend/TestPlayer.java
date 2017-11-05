@@ -37,4 +37,86 @@ public class TestPlayer {
         Player p = new Player(u, Color.WHITE);
         assertEquals(9,p.getPieces().size());
     }
+
+    @Test
+    public void testInitializedKing() {
+        User u = new User("a","b","c");
+        Player p = new Player(u, Color.WHITE);
+        King k = p.getKing();
+        assertNotNull("Player should have one King after initialization", k);
+    }
+
+    /**
+     * Returns the count of all piece of the same type as the passed piece in the players pieces
+     * @param testPiece
+     * @return
+     */
+    private int countPieceInstances(Piece testPiece, Player p) {
+        int count = 0;
+        for (Piece piece : p.getPieces()) {
+            if (piece.getClass() == testPiece.getClass()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    @Test
+    public void testInitializeRookCount() {
+        User u = new User("a","b","c");
+        Player p = new Player(u, Color.WHITE);
+        Rook r = new Rook(0,0,true,Color.BLACK);
+        assertTrue("Player should have 8 Rooks after initialization", 8 == countPieceInstances(r, p));
+    }
+
+    @Test
+    public void testPromoteCopiesValues() {
+        User u = new User("a","b","c");
+        Player p = new Player(u, Color.WHITE);
+        Piece test = p.getPieces().get(0);
+        if (test instanceof King) {
+            test = p.getPieces().get(1);
+        }
+        Rook r = (Rook) test;
+        Queen q = p.promoteRook(r);
+        assertTrue("Queen returned from premote should have the same values as the original rook",
+                r.getCol() == q.getCol() && r.getRow() == q.getRow() && r.getColor() == q.getColor());
+    }
+
+    @Test
+    public void testPromoteDecreasesRookCount() {
+        User u = new User("a","b","c");
+        Player p = new Player(u, Color.WHITE);
+        Piece test = p.getPieces().get(0);
+        if (test instanceof King) {
+            test = p.getPieces().get(1);
+        }
+        Rook r = (Rook) test;
+        int originalRookCount = countPieceInstances(r, p);
+        Queen q = p.promoteRook(r);
+        assertTrue("Players number of rooks should decrease by one", (originalRookCount-1) == countPieceInstances(r, p));
+    }
+
+    @Test
+    public void testPromoteIncreasesQueenCount() {
+        User u = new User("a","b","c");
+        Player p = new Player(u, Color.WHITE);
+        Piece test = p.getPieces().get(0);
+        if (test instanceof King) {
+            test = p.getPieces().get(1);
+        }
+        Rook r = (Rook) test;
+        int originalQueenCount = countPieceInstances(new Queen(0,0,true,Color.WHITE), p);
+        Queen q = p.promoteRook(r);
+        assertTrue("Players number of rooks should decrease by one", (originalQueenCount+1) == countPieceInstances(q, p));
+    }
+
+    @Test
+    public void testPromoteFailure() {
+        User u = new User("a","b","c");
+        Player p = new Player(u, Color.WHITE);
+        Rook r = new Rook(0,0,true,Color.BLACK);
+        Queen q = p.promoteRook(r);
+        assertNull("The passed rook should not be in the players pieces list",q);
+    }
 }

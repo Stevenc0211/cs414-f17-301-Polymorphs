@@ -23,32 +23,57 @@ public class TestQueen {
     }
 
     @Test
-    public void testIsValidMoveFalse(){
+    public void testIsValidMoveUp(){
         Queen q = new Queen(4,5,true,Color.WHITE);
-        assertFalse("Should be false",q.isValidMove(4,96));
+        assertTrue("Queen should be able to move up",q.isValidMove(0,5));
     }
 
     @Test
-    public void testIsValidMoveTrue(){
+    public void testIsValidMoveUpRight(){
         Queen q = new Queen(4,5,true,Color.WHITE);
-        assertTrue("Should be true",q.isValidMove(2,3));
-    }
-
-
-    @Test
-    public void testGetMovePathDiagonal(){
-        Board b = new Board();
-        Queen q = new Queen(4,5,true,Color.WHITE);
-        ArrayList<Tile> temp = q.getMovePath(b,2,3);
-        assertEquals(2,temp.size());
+        assertTrue("Queen should be able to move up right diagonal",q.isValidMove(2,7));
     }
 
     @Test
-    public void testGetMovePathRow(){
-        Board b = new Board();
+    public void testIsValidMoveRight(){
         Queen q = new Queen(4,5,true,Color.WHITE);
-        ArrayList<Tile> temp = q.getMovePath(b,4,0);
-        assertEquals(5,temp.size());
+        assertTrue("Queen should be able to move right",q.isValidMove(4,7));
+    }
+
+    @Test
+    public void testIsValidMoveDownRight(){
+        Queen q = new Queen(4,5,true,Color.WHITE);
+        assertTrue("Queen should be able to move down right diagonal",q.isValidMove(7,8));
+    }
+
+    @Test
+    public void testIsValidMoveDown(){
+        Queen q = new Queen(4,5,true,Color.WHITE);
+        assertTrue("Queen should be able to move down",q.isValidMove(8,5));
+    }
+
+    @Test
+    public void testIsValidMoveDownLeft(){
+        Queen q = new Queen(4,5,true,Color.WHITE);
+        assertTrue("Queen should be able to move down left diagonal",q.isValidMove(6,3));
+    }
+
+    @Test
+    public void testIsValidMoveLeft(){
+        Queen q = new Queen(4,5,true,Color.WHITE);
+        assertTrue("Queen should be able to move left",q.isValidMove(4,3));
+    }
+
+    @Test
+    public void testIsValidMoveUpLeft(){
+        Queen q = new Queen(4,5,true,Color.WHITE);
+        assertTrue("Queen should be able to move up left diagonal",q.isValidMove(1,2));
+    }
+
+    @Test
+    public void testIsValidMoveFailure(){
+        Queen q = new Queen(4,5,true,Color.WHITE);
+        assertFalse("Queen should not be able to make a knights move",q.isValidMove(6,6));
     }
 
     @Test

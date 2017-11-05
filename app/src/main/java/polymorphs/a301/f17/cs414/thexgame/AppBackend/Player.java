@@ -8,11 +8,10 @@ import java.util.Date;
 
 class Player {
     private User user; // saving the user instead to match between UI and backend
-    private Enum color;
+    private Color color;
     private ArrayList<Piece> pieces = new ArrayList<Piece>();
-    public String timestamp = "";
 
-    public Player(User user,Enum color){
+    public Player(User user,Color color){
         this.user = user;
         this.color = color;
         initializePieces();
@@ -22,17 +21,8 @@ class Player {
         return user.getNickname();
     }
 
-    public Enum getColor(){
+    public Color getColor(){
         return color;
-    }
-
-    public void setColor(Enum color){
-        this.color = color;
-    }
-
-    public String getTimestamp(){
-        //Use java.sql.Timestamp
-        return timestamp;
     }
 
     public boolean equals(Object o) {
@@ -84,6 +74,12 @@ class Player {
         return null;
     }
 
+    /**
+     * Takes in a Rook and returns a Queen with all piece parameters the same as the passed Rook.
+     * Also removes the old Rook from the players pieces and adds the new queen
+     * @param rook - the rook to premote
+     * @return  the new Queen if the passed rook existed in the players pieces, null if otherwise
+     */
     public Queen promoteRook(Rook rook) {
         int idx = pieces.indexOf(rook);
         if (idx == -1) return null;

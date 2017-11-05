@@ -59,4 +59,12 @@ public class TestTile {
         tile.occupyTile(queen1);
         tile.occupyTile(queen2);
     }
+
+    @Test
+    public void testPieceLocationUpdateOnOccupy() {
+        Tile tile = new Tile(5,6);
+        Queen queen = new Queen(4,4,true,Color.BLACK);
+        tile.occupyTile(queen);
+        assertTrue("ERROR: piece coordinates should update when occupying a tile", queen.getCol() == tile.getCol() && queen.getRow() == tile.getRow());
+    }
 }
