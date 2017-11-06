@@ -77,4 +77,8 @@ abstract class Piece {
      */
     public abstract ArrayList<Tile> getMovePath(Board board,int toRow, int toCol);
 
+    public String toString(){
+        return myRow + ", " + myCol + ", " + available + ", " + color;
+    }
+
 }

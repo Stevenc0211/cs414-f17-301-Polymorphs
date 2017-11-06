@@ -82,4 +82,10 @@ public class TestKing {
         ArrayList<Tile> temp = king.getAllMoves(board);
         assertEquals(16,temp.size());
     }
+
+    @Test
+    public void testToString(){
+        King king = new King(3,8,true,Color.BLACK);
+        assertEquals("3, 8, true, BLACK",king.toString());
+    }
 }

@@ -71,4 +71,12 @@ public class TestGame {
 
         assertEquals(false, game.makeMove(user1, 0,0, 1, 1 )); // should be false because rooks can only go horizontally and vertically.
     }
+
+    @Test
+    public void testToString(){
+        User user1 = new User("a","email","nickname");
+        User user2 = new User("b","test","ddd");
+        Game game = new Game(user1,user2);
+        assertEquals("3, 8, true, WHITE, 2, 7, true, WHITE, 3, 7, true, WHITE, 4, 7, true, WHITE, 2, 8, true, WHITE, 4, 8, true, WHITE, 2, 9, true, WHITE, 3, 9, true, WHITE, 4, 9, true, WHITE, 8, 3, true, BLACK, 7, 2, true, BLACK, 8, 2, true, BLACK, 9, 2, true, BLACK, 7, 3, true, BLACK, 9, 3, true, BLACK, 7, 4, true, BLACK, 8, 4, true, BLACK, 9, 4, true, BLACK",game.toString());
+    }
 }

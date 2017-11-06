@@ -87,4 +87,8 @@ class King extends Piece {
         return validTiles;
     }
 
+    public String toString(){
+        return super.toString();
+    }
+
 }

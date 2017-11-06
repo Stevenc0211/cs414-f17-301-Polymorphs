@@ -121,6 +121,17 @@ public class DBIOCore {
     }
 
     /**
+     * This method registers the passed Observer to the master game record list.
+     * The Observers update methods will be called if there is any change in the list data
+     * @param observer - the observer to register
+     */
+    public static void registerToGameRecordList(GameRecordListObserver observer) {
+        baseReference.child("gamerecordList").addChildEventListener(new GameRecordListListener(observer));
+    }
+
+    // TODO: 11/4/17 implement listener for GameSnapshotListListener 
+
+    /**
      * This takes the passed invitation and adds it to the passed users invitation list.
      * NOTE: the passed user is not ensured to exist, i.e. a random username may be passed without
      * error (please don't)
