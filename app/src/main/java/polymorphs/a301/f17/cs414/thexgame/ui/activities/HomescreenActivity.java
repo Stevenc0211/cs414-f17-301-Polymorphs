@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
-import polymorphs.a301.f17.cs414.thexgame.BoardUI;
+import polymorphs.a301.f17.cs414.thexgame.ui.BoardUI;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.persistence.UserObserver;

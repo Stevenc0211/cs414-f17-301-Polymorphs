@@ -3,7 +3,7 @@ package polymorphs.a301.f17.cs414.thexgame.ui.listeners;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 
-import polymorphs.a301.f17.cs414.thexgame.BoardUI;
+import polymorphs.a301.f17.cs414.thexgame.ui.BoardUI;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.ui.activities.HomescreenActivity;
 

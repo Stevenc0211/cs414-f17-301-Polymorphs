@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-import polymorphs.a301.f17.cs414.thexgame.BoardUI;
+import polymorphs.a301.f17.cs414.thexgame.ui.BoardUI;
 
 /**
  * Created by thenotoriousrog on 10/13/17.

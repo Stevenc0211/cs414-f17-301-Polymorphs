@@ -1,4 +1,4 @@
-package polymorphs.a301.f17.cs414.thexgame;
+package polymorphs.a301.f17.cs414.thexgame.ui;
 
 /**
  * * Found on https://gist.github.com/Oshuma/3352280 updated and modified for our implementation. ~ Roger
@@ -13,10 +13,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.v4.content.ContextCompat;
-import android.view.View;
-import android.widget.Toast;
 
-public final class TileUI implements View.OnClickListener {
+import polymorphs.a301.f17.cs414.thexgame.R;
+
+public final class TileUI  {
     private static final String TAG = TileUI.class.getSimpleName();
 
     private final int col;
@@ -30,7 +30,7 @@ public final class TileUI implements View.OnClickListener {
     private boolean hasRook = false;
     private boolean hasKing = false;
     private boolean hasQueen = false;
-
+    private String pieceName = " "; // holds the name of the piece whether it be a rook, queen, or king, whether black or white.
 
     public boolean hasPiece()
     {
@@ -40,6 +40,18 @@ public final class TileUI implements View.OnClickListener {
         }
 
         return true; // this tile has a piece on it.
+    }
+
+    // set the piecename for this tile.
+    public void setPieceName(String name)
+    {
+        pieceName = name;
+    }
+
+    // returns the name of the piece that this tile contains.
+    public String getPieceName()
+    {
+        return pieceName;
     }
 
     // tells us if a tile is on the opponent castle wall.
@@ -335,43 +347,52 @@ public final class TileUI implements View.OnClickListener {
         Bitmap piece = null; // holds the piece that we want to draw.
 
         // TODO: need to efficiently draw the bitmaps here to ensure that the UI does not lag or get super super super slow.
+        // TODO: need to figure out how to keep the bitmaps higher quality while keeping the app responsive.
         if(!pieceName.equals(" ")) // make sure that the name is not a space, it is a space, then we must not put a piece there, show only the board.
         {
             if(pieceName.equals("wrook")){ // set white rook
-                piece = decodeSampledBitmapFromResource(c.getResources(), R.drawable.wrook, 100, 100);
+
+                //System.out.println("TEST DRAWING OVER THE NEW ROOK NOW!!");
+                piece = decodeSampledBitmapFromResource(c.getResources(), R.drawable.wrook, 50, 50);
                 hasRook = true;
                 hasKing = false;
                 hasQueen = false;
+                this.pieceName = pieceName;
             }
             else if(pieceName.equals("wking")){ // set white king
-                piece = decodeSampledBitmapFromResource(c.getResources(), R.drawable.wking, 100, 100);
+                piece = decodeSampledBitmapFromResource(c.getResources(), R.drawable.wking, 50, 50);
                 hasRook = false;
                 hasKing = true;
                 hasQueen = false;
+                this.pieceName = pieceName;
             }
             else if(pieceName.equals("wqueen")){ // set white queen
-                piece = decodeSampledBitmapFromResource(c.getResources(), R.drawable.wqueen, 100, 100);
+                piece = decodeSampledBitmapFromResource(c.getResources(), R.drawable.wqueen, 50, 50);
                 hasRook = false;
                 hasKing = false;
                 hasQueen = true;
+                this.pieceName = pieceName;
             }
             else if(pieceName.equals("brook")){ // set black rook
-                piece = decodeSampledBitmapFromResource(c.getResources(), R.drawable.brook, 100, 100);
+                piece = decodeSampledBitmapFromResource(c.getResources(), R.drawable.brook, 50, 50);
                 hasRook = true;
                 hasKing = false;
                 hasQueen = false;
+                this.pieceName = pieceName;
             }
             else if(pieceName.equals("bking")){ // set black king
-                piece = decodeSampledBitmapFromResource(c.getResources(), R.drawable.bking, 100, 100);
+                piece = decodeSampledBitmapFromResource(c.getResources(), R.drawable.bking, 50, 50);
                 hasRook = false;
                 hasKing = true;
                 hasQueen = false;
+                this.pieceName = pieceName;
             }
             else if(pieceName.equals("bqueen")){ // set black queen
-                piece = decodeSampledBitmapFromResource(c.getResources(), R.drawable.bqueen, 100, 100);
+                piece = decodeSampledBitmapFromResource(c.getResources(), R.drawable.bqueen, 50, 50);
                 hasRook = false;
                 hasKing = false;
                 hasQueen = true;
+                this.pieceName = pieceName;
             }
 
             canvas.drawBitmap(piece, null, tileRect, null); // draw our bitmap image.
@@ -379,21 +400,12 @@ public final class TileUI implements View.OnClickListener {
             hasKing = false;
             hasQueen = false;
         }
-    }
-
-    public String getColumnString() {
-        switch (col) {
-            case 0: return "A";
-            case 1: return "B";
-            case 2: return "C";
-            case 3: return "D";
-            case 4: return "E";
-            case 5: return "F";
-            case 6: return "G";
-            case 7: return "H";
-            default: return null;
+        else // no piece therefore draw an empty piece.
+        {
+            this.pieceName = " "; // set the piece name to be nothing to stand for an empty tile.
         }
     }
+
 
     public String getRowString() {
         // To get the actual row, add 1 since 'row' is 0 indexed.
@@ -422,17 +434,5 @@ public final class TileUI implements View.OnClickListener {
         this.tileRect = tileRect;
     }
 
-    public String toString() {
-        final String column = getColumnString();
-        final String row    = getRowString();
-        return "<TileUI " + column + row + ">";
-    }
 
-    // This click listener is a little bit different
-    @Override
-    public void onClick(View view)
-    {
-        // this is just a test to see if a click listener would work in this class or not. If it does work, take the logic and the to do out of the handle touch and place it in here.
-        Toast.makeText(view.getContext(), "TileUI at row = " + row + " col = " + col + " was clicked", Toast.LENGTH_SHORT).show();
-    }
 }
