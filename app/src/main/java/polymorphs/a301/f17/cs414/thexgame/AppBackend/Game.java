@@ -14,9 +14,8 @@ class Game {
     private Player p2;
     private Player currentPlayer;
     private Board board;
-    // not sure these are needed. A game record object should be created when the game ends that will capture this info - Miles
-    private Player winner; // holds the winner of the game.
-    private Player loser; //
+    private Player winner;
+    private Player loser;
 
     public Game(User user1,User user2){
         this.user1 = user1;
@@ -24,7 +23,7 @@ class Game {
         p1 = new Player(user1,Color.WHITE);
         currentPlayer = p1;
         p2 = new Player(user2,Color.BLACK);
-        this.board = new Board();
+        this.board = new Board(p1,p2);
     }
 
     public User getUser1(){
@@ -33,18 +32,6 @@ class Game {
 
     public User getUser2(){
         return user2;
-    }
-
-    public Player getP1(){
-        return p1;
-    }
-
-    public Player getP2(){
-        return p2;
-    }
-
-    public Board getBoard(){
-        return board;
     }
 
     /**
@@ -60,7 +47,7 @@ class Game {
     public int makeMove(User user, int fromRow, int fromCol, int toRow,int toCol)
     {
 
-        Player activePlayer = getActivePlayer(user);
+        Player activePlayer = getPlayerForUser(user);
         if (activePlayer == null) return -1;
 
         if (!this.currentPlayer.equals(activePlayer)) return -1;
@@ -68,21 +55,7 @@ class Game {
         if (board.isValidMove(activePlayer , fromRow, fromCol, toRow, toCol))
         {
 
-            Tile from = board.getTile(fromRow, fromCol);
-            Tile to = board.getTile(toRow, toCol);
-            to.occupyTile(from.getPiece()); // this will also update the coordinates of the piece
-            from.occupyTile(null);
-            if (from.getPiece() instanceof Rook) {
-                if (from.getPiece().getColor() == Color.WHITE) {
-                    if (from.getTileStatus() == Status.INSIDE_BLACK) {
-                        from.occupyTile(currentPlayer.promoteRook((Rook)from.getPiece()));
-                    }
-                } else {
-                    if (from.getTileStatus() == Status.INSIDE_WHITE) {
-                        from.occupyTile(currentPlayer.promoteRook((Rook)from.getPiece()));
-                    }
-                }
-            }
+            movePiece(fromRow, fromCol, toRow, toCol);
             if (currentPlayer == p1) {
                 currentPlayer = p2;
             } else {
@@ -97,8 +70,37 @@ class Game {
         }
     }
 
+    /** Helper for makeMove
+     * Responsible for moving and possibly promoting the piece after the move is verified as valid
+     * @param fromRow - the row where the move starts
+     * @param fromCol - the column where the move starts
+     * @param toRow - the row where the move ends
+     * @param toCol - the column where the move ends
+     */
+    private void movePiece(int fromRow, int fromCol, int toRow, int toCol) {
+        Tile from = board.getTile(fromRow, fromCol);
+        Tile to = board.getTile(toRow, toCol);
+        to.occupyTile(from.getPiece()); // this will also update the coordinates of the piece
+        from.occupyTile(null);
+        if (from.getPiece() instanceof Rook) {
+            if (from.getPiece().getColor() == Color.WHITE) {
+                if (from.getTileStatus() == Status.INSIDE_BLACK) {
+                    from.occupyTile(currentPlayer.promoteRook((Rook)from.getPiece()));
+                }
+            } else {
+                if (from.getTileStatus() == Status.INSIDE_WHITE) {
+                    from.occupyTile(currentPlayer.promoteRook((Rook)from.getPiece()));
+                }
+            }
+        }
+    }
 
-    private Player getActivePlayer(User user) {
+    /**
+     * Returns the player for the passed user. If the user is not a player in the game null will be returned.
+     * @param user - the user to retrieve the player for
+     * @return player if the user is part of the game, null if not
+     */
+    private Player getPlayerForUser(User user) {
         Player activePlayer;
         if (user.equals(user1)) {
             activePlayer = p1;

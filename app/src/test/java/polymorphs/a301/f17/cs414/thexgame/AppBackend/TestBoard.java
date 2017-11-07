@@ -27,11 +27,6 @@ public class TestBoard {
     public void setup() {
         b = new Board();
         white = new Player(new User("test", "test", "user1"), Color.WHITE);
-        for (Piece piece : white.getPieces()) {
-            if (piece instanceof King) continue;
-            piece.setAvailable(false);
-        }
-        b.getTile(white.getKing().getRow(), white.getKing().getCol()).occupyTile(white.getKing());
     }
 
 
@@ -137,11 +132,11 @@ public class TestBoard {
 
     // ---------- All capture tests ---------- //
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testIsValidMoveFriendlyCapture() {
         b.getTile(7,7).occupyTile(new Rook(7,7,true,Color.WHITE));
         b.getTile(7,5).occupyTile(new Rook(7,5,true,Color.WHITE));
-        assertFalse("Move should not end on a same colored piece", b.isValidMove(white,7,5,7,7));
+        b.isValidMove(white,7,5,7,7);
     }
 
     @Test
@@ -236,8 +231,10 @@ public class TestBoard {
         assertTrue("Capture should be valid",b.isValidMove(white,9,3,7,2));
     }
 
+    // ---------- Checkmate tests ---------- //
     @Test
     public void testKingInCheckmateTrue() {
+        for (Piece piece : white.getPieces()) if (!(piece instanceof King)) piece.setAvailable(false);
         b.getTile(9,3).occupyTile(white.getKing());
         b.getTile(0,2).occupyTile(new Rook(0,2,true,Color.BLACK));
         b.getTile(0,3).occupyTile(new Rook(0,3,true,Color.BLACK));
@@ -247,6 +244,7 @@ public class TestBoard {
 
     @Test
     public void testKingInCheckmateFalse1() { // no in check
+        for (Piece piece : white.getPieces()) if (!(piece instanceof King)) piece.setAvailable(false);
         b.getTile(9,3).occupyTile(white.getKing());
         b.getTile(0,2).occupyTile(new Rook(0,2,true,Color.BLACK));
         b.getTile(0,4).occupyTile(new Rook(0,4,true,Color.BLACK));
@@ -255,6 +253,7 @@ public class TestBoard {
 
     @Test
     public void testKingInCheckmateFalse2() { // can move out of check
+        for (Piece piece : white.getPieces()) if (!(piece instanceof King)) piece.setAvailable(false);
         b.getTile(9,3).occupyTile(white.getKing());
         b.getTile(0,3).occupyTile(new Rook(0,3,true,Color.BLACK));
         assertFalse("King should not be in checkmate", b.inCheckmate(white));
@@ -262,6 +261,7 @@ public class TestBoard {
 
     @Test
     public void testKingInCheckmateFalse3() { // another piece can block check
+        for (Piece piece : white.getPieces()) if (!(piece instanceof King)) piece.setAvailable(false);
         b.getTile(9,3).occupyTile(white.getKing());
         b.getTile(0,2).occupyTile(new Rook(0,2,true,Color.BLACK));
         b.getTile(0,3).occupyTile(new Rook(0,3,true,Color.BLACK));
@@ -278,6 +278,7 @@ public class TestBoard {
 
     @Test
     public void testKingInCheckmateFalse4() { // another piece can capture checking piece
+        for (Piece piece : white.getPieces()) if (!(piece instanceof King)) piece.setAvailable(false);
         b.getTile(7,3).occupyTile(white.getKing());
         b.getTile(6,2).occupyTile(new Rook(0,2,true,Color.BLACK));
         b.getTile(6,3).occupyTile(new Rook(0,3,true,Color.BLACK));
@@ -290,6 +291,74 @@ public class TestBoard {
         whiteRook.setAvailable(true);
         b.getTile(7,2).occupyTile(white.promoteRook(whiteRook));
         assertFalse("King should not be in checkmate", b.inCheckmate(white));
+    }
+
+    // ---------- Board init w/Player pieces tests ---------- //
+    @Test
+    public void testAddPlayerPieces() {
+        try{
+            b = new Board();
+            b.addPlayerPieces(white);
+        } catch (IllegalArgumentException e) {
+            fail("White pieces should be added to an empty board without error");
+        }
+    }
+
+    @Test
+    public void testAddPlayerPiecesConsistency() {
+        b = new Board();
+        b.addPlayerPieces(white);
+        for (Piece piece : white.getPieces()) {
+            assertTrue("All player pieces should exist on the board", b.getTile(piece.getRow(), piece.getCol()).getPiece().equals(piece));
+        }
+    }
+
+    @Test
+    public void testInitWhiteRookPlacement() {
+        Player black = new Player(new User("1", "2", "3"), Color.BLACK);
+        b = new Board(white,black);
+        int[][] coordinates = {{7,2},{7,3},{7,4},{8,2},{8,4},{9,2},{9,3},{9,4}};
+        boolean test;
+        for (int[] coord: coordinates) {
+            test = b.getTile(coord[0],coord[1]).isOccupied();
+            test = test & b.getTile(coord[0],coord[1]).getPiece().getColor() == Color.WHITE;
+            test = test & b.getTile(coord[0],coord[1]).getPiece() instanceof Rook;
+            assertTrue("All specified tiles should contain a white rook", test);
+        }
+    }
+
+    @Test
+    public void testInitWhiteKingPlacement() {
+        Player black = new Player(new User("1", "2", "3"), Color.BLACK);
+        b = new Board(white,black);
+        boolean test = b.getTile(8,3).isOccupied();
+        test = test & b.getTile(8,3).getPiece().getColor() == Color.WHITE;
+        test = test & b.getTile(8,3).getPiece() instanceof King;
+        assertTrue("Tile at 8,3 should contain the white king", test);
+    }
+
+    @Test
+    public void testInitBlackRookPlacement() {
+        Player black = new Player(new User("1", "2", "3"), Color.BLACK);
+        b = new Board(white,black);
+        int[][] coordinates = {{2,7},{2,8},{2,9},{3,7},{3,9},{4,7},{4,8},{4,9}};
+        boolean test;
+        for (int[] coord: coordinates) {
+            test = b.getTile(coord[0],coord[1]).isOccupied();
+            test = test & b.getTile(coord[0],coord[1]).getPiece().getColor() == Color.BLACK;
+            test = test & b.getTile(coord[0],coord[1]).getPiece() instanceof Rook;
+            assertTrue("All specified tiles should contain a black rook", test);
+        }
+    }
+
+    @Test
+    public void testInitBlackKingPlacement() {
+        Player black = new Player(new User("1", "2", "3"), Color.BLACK);
+        b = new Board(white,black);
+        boolean test = b.getTile(3,8).isOccupied();
+        test = test & b.getTile(3,8).getPiece().getColor() == Color.BLACK;
+        test = test & b.getTile(3,8).getPiece() instanceof King;
+        assertTrue("Tile at 3,8 should contain the black king", test);
     }
 
 }

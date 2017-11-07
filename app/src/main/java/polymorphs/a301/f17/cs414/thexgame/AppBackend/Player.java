@@ -37,27 +37,27 @@ class Player {
 
     public void initializePieces(){
         if(color.equals(Color.WHITE)){
-            pieces.add(new King(3,8,true,Color.WHITE));
-            pieces.add(new Rook(2,7,true,Color.WHITE));
-            pieces.add(new Rook(3,7,true,Color.WHITE));
-            pieces.add(new Rook(4,7,true,Color.WHITE));
-            pieces.add(new Rook(2,8,true,Color.WHITE));
-            pieces.add(new Rook(4,8,true,Color.WHITE));
-            pieces.add(new Rook(2,9,true,Color.WHITE));
-            pieces.add(new Rook(3,9,true,Color.WHITE));
-            pieces.add(new Rook(4,9,true,Color.WHITE));
+            pieces.add(new King(8,3,true,Color.WHITE));
+            pieces.add(new Rook(7,2,true,Color.WHITE));
+            pieces.add(new Rook(8,2,true,Color.WHITE));
+            pieces.add(new Rook(9,2,true,Color.WHITE));
+            pieces.add(new Rook(7,3,true,Color.WHITE));
+            pieces.add(new Rook(9,3,true,Color.WHITE));
+            pieces.add(new Rook(7,4,true,Color.WHITE));
+            pieces.add(new Rook(8,4,true,Color.WHITE));
+            pieces.add(new Rook(9,4,true,Color.WHITE));
         }
         //else BLACK
         else{
-            pieces.add(new King(8,3,true,Color.BLACK));
-            pieces.add(new Rook(7,2,true,Color.BLACK));
-            pieces.add(new Rook(8,2,true,Color.BLACK));
-            pieces.add(new Rook(9,2,true,Color.BLACK));
-            pieces.add(new Rook(7,3,true,Color.BLACK));
-            pieces.add(new Rook(9,3,true,Color.BLACK));
-            pieces.add(new Rook(7,4,true,Color.BLACK));
-            pieces.add(new Rook(8,4,true,Color.BLACK));
-            pieces.add(new Rook(9,4,true,Color.BLACK));
+            pieces.add(new King(3,8,true,Color.BLACK));
+            pieces.add(new Rook(2,7,true,Color.BLACK));
+            pieces.add(new Rook(3,7,true,Color.BLACK));
+            pieces.add(new Rook(4,7,true,Color.BLACK));
+            pieces.add(new Rook(2,8,true,Color.BLACK));
+            pieces.add(new Rook(4,8,true,Color.BLACK));
+            pieces.add(new Rook(2,9,true,Color.BLACK));
+            pieces.add(new Rook(3,9,true,Color.BLACK));
+            pieces.add(new Rook(4,9,true,Color.BLACK));
         }
     }
 

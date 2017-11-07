@@ -56,7 +56,7 @@ public class TestKing {
         Board board = new Board();
         King king = new King(3,8,true,Color.WHITE);
         ArrayList<Tile> temp = king.getMovePath(board,4,8);
-        assertEquals(1,temp.size());
+        assertEquals(2,temp.size());
     }
 
     @Test
@@ -64,7 +64,7 @@ public class TestKing {
         Board board = new Board();
         King king = new King(3,8,true,Color.WHITE);
         ArrayList<Tile> temp = king.getMovePath(board,1,9);
-        assertEquals(1,temp.size());
+        assertEquals(2,temp.size());
     }
 
     @Test

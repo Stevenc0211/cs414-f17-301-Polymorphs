@@ -9,6 +9,9 @@ import java.util.ArrayList;
 class Board {
     private Tile[][] boardTiles;
 
+    /**
+     * Creates an empty Chad board
+     */
     public Board(){
         super();
         boardTiles = new Tile[12][12];
@@ -20,6 +23,48 @@ class Board {
         }
         initializeCastleWall();
         initializeInsideCastle();
+    }
+
+    /**
+     * Creates and empty Chad board then adds all the piece from both player1 and player2 to the board.
+     * @param player1 - the first player with pieces to add
+     * @param player2 - the second player with pieces to add
+     */
+    public Board(Player player1, Player player2) throws IllegalArgumentException {
+        this();
+        addPlayerPieces(player1);
+        addPlayerPieces(player2);
+    }
+
+    /**
+     * Adds all of the available pieces the player owns to the board.
+     * @param player - the player with pieces to add
+     * @throws IllegalArgumentException - if any of the pieces from the player would be added to an occupied tile or tile outside the board bounds
+     */
+    public void addPlayerPieces(Player player) throws IllegalArgumentException {
+        for (Piece piece : player.getPieces()) {
+            if (!piece.isAvailable()) continue;
+            addPiece(piece);
+        }
+    }
+
+    /**
+     * Adds the passed piece to the board and the coordinates specified by the piece
+     * @param piece - the piece to add
+     * @throws IllegalArgumentException - if the piece would be added to an occupied tile
+     */
+    private void addPiece(Piece piece) throws IllegalArgumentException {
+        try {
+            if (boardTiles[piece.getRow()][piece.getCol()].isOccupied()) {
+                throw new IllegalArgumentException("ERROR: piece would be added to an occupied tile");
+            }
+        } catch (IndexOutOfBoundsException e) {
+            throw new IllegalArgumentException("ERROR: piece specified a tile that was out of bounds");
+        } catch (NullPointerException e) {
+            if (piece == null) throw new IllegalArgumentException("ERROR: passed piece was null");
+            else throw new IllegalArgumentException("ERROR: board has null tiles");
+        }
+        boardTiles[piece.getRow()][piece.getCol()].occupyTile(piece);
     }
     //todo @Andy, do we still need to initialize the castle wall from within Board? -Steven
 
@@ -176,13 +221,12 @@ class Board {
      * @return true if the king is in check, false if otherwise
      */
     private boolean kingInCheck(King king) {
-        if (checkEngine(king,1,0)) return true; // check for threat below king (col +)
-        if (checkEngine(king,-1,0)) return true; // check for threat above king (col -)
-        if (checkEngine(king,0,1)) return true; // check for threat right of king (row +)
-        if (checkEngine(king,0,-1)) return true; // check for threat left of king (row -)
+        if (checkEngine(king,1,0)) return true; // check for threat below king (row +)
+        if (checkEngine(king,-1,0)) return true; // check for threat above king (row -)
+        if (checkEngine(king,0,1)) return true; // check for threat right of king (col +)
+        if (checkEngine(king,0,-1)) return true; // check for threat left of king (col -)
         if (checkEngine(king,1,1)) return true; // check for threat down right diagonal (col +, row +)
         if (checkEngine(king,-1,-1)) return true; // check for threat up left diagonal (col -, row -)
-        if (checkEngine(king,1,1)) return true; // check for threat down right diagonal (col +, row +)
         if (checkEngine(king,1,-1)) return true; // check for threat up right diagonal (col +, row -)
         if (checkEngine(king,-1,1)) return true; // check for threat down left diagonal (col -, row +)
         return false;
@@ -208,6 +252,7 @@ class Board {
                 break;
             } else {
                 if (currentTile.getPiece() instanceof King) break; // kings can't check each other
+                if (colInc != 0 && rowInc != 0 && currentTile.getPiece() instanceof Rook) continue; // rooks can't check diagonaly
                 return true;
             }
         }
