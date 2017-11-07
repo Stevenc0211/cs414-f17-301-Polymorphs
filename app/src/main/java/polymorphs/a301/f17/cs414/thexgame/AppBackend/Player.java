@@ -10,7 +10,6 @@ class Player {
     private User user; // saving the user instead to match between UI and backend
     private Color color;
     private ArrayList<Piece> pieces = new ArrayList<Piece>();
-    public String timestamp = "";
 
     public Player(User user,Color color){
         this.user = user;
@@ -24,15 +23,6 @@ class Player {
 
     public Color getColor(){
         return color;
-    }
-
-    public void setColor(Enum color){
-        this.color = color;
-    }
-
-    public String getTimestamp(){
-        //Use java.sql.Timestamp
-        return timestamp;
     }
 
     public boolean equals(Object o) {
@@ -96,5 +86,15 @@ class Player {
         Queen newQueen = new Queen(rook.getRow(), rook.getCol(), rook.isAvailable(), rook.getColor());
         pieces.set(idx, newQueen);
         return newQueen;
+    }
+
+    public String toString() {
+        String temp = "";
+        for (int i = 0; i < pieces.size() - 1; i++) {
+            temp += pieces.get(i).toString();
+            temp += ", ";
+        }
+        temp += pieces.get(pieces.size() - 1).toString();
+        return temp;
     }
 }

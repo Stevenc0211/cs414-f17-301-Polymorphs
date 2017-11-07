@@ -42,7 +42,7 @@ public class TestPlayer {
     public void testToString(){
         User u = new User("a","b","c");
         Player p = new Player(u, Color.WHITE);
-        assertEquals("3, 8, true, WHITE, 2, 7, true, WHITE, 3, 7, true, WHITE, 4, 7, true, WHITE, 2, 8, true, WHITE, 4, 8, true, WHITE, 2, 9, true, WHITE, 3, 9, true, WHITE, 4, 9, true, WHITE", p.toString());
+        assertEquals("8, 3, true, WHITE, 7, 2, true, WHITE, 8, 2, true, WHITE, 9, 2, true, WHITE, 7, 3, true, WHITE, 9, 3, true, WHITE, 7, 4, true, WHITE, 8, 4, true, WHITE, 9, 4, true, WHITE", p.toString());
     }
 
     @Test

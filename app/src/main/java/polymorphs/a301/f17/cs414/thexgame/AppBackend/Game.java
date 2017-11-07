@@ -37,14 +37,6 @@ class Game {
         return user2;
     }
 
-    public Player getP1(){
-        return p1;
-    }
-
-    public Player getP2(){
-        return p2;
-    }
-
     public Board getBoard(){
         return board;
     }
@@ -61,15 +53,6 @@ class Game {
      */
     public int makeMove(User user, int fromRow, int fromCol, int toRow,int toCol)
     {
-        Player activePlayer;
-        if (user.equals(user1)) {
-            activePlayer = p1;
-        } else if (user.equals(user2)) {
-            activePlayer = p2;
-        } else {
-            return -1;
-        }
-
         Player activePlayer = getPlayerForUser(user);
         if (activePlayer == null) return -1;
 
@@ -116,9 +99,6 @@ class Game {
                 }
             }
         }
-        else {
-            return false; // player two is not in check.
-        }
     }
 
     /**
@@ -138,5 +118,8 @@ class Game {
         return activePlayer;
     }
 
+    public String toString(){
+        return p1.toString() + ", " + p2.toString();
+    }
 
 }
