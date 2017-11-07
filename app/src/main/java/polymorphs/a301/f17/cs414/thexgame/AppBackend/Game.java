@@ -1,5 +1,8 @@
 package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /**
  * Created by athai on 10/18/17, edited, modified, and implemented by Roger.
  *
@@ -34,6 +37,18 @@ class Game {
         return user2;
     }
 
+    public Player getP1(){
+        return p1;
+    }
+
+    public Player getP2(){
+        return p2;
+    }
+
+    public Board getBoard(){
+        return board;
+    }
+
     /**
      * This is the method the driver will use to validate moves the player is attempting. This method will
      * decide if the move is valid and if so will update the game state and return 1.
@@ -46,6 +61,14 @@ class Game {
      */
     public int makeMove(User user, int fromRow, int fromCol, int toRow,int toCol)
     {
+        Player activePlayer;
+        if (user.equals(user1)) {
+            activePlayer = p1;
+        } else if (user.equals(user2)) {
+            activePlayer = p2;
+        } else {
+            return -1;
+        }
 
         Player activePlayer = getPlayerForUser(user);
         if (activePlayer == null) return -1;
@@ -93,6 +116,9 @@ class Game {
                 }
             }
         }
+        else {
+            return false; // player two is not in check.
+        }
     }
 
     /**
@@ -111,5 +137,6 @@ class Game {
         }
         return activePlayer;
     }
+
 
 }

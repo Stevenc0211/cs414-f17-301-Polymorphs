@@ -6,3 +6,4 @@ need be.
 
 Apk upload dates:
 1.) 10/27/2017
+2.) 11/05/2017

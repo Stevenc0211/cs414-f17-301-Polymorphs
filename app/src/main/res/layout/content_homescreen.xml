@@ -20,7 +20,7 @@
         android:layout_centerInParent="true"
         >
 
-        <polymorphs.a301.f17.cs414.thexgame.Chessboard
+        <polymorphs.a301.f17.cs414.thexgame.ui.BoardUI
             android:id="@+id/chessboard"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

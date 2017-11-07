@@ -134,4 +134,8 @@ abstract class Piece {
         return result;
     }
 
+    public String toString(){
+        return myRow + ", " + myCol + ", " + available + ", " + color;
+    }
+
 }

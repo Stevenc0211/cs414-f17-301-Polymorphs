@@ -239,4 +239,9 @@ public class TestPiece {
             row--;
         }
     }
+
+    @Test
+    public void testToString(){
+
+    }
 }

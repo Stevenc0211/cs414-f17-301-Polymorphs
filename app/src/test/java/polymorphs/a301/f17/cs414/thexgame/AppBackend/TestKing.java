@@ -84,6 +84,12 @@ public class TestKing {
     }
 
     @Test
+    public void testToString(){
+        King king = new King(3,8,true,Color.BLACK);
+        assertEquals("3, 8, true, BLACK",king.toString());
+    }
+
+    @Test
     public void testGetAllMovesValid(){
         Board board = new Board();
         King king = new King(3,8,true,Color.WHITE);

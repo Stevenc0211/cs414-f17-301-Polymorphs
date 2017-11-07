@@ -6,12 +6,6 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
-
-import polymorphs.a301.f17.cs414.thexgame.Invitation;
-
 import static android.content.ContentValues.TAG;
 
 /**

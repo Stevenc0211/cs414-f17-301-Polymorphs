@@ -3,7 +3,10 @@ package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Color;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Game;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Player;
 /**
  * Created by athai on 10/23/17. Updated and modified by Roger.
  */
@@ -68,6 +71,14 @@ public class TestGame {
         setupNewGame();
         game.makeMove(white,7,2,2,2);
         assertEquals("Move should be valid, black 4,7 -> 11,7",1 ,game.makeMove(black,4,7,11,7));
+    }
+
+    @Test
+    public void testToString(){
+        User user1 = new User("a","email","nickname");
+        User user2 = new User("b","test","ddd");
+        Game game = new Game(user1,user2);
+        assertEquals("3, 8, true, WHITE, 2, 7, true, WHITE, 3, 7, true, WHITE, 4, 7, true, WHITE, 2, 8, true, WHITE, 4, 8, true, WHITE, 2, 9, true, WHITE, 3, 9, true, WHITE, 4, 9, true, WHITE, 8, 3, true, BLACK, 7, 2, true, BLACK, 8, 2, true, BLACK, 9, 2, true, BLACK, 7, 3, true, BLACK, 9, 3, true, BLACK, 7, 4, true, BLACK, 8, 4, true, BLACK, 9, 4, true, BLACK",game.toString());
     }
 
     @Test

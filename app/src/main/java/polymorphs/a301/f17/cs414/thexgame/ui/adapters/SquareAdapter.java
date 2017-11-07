@@ -1,8 +1,6 @@
 package polymorphs.a301.f17.cs414.thexgame.ui.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,7 +86,7 @@ public class SquareAdapter extends BaseAdapter {
 
             ViewHolder viewHolder = new ViewHolder();
             viewHolder.square = (ImageView) rowView.findViewById(R.id.squareBackground);
-            viewHolder.square.setImageResource(R.drawable.boardsquare); // set the image to be whatever position is called on getView.
+            viewHolder.square.setImageResource(R.drawable.goldsquare); // set the image to be whatever position is called on getView.
             viewHolder.piece = (ImageView) rowView.findViewById(R.id.chessPiece); // set the ImageView for the chess piece, however we do not have a chess piece yet.
 
             /*
@@ -96,7 +94,7 @@ public class SquareAdapter extends BaseAdapter {
                     || position == 19 || position == 23 || position == 31 || position == 35 || position == 43 || position == 47 ||
                     position == 56 || position == 57 || position == 58)
             {
-                viewHolder.square.setImageResource(R.drawable.castlesquare);
+                viewHolder.square.setImageResource(R.drawable.greensquare);
             }
             */
 
@@ -109,7 +107,7 @@ public class SquareAdapter extends BaseAdapter {
                 {
                     // TODO: We will likely want to add a custom listener that will let us see what we would like to do for this particular square so that users can select moves.
                     System.out.println("The item at position " + pos + " was clicked!");
-                    Toast.makeText(context, "Tile at position " + pos + " was clicked!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "TileUI at position " + pos + " was clicked!", Toast.LENGTH_SHORT).show();
                 }
             });
             rowView.setTag(viewHolder);

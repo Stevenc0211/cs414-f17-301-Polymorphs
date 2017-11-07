@@ -3,7 +3,7 @@ package polymorphs.a301.f17.cs414.thexgame.ui.listeners;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 
-import polymorphs.a301.f17.cs414.thexgame.Chessboard;
+import polymorphs.a301.f17.cs414.thexgame.ui.BoardUI;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.ui.activities.HomescreenActivity;
 
@@ -17,12 +17,12 @@ import polymorphs.a301.f17.cs414.thexgame.ui.activities.HomescreenActivity;
 public class GamePageChangeListener implements ViewPager.OnPageChangeListener {
 
     private HomescreenActivity homescreenActivity; // a copy of the homescreen layout.
-    private Chessboard game; // holds a copy of the game that the user is working on which is pretty important!!!
+    private BoardUI game; // holds a copy of the game that the user is working on which is pretty important!!!
 
     public GamePageChangeListener(HomescreenActivity homescreenActivity)
     {
         this.homescreenActivity = homescreenActivity;
-        game = (Chessboard) homescreenActivity.findViewById(R.id.chessboard); // grabs the chessboard that we are working with.
+        game = (BoardUI) homescreenActivity.findViewById(R.id.chessboard); // grabs the chessboard that we are working with.
     }
 
     // do not pay attention to this.
