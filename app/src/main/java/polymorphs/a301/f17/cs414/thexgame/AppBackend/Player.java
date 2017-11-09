@@ -2,19 +2,16 @@ package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 
 import java.util.ArrayList;
 import java.util.Date;
-import  android.text.TextUtils;
-
 /**
  * Created by athai on 10/18/17.
  */
 
 class Player {
     private User user; // saving the user instead to match between UI and backend
-    private Enum color;
+    private Color color;
     private ArrayList<Piece> pieces = new ArrayList<Piece>();
-    public String timestamp = "";
 
-    public Player(User user,Enum color){
+    public Player(User user,Color color){
         this.user = user;
         this.color = color;
         initializePieces();
@@ -24,17 +21,8 @@ class Player {
         return user.getNickname();
     }
 
-    public Enum getColor(){
+    public Color getColor(){
         return color;
-    }
-
-    public void setColor(Enum color){
-        this.color = color;
-    }
-
-    public String getTimestamp(){
-        //Use java.sql.Timestamp
-        return timestamp;
     }
 
     public boolean equals(Object o) {
@@ -49,27 +37,27 @@ class Player {
 
     public void initializePieces(){
         if(color.equals(Color.WHITE)){
-            pieces.add(new King(3,8,true,Color.WHITE));
-            pieces.add(new Rook(2,7,true,Color.WHITE));
-            pieces.add(new Rook(3,7,true,Color.WHITE));
-            pieces.add(new Rook(4,7,true,Color.WHITE));
-            pieces.add(new Rook(2,8,true,Color.WHITE));
-            pieces.add(new Rook(4,8,true,Color.WHITE));
-            pieces.add(new Rook(2,9,true,Color.WHITE));
-            pieces.add(new Rook(3,9,true,Color.WHITE));
-            pieces.add(new Rook(4,9,true,Color.WHITE));
+            pieces.add(new King(8,3,true,Color.WHITE));
+            pieces.add(new Rook(7,2,true,Color.WHITE));
+            pieces.add(new Rook(8,2,true,Color.WHITE));
+            pieces.add(new Rook(9,2,true,Color.WHITE));
+            pieces.add(new Rook(7,3,true,Color.WHITE));
+            pieces.add(new Rook(9,3,true,Color.WHITE));
+            pieces.add(new Rook(7,4,true,Color.WHITE));
+            pieces.add(new Rook(8,4,true,Color.WHITE));
+            pieces.add(new Rook(9,4,true,Color.WHITE));
         }
         //else BLACK
         else{
-            pieces.add(new King(8,3,true,Color.BLACK));
-            pieces.add(new Rook(7,2,true,Color.BLACK));
-            pieces.add(new Rook(8,2,true,Color.BLACK));
-            pieces.add(new Rook(9,2,true,Color.BLACK));
-            pieces.add(new Rook(7,3,true,Color.BLACK));
-            pieces.add(new Rook(9,3,true,Color.BLACK));
-            pieces.add(new Rook(7,4,true,Color.BLACK));
-            pieces.add(new Rook(8,4,true,Color.BLACK));
-            pieces.add(new Rook(9,4,true,Color.BLACK));
+            pieces.add(new King(3,8,true,Color.BLACK));
+            pieces.add(new Rook(2,7,true,Color.BLACK));
+            pieces.add(new Rook(3,7,true,Color.BLACK));
+            pieces.add(new Rook(4,7,true,Color.BLACK));
+            pieces.add(new Rook(2,8,true,Color.BLACK));
+            pieces.add(new Rook(4,8,true,Color.BLACK));
+            pieces.add(new Rook(2,9,true,Color.BLACK));
+            pieces.add(new Rook(3,9,true,Color.BLACK));
+            pieces.add(new Rook(4,9,true,Color.BLACK));
         }
     }
 
@@ -86,13 +74,27 @@ class Player {
         return null;
     }
 
-    public String toString(){
+    /**
+     * Takes in a Rook and returns a Queen with all piece parameters the same as the passed Rook.
+     * Also removes the old Rook from the players pieces and adds the new queen
+     * @param rook - the rook to premote
+     * @return  the new Queen if the passed rook existed in the players pieces, null if otherwise
+     */
+    public Queen promoteRook(Rook rook) {
+        int idx = pieces.indexOf(rook);
+        if (idx == -1) return null;
+        Queen newQueen = new Queen(rook.getRow(), rook.getCol(), rook.isAvailable(), rook.getColor());
+        pieces.set(idx, newQueen);
+        return newQueen;
+    }
+
+    public String toString() {
         String temp = "";
-        for(int i = 0; i < pieces.size()-1; i++){
+        for (int i = 0; i < pieces.size() - 1; i++) {
             temp += pieces.get(i).toString();
             temp += ", ";
         }
-        temp += pieces.get(pieces.size()-1).toString();
+        temp += pieces.get(pieces.size() - 1).toString();
         return temp;
     }
 }
