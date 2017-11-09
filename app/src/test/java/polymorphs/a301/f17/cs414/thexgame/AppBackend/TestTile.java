@@ -51,13 +51,20 @@ public class TestTile {
         assertEquals(queen2,tile.getPiece());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testOccupyTileSameColor(){
         Tile tile = new Tile(5,6);
         Queen queen1 = new Queen(4,4,true,Color.BLACK);
         Queen queen2 = new Queen(4,5,true,Color.BLACK);
         tile.occupyTile(queen1);
         tile.occupyTile(queen2);
-        assertEquals(queen1,tile.getPiece());
+    }
+
+    @Test
+    public void testPieceLocationUpdateOnOccupy() {
+        Tile tile = new Tile(5,6);
+        Queen queen = new Queen(4,4,true,Color.BLACK);
+        tile.occupyTile(queen);
+        assertTrue("ERROR: piece coordinates should update when occupying a tile", queen.getCol() == tile.getCol() && queen.getRow() == tile.getRow());
     }
 }

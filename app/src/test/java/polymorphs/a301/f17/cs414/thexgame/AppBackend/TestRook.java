@@ -25,33 +25,23 @@ public class TestRook {
     @Test
     public void testIsValidMoveFalse(){
         Rook r = new Rook(4,5,true,Color.WHITE);
-        assertFalse("Should be false",r.isValidMove(4,96));
+        assertFalse("Rook should not be able to move diagonally",r.isValidMove(5,6));
     }
 
     @Test
-    public void testIsValidMoveTrue(){
+    public void testIsValidMoveTrueVertically(){
         Rook r = new Rook(4,5,true,Color.WHITE);
-        assertTrue("Should be true",r.isValidMove(11,5));
+        assertTrue("Rook should be able to move vertically",r.isValidMove(11,5));
     }
 
     @Test
-    public void testGetMovePathColumn(){
-        Board b = new Board();
+    public void testIsValidMoveTrueHorizontally(){
         Rook r = new Rook(4,5,true,Color.WHITE);
-        ArrayList<Tile> temp = r.getMovePath(b,4,10);
-        assertEquals(5,temp.size());
+        assertTrue("Rook should be able to move horizontally",r.isValidMove(4,7));
     }
 
     @Test
-    public void testGetMovePathRow(){
-        Board b = new Board();
-        Rook r = new Rook(4,5,true,Color.WHITE);
-        ArrayList<Tile> temp = r.getMovePath(b,1,5);
-        assertEquals(3,temp.size());
-    }
-
-    @Test
-    public void testGetMovePathNull(){
+    public void testGetMovePathInvalid(){
         Board b = new Board();
         Rook r = new Rook(4,5,true,Color.WHITE);
         ArrayList<Tile> temp = r.getMovePath(b,7,0);
