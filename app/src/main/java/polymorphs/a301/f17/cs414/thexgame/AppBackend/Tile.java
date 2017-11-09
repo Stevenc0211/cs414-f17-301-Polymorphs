@@ -21,6 +21,15 @@ class Tile {
         return piece;
     }
 
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
     public boolean isOccupied(){
         if(piece == null){
             return false;

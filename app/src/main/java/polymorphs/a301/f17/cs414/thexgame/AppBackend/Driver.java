@@ -6,7 +6,8 @@ import java.util.HashMap;
 import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListObserver;
 
 /**
- * Created by athai on 10/18/17.
+ * Created by athai on 10/18/17. Edited and modified by Roger and Miles
+ * Controls all of the features needed for the backend to work with the UI elements.
  */
 
 public final class Driver implements UsernameListObserver { // will implement GameListObserver
@@ -84,6 +85,122 @@ public final class Driver implements UsernameListObserver { // will implement Ga
         }
         return result;
     }
+
+    /**
+        Grabs all of the available moves for a rook sent in by the getAvailableMoves method.
+        @param rook - the rook that is sent in.
+        @param selectedTile - the tile that was selected by the user on the UI that contains the rook.
+     */
+    private ArrayList<Tile> getRookMoves(Rook rook, Tile selectedTile)
+    {
+
+        ArrayList<Tile> availableMoves = new ArrayList<>();
+
+        // go through every row and col and check if it is a valid move, if so, add to our list of available moves.
+        for(int row = 0; row < 12; row++)
+        {
+            for(int col = 0; col < 12; col++)
+            {
+                if(rook.isValidMove(row, col) == true)
+                {
+                    Tile tile = games.get(currentGameIndex).getBoard().getTile(row, col); // get the tile from the board, this is a valid tile.
+                    availableMoves.add(tile); // add the tile to the list of valid tiles.
+                }
+            }
+        }
+
+        return availableMoves;
+    }
+
+    /**
+     Grabs all of the available moves for a rook sent in by the getAvailableMoves method.
+     @param king - the king that is sent in.
+     @param selectedTile - the tile that was selected by the user on the UI that contains the king.
+     */
+    private ArrayList<Tile> getKingMoves(King king, Tile selectedTile)
+    {
+
+        ArrayList<Tile> availableMoves = new ArrayList<>();
+
+        // go through every row and col and check if it is a valid move, if so, add to our list of available moves.
+        for(int row = 0; row < 12; row++)
+        {
+            for(int col = 0; col < 12; col++)
+            {
+                if(king.isValidMove(row, col) == true)
+                {
+                    Tile tile = games.get(currentGameIndex).getBoard().getTile(row, col); // get the tile from the board, this is a valid tile.
+                    availableMoves.add(tile); // add the tile to the list of valid tiles.
+                }
+            }
+        }
+
+        return availableMoves;
+    }
+
+    /**
+     Grabs all of the available moves for a rook sent in by the getAvailableMoves method.
+     @param queen - the rook that is sent in.
+     @param selectedTile - the tile that was selected by the user on the UI that contains the rook.
+     */
+    private ArrayList<Tile> getQueenMoves(Queen queen, Tile selectedTile)
+    {
+
+        ArrayList<Tile> availableMoves = new ArrayList<>();
+
+        // go through every row and col and check if it is a valid move, if so, add to our list of available moves.
+        for(int row = 0; row < 12; row++)
+        {
+            for(int col = 0; col < 12; col++)
+            {
+                if(queen.isValidMove(row, col) == true)
+                {
+                    Tile tile = games.get(currentGameIndex).getBoard().getTile(row, col); // get the tile from the board, this is a valid tile.
+                    availableMoves.add(tile); // add the tile to the list of valid tiles.
+                }
+            }
+        }
+
+        return availableMoves;
+    }
+
+    /*
+        This method is used to grab all of the available moves for a piece that the user has clicked.
+    */
+    public ArrayList<Tile> getAvailableMoves(User user, int row, int col)
+    {
+        ArrayList<Tile> availableMoves = new ArrayList<>(); // holds the list of moves that the player is able to make.
+        Tile selectedTile = games.get(currentGameIndex).getBoard().getTile(row, col); // get the tile that was selected by the player.
+
+        if(selectedTile.isOccupied() == true) // tile has a piece.
+        {
+            Piece piece = selectedTile.getPiece(); // grab the piece that this tile has and see what piece it is.
+            if(piece.isAvailable())
+            {
+                // figure out what piece this actually is and find the moves for it.
+                if(piece instanceof Rook)
+                {
+                    Rook rook = (Rook) piece; // piece is a rook
+                    availableMoves = getRookMoves()
+                }
+                else if(piece instanceof Queen)
+                {
+                    Queen queen = (Queen) piece; // piece is a queen.
+                    // grab moves for this piece, then return the arraylist.
+                }
+                else if(piece instanceof King)
+                {
+                    King king = (King) piece; // piece is a king.
+                    // grab moves for this piece, then return the arraylist.
+                }
+            }
+        }
+        else {
+            System.out.println("The tile does not have a piece on it!");
+            return null; // return a null set in which the UI will not highlight anything.
+        }
+    }
+
 
     /**
      * This method should be used if a user wishes to forfeit a game in progress. That user will be marked as the looser
