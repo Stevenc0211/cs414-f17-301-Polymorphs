@@ -366,7 +366,6 @@ class Board {
         ArrayList<int[]> result = new ArrayList<>();
         boolean firstTileOfPath;
         if (boardTiles[row][col].isOccupied()) {
-            Color friendlyColor = boardTiles[row][col].getPiece().getColor();
             ArrayList<ArrayList<Tile>> allMovePaths = boardTiles[row][col].getPiece().getAllMovePaths(this);
             for(ArrayList<Tile> movePath : allMovePaths) {
                 if (validateMovePath(movePath, playerMoving)) {
@@ -384,21 +383,4 @@ class Board {
         return result;
     }
 
-    /**
-     * Helper for getAvailableMoves, removes any movePaths that would be invalid for a king.
-     * If the piece at row col is not a king the passed move paths will be returned unmodified
-     * @param movePaths
-     * @return
-     */
-    private ArrayList<ArrayList<Tile>> removeInvalidKingPaths(ArrayList<ArrayList<Tile>> movePaths, int row, int col) {
-        if (!boardTiles[row][col].isOccupied() || !(boardTiles[row][col].getPiece() instanceof King)) return movePaths;
-        ArrayList<ArrayList<Tile>> result = new ArrayList<>();
-        for (ArrayList<Tile> movePath : movePaths) {
-            Tile firstTile = movePath.get(0);
-            Tile lastTile = movePath.get(movePath.size()-1);
-            if (!isValidKingMove(firstTile.getRow(), firstTile.getCol(), lastTile.getRow(), lastTile.getCol())) continue;
-            result.add(movePath);
-        }
-        return result;
-    }
 }
