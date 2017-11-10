@@ -54,9 +54,7 @@ public class InvitationsListAdapter extends ArrayAdapter {
             public void onClick(View view) {
 
                 DBIOCore.removeInvite((Invitation)getItem(position));
-                //primaryActivity.openCurrentGamesFragment();
-                // TODO: after clicking accept, a game will be added to the ViewPager in HomescreenActivity.
-                // TODO: @Miles if you can't figure it out it doesn't matter at this point, just focus on getting those invitations working right again.
+                primaryActivity.createNewGame((Invitation)getItem(position));
             }
         });
 

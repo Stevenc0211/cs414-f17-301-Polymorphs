@@ -7,18 +7,18 @@ import java.util.Date;
  */
 
 class Player {
-    private User user; // saving the user instead to match between UI and backend
+    private String userNickname;
     private Color color;
     private ArrayList<Piece> pieces = new ArrayList<Piece>();
 
-    public Player(User user,Color color){
-        this.user = user;
+    public Player(String nickname,Color color){
+        userNickname = nickname;
         this.color = color;
         initializePieces();
     }
 
     public String getNickname(){
-        return user.getNickname();
+        return userNickname;
     }
 
     public Color getColor(){
@@ -28,7 +28,7 @@ class Player {
     public boolean equals(Object o) {
         if (!(o instanceof Player)) return false;
         Player otherPlayer = (Player) o;
-        return (user.equals(otherPlayer.user) && color == otherPlayer.color);
+        return (userNickname.equals(otherPlayer.userNickname) && color == otherPlayer.color);
     }
 
     public ArrayList<Piece> getPieces(){

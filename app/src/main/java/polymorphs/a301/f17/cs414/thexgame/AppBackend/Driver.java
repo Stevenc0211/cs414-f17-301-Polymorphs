@@ -3,6 +3,7 @@ package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListObserver;
 
 /**
@@ -25,20 +26,32 @@ public final class Driver implements UsernameListObserver { // will implement Ga
 
     /**
      * Builds a new game and adds it to the set of current games.
-     * @param player1 - the inviting user for this game
-     * @param player2 - the invited user for this game
+     * @param userWhite - the inviting user for this game
+     * @param userBlack - the invited user for this game
      * @throws IllegalArgumentException - if either passed user are not registered with the system
      */
-    public void createGame(User player1,User player2) throws IllegalArgumentException{
+    public void createGame(User userWhite,User userBlack) throws IllegalArgumentException{
+        createGame(userWhite.getNickname(), userBlack.getNickname());
+    }
+
+    /**
+     * Builds a new game and adds it to the set of current games.
+     * @param nicknameWhite - the inviting users nickname for this game
+     * @param nicknameBlack - the invited users nickname for this game
+     * @throws IllegalArgumentException - if either passed user are not registered with the system
+     */
+    public void createGame(String nicknameWhite,String nicknameBlack) throws IllegalArgumentException{
         //must check if both players are registered
-        if(isRegistered(player1) && isRegistered(player2)) {
-            Game game = new Game(player1, player2);
+        if(isRegistered(nicknameWhite) && isRegistered(nicknameBlack)) {
+            Game game = new Game(nicknameWhite, nicknameBlack);
             games.add(game);
         }
         else{
             throw new IllegalArgumentException("ERROR: both passed users must be registered");
         }
     }
+
+
 
     /**
      * Sets the active game of the set of active games.
@@ -54,11 +67,11 @@ public final class Driver implements UsernameListObserver { // will implement Ga
 
     /**
      * Checks if the passed user has it's nickname in the system, i.e. has registered to the system
-     * @param user - the user to check
+     * @param userNickname - the nickname of the user to check
      * @return true if the user is registered to the system, false if not
      */
-    private boolean isRegistered(User user){
-        if (usernames.containsValue(user.getNickname())) {
+    private boolean isRegistered(String userNickname){
+        if (usernames.containsValue(userNickname)) {
             return true;
         } else {
             return false;
@@ -92,7 +105,7 @@ public final class Driver implements UsernameListObserver { // will implement Ga
      * @return - true if the user is part of the current game and the quit operation was successful, false if otherwise
      */
     public boolean quitGame(User user) {
-        if (games.get(currentGameIndex).getUser1().equals(user) || games.get(currentGameIndex).getUser2().equals(user)) {
+        if (games.get(currentGameIndex).getNicknameWhite().equals(user.getNickname()) || games.get(currentGameIndex).getNicknameBlack().equals(user.getNickname())) {
             // preform quit operation, will need to wait until DB is caught up
             return true;
         }

@@ -56,7 +56,7 @@ public class NotificationsFragment extends Fragment implements InviteListObserve
     // set up the invitations list view.
     protected void setupInvitationsListView(View notificationsView)
     {
-        invitationsList = (ListView) notificationsView.findViewById(R.id.invitationsListView); // grab the inviations list.
+        invitationsList = notificationsView.findViewById(R.id.invitationsListView); // grab the inviations list.
         invitationsListAdapter = new InvitationsListAdapter(notificationsView.getContext(), R.layout.invitation_item,new ArrayList<>(invitationsData.values()) , (HomescreenActivity) getActivity()); // create the invitations adapter that we need to use.
         invitationsList.setAdapter(invitationsListAdapter);
         invitationsListAdapter.notifyDataSetChanged();

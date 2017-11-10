@@ -5,17 +5,27 @@ package polymorphs.a301.f17.cs414.thexgame.AppBackend;
  */
 
 public class GameSnapshot {
-    private Game game;
+    private String gameString;
+    private String nicknameWhite;
+    private String nicknameBlack;
 
     public GameSnapshot(Game game){
-        this.game = game;
+        gameString = game.toString();
+        nicknameWhite = game.getNicknameWhite();
+        nicknameBlack = game.getNicknameBlack();
     }
 
-    public String toString(){
-        return game.toString();
+    public GameSnapshot() {} // for Firebase loads
+
+    public String getGameString() {
+        return gameString;
     }
 
-    public Game getGame(){
-        return game;
+    public String getNicknameBlack() {
+        return nicknameBlack;
+    }
+
+    public String getNicknameWhite() {
+        return  nicknameWhite;
     }
 }

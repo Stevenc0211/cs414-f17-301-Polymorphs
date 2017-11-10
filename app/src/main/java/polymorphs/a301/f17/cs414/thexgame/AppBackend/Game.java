@@ -1,8 +1,5 @@
 package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-
 /**
  * Created by athai on 10/18/17, edited, modified, and implemented by Roger.
  *
@@ -11,30 +8,31 @@ import java.util.ArrayList;
  */
 
 class Game {
-    private User user1;
-    private User user2;
-    private Player p1;
-    private Player p2;
+    private String nicknameW;
+    private String nicknameB;
+    private Player white;
+    private Player black;
     private Player currentPlayer;
     private Board board;
     private Player winner;
     private Player loser;
 
-    public Game(User user1,User user2){
-        this.user1 = user1;
-        this.user2 = user2;
-        p1 = new Player(user1,Color.WHITE);
-        currentPlayer = p1;
-        p2 = new Player(user2,Color.BLACK);
-        this.board = new Board(p1,p2);
+
+    public Game(String nickname1, String nickname2){
+        nicknameW = nickname1;
+        nicknameB = nickname2;
+        white = new Player(nicknameW,Color.WHITE);
+        currentPlayer = white;
+        black = new Player(nicknameB,Color.BLACK);
+        this.board = new Board(white, black);
     }
 
-    public User getUser1(){
-        return user1;
+    public String getNicknameWhite(){
+        return nicknameW;
     }
 
-    public User getUser2(){
-        return user2;
+    public String getNicknameBlack(){
+        return nicknameB;
     }
 
     public Board getBoard(){
@@ -62,10 +60,10 @@ class Game {
         {
 
             movePiece(fromRow, fromCol, toRow, toCol);
-            if (currentPlayer == p1) {
-                currentPlayer = p2;
+            if (currentPlayer == white) {
+                currentPlayer = black;
             } else {
-                currentPlayer = p1;
+                currentPlayer = white;
             }
             if (board.inCheckmate(currentPlayer)) {
                 return 0;
@@ -108,10 +106,10 @@ class Game {
      */
     private Player getPlayerForUser(User user) {
         Player activePlayer;
-        if (user.equals(user1)) {
-            activePlayer = p1;
-        } else if (user.equals(user2)) {
-            activePlayer = p2;
+        if (user.getNickname().equals(nicknameW)) {
+            activePlayer = white;
+        } else if (user.getNickname().equals(nicknameB)) {
+            activePlayer = black;
         } else {
             return null;
         }
@@ -119,7 +117,7 @@ class Game {
     }
 
     public String toString(){
-        return p1.toString() + ", " + p2.toString();
+        return white.toString() + ", " + black.toString();
     }
 
 }

@@ -24,7 +24,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
+import polymorphs.a301.f17.cs414.thexgame.Invitation;
 import polymorphs.a301.f17.cs414.thexgame.ui.BoardUI;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
@@ -57,6 +59,7 @@ public class HomescreenActivity extends AppCompatActivity
     private SubmitButtonClickListener submitClickListener;
     private SettingsFragment settingsUI = new SettingsFragment(); // holds a copy of our settingsUI.
     private final int SET_USERNAME = 9001; // details what we are doing for the username.
+    private Driver gameDriver;
 
 
     // These will be populated by the shared preferences.
@@ -65,13 +68,15 @@ public class HomescreenActivity extends AppCompatActivity
     private String username; // username of the user
 
     HashMap<String, String> usernames; // holds the list of people to invite keyed by the previous usernames database key
-    polymorphs.a301.f17.cs414.thexgame.AppBackend.User currentUser;
+    User currentUser;
 
 
     // adds a game to the game pager and also shows the person we are playing the game with.
-    public void addGameToPager(BoardUI boardToAdd, String opponent)
+    public void createNewGame(Invitation invite)
     {
-        games.add(boardToAdd);
+        gameDriver.createGame(invite.getInvitingUser(), invite.getInvitedUser());
+        BoardUI newGameUI = (BoardUI) findViewById(R.id.chessboard);
+        gamePager.addView(newGameUI);
         gamePagerAdapter.notifyDataSetChanged();
     }
 
@@ -153,6 +158,9 @@ public class HomescreenActivity extends AppCompatActivity
         {
             displayHomescreen(); // setup the familiar homescreen layout that we are used to seeing.
         }
+
+        gameDriver = new Driver();
+        // TODO: will probably need to attach the driver to the gamesnapshot list.
 
         DBIOCore.registerToUsernameList(this);
         DBIOCore.registerToCurrentUser(this);
