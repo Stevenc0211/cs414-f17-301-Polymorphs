@@ -224,8 +224,10 @@ class Board {
      * Given a king piece decides if the king is in check.
      * @param king - the king to check
      * @return true if the king is in check, false if otherwise
+     *
+     * made public to allow for UI to highlight the king that is in check, remove if there's a better way. ~Roger
      */
-    private boolean kingInCheck(King king) {
+    public boolean kingInCheck(King king) {
         if (checkEngine(king,1,0)) return true; // check for threat below king (row +)
         if (checkEngine(king,-1,0)) return true; // check for threat above king (row -)
         if (checkEngine(king,0,1)) return true; // check for threat right of king (col +)

@@ -76,27 +76,10 @@ class Game {
                 return 0;
             }
 
-
             if(promotionOccurred) // a promotion has occured.
             {
                 return 2;
             }
-
-//            Piece piece = board.getTile(toRow, toCol).getPiece();
-//            if(piece instanceof Rook)
-//            {
-//
-//                /*
-//                // tells the board that the piece has went inside the castle and that we should promote the piece.
-//                if(board.getTile(toRow, toCol).getTileStatus() == Status.INSIDE_WHITE ||
-//                        board.getTile(toRow, toCol).getTileStatus() == Status.INSIDE_BLACK)
-//                {
-//                    //movePiece(fromRow, fromCol, toRow, toCol); // move piece telling the game that a rook has been promoted to queen.
-//                    return 2;
-//                }
-//                */
-//            }
-
 
             return 1;
         } else {

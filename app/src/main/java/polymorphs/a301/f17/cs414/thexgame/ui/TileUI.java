@@ -24,11 +24,12 @@ public final class TileUI  {
 
     private final Paint squareColor; // color of the square itself.
     private final Paint squareBorder; // color of the boarder of each square (black)
-    private final Paint highlightColor; // color of the highlight that we are working with.
+    private final Paint highlightColor; // color of the highlight that we are working with (blue)
+    private final Paint kingHighlightColor; // holds the color of the king hightlight (Red)
     private Rect tileRect; // holds the rectangle of the tile itself where pieces move to.
     private Rect highlightRect;  // holds the rectangle that will highlight the board.
+    private Rect kingHighlightRect; // holds the rectangle that the king is on.
 
-    // TODO: @miles, @Andy should we allow the Piece class from backend be in here? It sure will make things easier for me to store certain pieces so I can see if this board has a piece or not.
     private boolean hasRook = false;
     private boolean hasKing = false;
     private boolean hasQueen = false;
@@ -131,6 +132,7 @@ public final class TileUI  {
         this.squareColor = new Paint();
         this.squareBorder = new Paint();
         this.highlightColor = new Paint();
+        this.kingHighlightColor = new Paint();
 
         squareColor.setStyle(Paint.Style.FILL);
         squareColor.setColor(ContextCompat.getColor(context, R.color.Green)); // set the color to be green.
@@ -141,9 +143,10 @@ public final class TileUI  {
 
 
         highlightColor.setStyle(Paint.Style.FILL);
-        highlightColor.setColor(Color.BLUE);
+        highlightColor.setColor(Color.BLUE); // color to tell the player what moves that they are able to work with!
 
-
+        kingHighlightColor.setStyle(Paint.Style.FILL);
+        kingHighlightColor.setColor(Color.RED); // color to tell the player who is currently in check.
 
         setOpponentBounds(); // set opponent bounds
         setPlayerBounds(); // set player bounds.
@@ -193,14 +196,19 @@ public final class TileUI  {
     }
 
     // draws our board including tiles and pieces.
-    public void draw(Canvas canvas, String pieceName, Context c) // TODO: decide if I need to send in the piece her when I call tile within chessboard so that we can be able to get this working properly.
+    public void draw(Canvas canvas, String pieceName, Context c)
     {
-        if(highlightRect != null) // draw the hightlighted squares instead of the normal board sqaures.
+        if(highlightRect != null) // draw the highlighted squares instead of the normal board sqaures.
         {
             canvas.drawRect(highlightRect, highlightColor);
             canvas.drawRect(highlightRect, squareBorder);
         }
-        else
+        else if(kingHighlightRect != null) // draw the color for the king if it is in check.
+        {
+            canvas.drawRect(kingHighlightRect, kingHighlightColor);
+            canvas.drawRect(kingHighlightRect, squareBorder);
+        }
+        else // color the board in the regular color style.
         {
             canvas.drawRect(tileRect, squareColor); // canvas requires these two elements here.
             canvas.drawRect(tileRect, squareBorder); // set the boarder of the squares themselves
@@ -208,9 +216,6 @@ public final class TileUI  {
 
 
         Bitmap piece = null; // holds the piece that we want to draw.
-
-        // TODO: need to efficiently draw the bitmaps here to ensure that the UI does not lag or get super super super slow.
-        // TODO: need to figure out how to keep the bitmaps higher quality while keeping the app responsive.
         if(!pieceName.equals(" ")) // make sure that the name is not a space, it is a space, then we must not put a piece there, show only the board.
         {
             if(pieceName.equals("wrook")){ // set white rook
@@ -257,14 +262,6 @@ public final class TileUI  {
                 hasQueen = true;
                 this.pieceName = pieceName;
             }
-//            else if(pieceName.equals("highlight")) { // set the color of the highlight.
-//
-//                piece = decodeSampledBitmapFromResource(c.getResources(), R.drawable.bluesquare, 50,50);
-//                hasRook = false;
-//                hasKing = false;
-//                hasQueen = false;
-//                this.pieceName = pieceName;
-//            }
 
             canvas.drawBitmap(piece, null, tileRect, null); // draw our bitmap image.
             hasRook = false;
@@ -308,6 +305,11 @@ public final class TileUI  {
     public void setHighlightRect(final Rect highlightRect)
     {
         this.highlightRect = highlightRect;
+    }
+
+    public void setKingHighlightRect(final Rect kingHighlightRect)
+    {
+        this.kingHighlightRect = kingHighlightRect;
     }
 
 

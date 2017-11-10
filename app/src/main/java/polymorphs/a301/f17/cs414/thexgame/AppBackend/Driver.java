@@ -94,6 +94,29 @@ public final class Driver implements UsernameListObserver { // will implement Ga
         return result;
     }
 
+    // returns the name of the player who won the game!
+    public String getCurrentPlayerNickname()
+    {
+        return games.get(currentGameIndex).getCurrentPlayer().getNickname();
+    }
+
+    // tells the calling method if the user we are looking for is in check
+    public int[] isInCheck()
+    {
+        King king = games.get(currentGameIndex).getCurrentPlayer().getKing(); // get the king for the current player.
+
+        if(games.get(currentGameIndex).getBoard().kingInCheck(king)) // if the king is in check.
+        {
+            int[] coords = new int[2];
+            coords[0] = king.getRow();
+            coords[1] = king.getCol();
+
+            return coords; // returning this will tell the UI that the game is in not in check.
+        }
+
+        return null; // return null saying that this king is not in check.
+    }
+
     /*
         This method is used to grab all of the available moves for a piece that the user has clicked.
     */

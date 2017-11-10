@@ -9,14 +9,20 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.service.quicksettings.Tile;
+import android.support.design.widget.Snackbar;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
+import polymorphs.a301.f17.cs414.thexgame.R;
+import polymorphs.a301.f17.cs414.thexgame.ui.activities.HomescreenActivity;
 
 
 public final class BoardUI extends View {
@@ -36,8 +42,8 @@ public final class BoardUI extends View {
     private int squareSize = 0;
 
 
-
     private Driver driver; // the driver object that we are going to be using to communicate with the UI (this)
+    private HomescreenActivity activity; // a copy of the homescreen activity so that we can display the proper winning screen for this game if a player sees it in real time.
 
     /** 'true' if black is facing player. */
     private boolean flipped = false;
@@ -54,9 +60,38 @@ public final class BoardUI extends View {
 
     public void setDriver(Driver driver)
     {
-        System.out.println("setting the driver now!");
-        System.out.println("The driver = " + driver);
         this.driver = driver;
+    }
+
+    // important for displaying the winner of the game.
+    public void setHomescreenActivity(HomescreenActivity activity)
+    {
+        this.activity = activity;
+    }
+
+    // returns a copy of the homescreen activity.
+    public HomescreenActivity getHomescreenActivity()
+    {
+        return activity;
+    }
+
+    // display the winner text if someone wins a game.
+    public void displayWinnerCaption()
+    {
+        // TODO: @Roger get this to work by setting the text view within the view pager. It has to be a game by game basis that the win will show that is happening!
+
+
+        String display = driver.getCurrentPlayerNickname().toUpperCase() + " WINS!";
+
+        Snackbar.make(this, display, Snackbar.LENGTH_INDEFINITE).show(); // show the snackbar of the player!
+
+        /* removed for now for not behaving the way that I wanted it do.
+        RelativeLayout winnerLoserScreen = (RelativeLayout) activity.findViewById(R.id.winnerLoserText); // get the layout that we are working with.
+        TextView winnerLoserCaption = (TextView) winnerLoserScreen.findViewById(R.id.winnerLoserCaption); // grabs the caption telling us who wins.
+        //winnerLoserCaption.setText(currentUser.getNickname());
+        winnerLoserCaption.setText("Someone Wins!");
+        winnerLoserScreen.setVisibility(View.VISIBLE); // make this view visible.
+        */
     }
 
     // gets the driver for the MovePieceActionListener.
@@ -68,12 +103,6 @@ public final class BoardUI extends View {
     private void setCanvas(Canvas c)
     {
         canvas = c;
-    }
-
-    // returns the canvas for this board. Mainly used for MovePieceActionListener.
-    public Canvas getCanvas()
-    {
-        return canvas;
     }
 
     // sets the squares that need to be highlighted, when onDraw is called after invalidate!
@@ -112,26 +141,6 @@ public final class BoardUI extends View {
         updatedTile.setPieceName(pieceName);
 
         tileUIs[row][col] = updatedTile; // this is the tile we wish to create.
-
-        //tileUIs[row][col].setTileRect(tileRect);
-        //tileUIs[row][col].setPieceName(pieceName); // set the piece name for this tile.
-    }
-
-    // this method is called when onDraw is called and goes through each of the elements in the arrayList of squares and checks to see if there is a square that needs to be highlighted.
-    private void highlightTiles(Canvas canvas, int rowToCheck, int colToCheck)
-    {
-        // iterate through each of the highlighted squares and if spots match, then we must color that square, very important.
-        for(int i = 0; i < highlightedSquares.size(); i++)
-        {
-            int row = highlightedSquares.get(i)[0]; // the row of this highlighted square.
-            int col = highlightedSquares.get(i)[1]; // the col of this highlighted square.
-
-            if(row == rowToCheck && col == colToCheck) // we must highlight this square.
-            {
-                System.out.println("We have found a highlight in row = " + rowToCheck + " and col = " + colToCheck);
-                tileUIs[rowToCheck][colToCheck].draw(canvas, "highlight", getContext()); // highlight this square, very important.
-            }
-        }
     }
 
     // Checks if the tile needs to be drawn again to when the board is rewritten.
@@ -149,6 +158,20 @@ public final class BoardUI extends View {
         }
 
         return false; // no square was found that was in need to be highlighted.
+    }
+
+    // checks to see if the coordinates of the king, null means that the king is not in check.
+    public int[] highlightKingInCheck()
+    {
+        int[] kingCoords = driver.isInCheck(); // returns the set of coords for king and checks if it is in check..
+        if(kingCoords != null) // that means there are some coordinates that we need to be working with.
+        {
+            return kingCoords;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     // Makes calls to tileUIs and tells it to graw the pieces and will eventually tell it what to do in terms of what to build and what not.
@@ -184,6 +207,13 @@ public final class BoardUI extends View {
                         yCoord + squareSize   // bottom
                 );
 
+                final Rect kingHightlightRect = new Rect(
+                        xCoord,               // left
+                        yCoord,               // top
+                        xCoord + squareSize,  // right
+                        yCoord + squareSize   // bottom
+                );
+
 
                 tileUIs[rows][cols].setTileRect(tileRect); // set the tileRect which controls coloring of the tiles.
 
@@ -191,17 +221,22 @@ public final class BoardUI extends View {
                 {
                     System.out.println("tile needs to be highlighted right now ");
                     tileUIs[rows][cols].setHighlightRect(highlightRect);
+                    tileUIs[rows][cols].setKingHighlightRect(null); // we are not using the king highlight rect here.
+                }
+                else if(highlightKingInCheck() != null)
+                {
+                    int row = highlightKingInCheck()[0];
+                    int col = highlightKingInCheck()[1];
+
+                    tileUIs[row][col].setKingHighlightRect(kingHightlightRect); // set the king highlight rect.
+                    tileUIs[rows][cols].setHighlightRect(null); // set null so that the original board colors are written.
                 }
                 else
                 {
                     tileUIs[rows][cols].setHighlightRect(null); // set null so that the original board colors are written.
+                    tileUIs[rows][cols].setKingHighlightRect(null); // we are not using the king highlight rect here.
                 }
-                // TODO: add the code here to check if this board ui class has just been started, if so, then we want to setup the game, otherwise we do no want to reset the pieces.
 
-                // TODO: add the code here to check to see if the tiles need to be the highlighted tiles
-
-
-                // TODO: Need to make use of the Driver objec that will be sent in to help us generate the UI with the correct UI elements to ensure that everything is working out the way it should!
 
                 if(newlyStarted == true) // generate the castle walls.
                 {
@@ -248,14 +283,6 @@ public final class BoardUI extends View {
                 {
                     tileUIs[rows][cols].draw(canvas, "bking", getContext()); // set the rook, very important!
                 }
-                else if(tileUIs[rows][cols].getPieceName().equals("highlight") ) // we have squares that we need to highlight.
-                {
-                   // tileUIs[rows][cols].draw(canvas, "highlight", getContext()); removed for now to test the tile hightlight system.
-
-                    System.out.println("we are highlighting squares is row = " + rows);
-                    // this causes my thing to be incorrect and this is a problem.!
-                   // highlightTiles(canvas, rows, cols); // highlight the squares.
-                }
                 else // nothing to highlight, we need to write the green squares.
                 {
                     tileUIs[rows][cols].draw(canvas, " ", getContext()); // set no pieces replace with a space to tell the tile to just draw the board.
@@ -287,9 +314,7 @@ public final class BoardUI extends View {
                 // This will look for when a user releases their touch which let's us know that it is a click.
                 if (tileUI.isTouched(x, y) && event.getAction() == MotionEvent.ACTION_UP)
                 {
-                    Toast.makeText(getContext(), "[row][col] = " + rows + ", " + cols, Toast.LENGTH_SHORT).show();
                     movePieceActionListener.click(tileUI, rows, cols, tileUI.getPieceName()); // determine a move click action listener.
-
                 }
             }
         }

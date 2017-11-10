@@ -91,6 +91,7 @@ public class HomescreenActivity extends AppCompatActivity
 
         System.out.println("SETTING THE DRIVER FOR BOARDUI");
         boardUI.setDriver(driver); // set the driver for the boardUI to be working with.
+        boardUI.setHomescreenActivity(this); // send a copy of the homescreen activity to allow for certain displaying of certain UI elements.
 
         gamePager = (ViewPager) findViewById(R.id.gamesListPager); // get the game pager that will basically fill out the games!
 
