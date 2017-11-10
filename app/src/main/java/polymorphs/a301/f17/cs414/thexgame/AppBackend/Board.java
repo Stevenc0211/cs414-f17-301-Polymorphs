@@ -66,7 +66,6 @@ class Board {
         }
         boardTiles[piece.getRow()][piece.getCol()].occupyTile(piece);
     }
-    //todo @Andy, do we still need to initialize the castle wall from within Board? -Steven
 
     private void initializeCastleWall(){
         getTile(1,7).setTileStatus(Status.WALL_BLACK);

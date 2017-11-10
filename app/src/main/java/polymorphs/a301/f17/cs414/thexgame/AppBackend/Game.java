@@ -29,6 +29,11 @@ class Game {
         this.board = new Board(p1,p2);
     }
 
+    public Player getCurrentPlayer()
+    {
+        return currentPlayer;
+    }
+
     public User getUser1(){
         return user1;
     }
@@ -60,7 +65,6 @@ class Game {
 
         if (board.isValidMove(activePlayer , fromRow, fromCol, toRow, toCol))
         {
-
             movePiece(fromRow, fromCol, toRow, toCol);
             if (currentPlayer == p1) {
                 currentPlayer = p2;

@@ -37,7 +37,12 @@ public final class Driver implements UsernameListObserver { // will implement Ga
             games.add(game);
         }
         else{
-            throw new IllegalArgumentException("ERROR: both passed users must be registered");
+
+            // MANUALLY ADDING THIS CODE WHERE WE BYPASS THE REGISTRATION TO GET USERS INTO THE GAME.
+            Game game = new Game(player1, player2);
+            games.add(game);
+
+            //throw new IllegalArgumentException("ERROR: both passed users must be registered");
         }
     }
 
@@ -86,15 +91,31 @@ public final class Driver implements UsernameListObserver { // will implement Ga
         return result;
     }
 
+    // return the color of the current player for the UI to keep track with who is moving.
+    public String getCurrentPlayerColor()
+    {
+        Color color = games.get(currentGameIndex).getCurrentPlayer().getColor(); // gets the color for the user that we are working with.
+
+        if(color == Color.BLACK)
+        {
+            return "black";
+        }
+        else
+        {
+            return "white";
+        }
+
+    }
+
     /**
         Grabs all of the available moves for a rook sent in by the getAvailableMoves method.
         @param rook - the rook that is sent in.
         @param selectedTile - the tile that was selected by the user on the UI that contains the rook.
      */
-    private ArrayList<Tile> getRookMoves(Rook rook, Tile selectedTile)
+    private ArrayList<int[]> getRookMoves(Rook rook, Tile selectedTile)
     {
 
-        ArrayList<Tile> availableMoves = new ArrayList<>();
+        ArrayList<int[]> availableMoves = new ArrayList<>();
 
         // go through every row and col and check if it is a valid move, if so, add to our list of available moves.
         for(int row = 0; row < 12; row++)
@@ -103,8 +124,10 @@ public final class Driver implements UsernameListObserver { // will implement Ga
             {
                 if(rook.isValidMove(row, col) == true)
                 {
-                    Tile tile = games.get(currentGameIndex).getBoard().getTile(row, col); // get the tile from the board, this is a valid tile.
-                    availableMoves.add(tile); // add the tile to the list of valid tiles.
+                    int moves[] = new int[2];
+                    moves[0] = row;
+                    moves[1] = col;
+                    availableMoves.add(moves); // add the tile to the list of valid tiles.
                 }
             }
         }
@@ -117,10 +140,10 @@ public final class Driver implements UsernameListObserver { // will implement Ga
      @param king - the king that is sent in.
      @param selectedTile - the tile that was selected by the user on the UI that contains the king.
      */
-    private ArrayList<Tile> getKingMoves(King king, Tile selectedTile)
+    private ArrayList<int[]> getKingMoves(King king, Tile selectedTile)
     {
 
-        ArrayList<Tile> availableMoves = new ArrayList<>();
+        ArrayList<int[]> availableMoves = new ArrayList<>();
 
         // go through every row and col and check if it is a valid move, if so, add to our list of available moves.
         for(int row = 0; row < 12; row++)
@@ -129,8 +152,10 @@ public final class Driver implements UsernameListObserver { // will implement Ga
             {
                 if(king.isValidMove(row, col) == true)
                 {
-                    Tile tile = games.get(currentGameIndex).getBoard().getTile(row, col); // get the tile from the board, this is a valid tile.
-                    availableMoves.add(tile); // add the tile to the list of valid tiles.
+                    int moves[] = new int[2];
+                    moves[0] = row;
+                    moves[1] = col;
+                    availableMoves.add(moves); // add the tile to the list of valid tiles.
                 }
             }
         }
@@ -143,10 +168,10 @@ public final class Driver implements UsernameListObserver { // will implement Ga
      @param queen - the rook that is sent in.
      @param selectedTile - the tile that was selected by the user on the UI that contains the rook.
      */
-    private ArrayList<Tile> getQueenMoves(Queen queen, Tile selectedTile)
+    private ArrayList<int[]> getQueenMoves(Queen queen, Tile selectedTile)
     {
 
-        ArrayList<Tile> availableMoves = new ArrayList<>();
+        ArrayList<int[]> availableMoves = new ArrayList<>();
 
         // go through every row and col and check if it is a valid move, if so, add to our list of available moves.
         for(int row = 0; row < 12; row++)
@@ -155,8 +180,10 @@ public final class Driver implements UsernameListObserver { // will implement Ga
             {
                 if(queen.isValidMove(row, col) == true)
                 {
-                    Tile tile = games.get(currentGameIndex).getBoard().getTile(row, col); // get the tile from the board, this is a valid tile.
-                    availableMoves.add(tile); // add the tile to the list of valid tiles.
+                    int moves[] = new int[2];
+                    moves[0] = row;
+                    moves[1] = col;
+                    availableMoves.add(moves); // add the tile to the list of valid tiles.
                 }
             }
         }
@@ -167,9 +194,9 @@ public final class Driver implements UsernameListObserver { // will implement Ga
     /*
         This method is used to grab all of the available moves for a piece that the user has clicked.
     */
-    public ArrayList<Tile> getAvailableMoves(User user, int row, int col)
+    public ArrayList<int[]> getAvailableMoves(int row, int col)
     {
-        ArrayList<Tile> availableMoves = new ArrayList<>(); // holds the list of moves that the player is able to make.
+        ArrayList<int[]> availableMoves = new ArrayList<>(); // holds the list of moves that the player is able to make.
         Tile selectedTile = games.get(currentGameIndex).getBoard().getTile(row, col); // get the tile that was selected by the player.
 
         if(selectedTile.isOccupied() == true) // tile has a piece.
@@ -181,17 +208,20 @@ public final class Driver implements UsernameListObserver { // will implement Ga
                 if(piece instanceof Rook)
                 {
                     Rook rook = (Rook) piece; // piece is a rook
-                    availableMoves = getRookMoves()
+                    availableMoves = getRookMoves(rook, selectedTile); // grabs the selected tile from the board. Pretty important.
+                    return availableMoves; // return the moves to the UI
                 }
                 else if(piece instanceof Queen)
                 {
                     Queen queen = (Queen) piece; // piece is a queen.
-                    // grab moves for this piece, then return the arraylist.
+                    availableMoves = getQueenMoves(queen, selectedTile); // grab moves for this piece, then return the arraylist.
+                    return availableMoves; // return the moves to the UI.
                 }
                 else if(piece instanceof King)
                 {
                     King king = (King) piece; // piece is a king.
-                    // grab moves for this piece, then return the arraylist.
+                    availableMoves = getKingMoves(king, selectedTile); // grab moves for this piece, then return the arraylist.
+                    return availableMoves;
                 }
             }
         }
@@ -199,6 +229,9 @@ public final class Driver implements UsernameListObserver { // will implement Ga
             System.out.println("The tile does not have a piece on it!");
             return null; // return a null set in which the UI will not highlight anything.
         }
+
+        return null; // this should not be reached, but if it is, the UI will not display highlighted tiles.
+
     }
 
 

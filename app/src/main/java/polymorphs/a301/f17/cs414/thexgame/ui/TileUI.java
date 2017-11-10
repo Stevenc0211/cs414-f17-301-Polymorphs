@@ -24,7 +24,7 @@ public final class TileUI  {
 
     private final Paint squareColor; // color of the square itself.
     private final Paint squareBorder; // color of the boarder of each square (black)
-    private Rect tileRect;
+    private Rect tileRect; // holds the rectangle of the tile itself where pieces move to.
 
     // TODO: @miles, @Andy should we allow the Piece class from backend be in here? It sure will make things easier for me to store certain pieces so I can see if this board has a piece or not.
     private boolean hasRook = false;
@@ -57,46 +57,33 @@ public final class TileUI  {
     // tells us if a tile is on the opponent castle wall.
     public boolean isOpponentCastle()
     {
-        if(col == 7 && row == 10 ) {
+        // right three rooks
+        if(col == 7 && row == 9 ) {
             return true;
         }
-        if(col == 8 && row == 10 ) {
+        if(col == 8 && row == 9 ) {
             return true;
         }
-        if(col == 9 && row == 10 ) {
-            return true;
-        }
-
-        if(col == 6 && row == 9 ) {
-            return true;
-        }
-        if(col == 6 && row == 8 ) {
-            return true;
-        }
-        if(col == 6 && row == 7 ) {
+        if(col == 9 && row == 9 ) {
             return true;
         }
 
-        if(col == 10 && row == 9 ) {
+        if(col == 7 && row == 8 ) { // bottom center rook.
             return true;
         }
-        if(col == 10 && row == 9 ) {
-            return true;
-        }
-        if(col ==10 && row == 8 ) {
+        if(col == 7 && row == 7 ) { // bottom right rook.
             return true;
         }
 
-        if(col == 10 && row == 7 ) {
+        if(col ==9 && row == 8 ) { // top center rook.
             return true;
         }
-        if(col == 9 && row == 6 ) {
+
+        if(col == 9 && row == 7 ) { // top left rook.
             return true;
         }
-        if(col == 8 && row == 6 ) {
-            return true;
-        }
-        if(col == 7 && row == 6 ) {
+
+        if(col == 8 && row == 7 ) { // left center rook.
             return true;
         }
 
@@ -128,47 +115,37 @@ public final class TileUI  {
     // returns true if tiles are within the player's castle.
     public boolean isPlayerCastle()
     {
-        if(col == 5 && row == 4 ) {
+        // top three rooks.
+        if(col == 4 && row == 4 ) {
             return true;
         }
-        if(col == 5 && row == 3 ) {
+        if(col == 4 && row == 3 ) {
             return true;
         }
-        if(col == 5 && row == 2 ) {
-            return true;
-        }
-
-        if(col == 4 && row == 5 ) {
-            return true;
-        }
-        if(col == 3 && row == 5 ) {
-            return true;
-        }
-        if(col == 4 && row == 5 ) {
+        if(col == 4 && row == 2 ) {
             return true;
         }
 
-        if(col == 2 && row == 5 ) {
-            return true;
-        }
-        if(col == 1 && row == 4 ) {
-            return true;
-        }
-        if(col ==1 && row == 3 ) {
+        if(col == 3 && row == 4 ) { // right center rook.
             return true;
         }
 
-        if(col == 1 && row == 2 ) {
+        if(col == 2 && row == 4 ) { // bottom right rook.
             return true;
         }
 
-        if(col == 4 && row == 1 ) {
+        if(col ==2 && row == 3 ) { // bottom center rook.
             return true;
         }
-        if(col == 3 && row ==  1) {
+
+
+
+        if(col == 2 && row == 2 ) { // bottom left rook.
             return true;
         }
-        if(col == 2 && row ==  1) {
+
+
+        if(col == 3 && row == 2 ) { // left center rook
             return true;
         }
 
@@ -203,9 +180,7 @@ public final class TileUI  {
         if(col == 10 && row == 9 ) {
             squareColor.setColor(Color.YELLOW);
         }
-        if(col == 10 && row == 9 ) {
-            squareColor.setColor(Color.YELLOW);
-        }
+
         if(col ==10 && row == 8 ) {
             squareColor.setColor(Color.YELLOW);
         }
@@ -243,13 +218,10 @@ public final class TileUI  {
         if(col == 3 && row == 5 ) {
             squareColor.setColor(Color.YELLOW);
         }
-        if(col == 4 && row == 5 ) {
-            squareColor.setColor(Color.YELLOW);
-        }
-
         if(col == 2 && row == 5 ) {
             squareColor.setColor(Color.YELLOW);
         }
+
         if(col == 1 && row == 4 ) {
             squareColor.setColor(Color.YELLOW);
         }
@@ -260,7 +232,6 @@ public final class TileUI  {
         if(col == 1 && row == 2 ) {
             squareColor.setColor(Color.YELLOW);
         }
-
 
 
         if(col == 4 && row == 1 ) {
@@ -290,6 +261,7 @@ public final class TileUI  {
         squareBorder.setStyle(Paint.Style.STROKE); // the black lines of the board.
         squareBorder.setColor(Color.BLACK); // color of the stroke itself.
         squareBorder.setStrokeWidth(3);
+
 
         setOpponentBounds(); // set opponent bounds
         setPlayerBounds(); // set player bounds.
@@ -394,6 +366,14 @@ public final class TileUI  {
                 hasQueen = true;
                 this.pieceName = pieceName;
             }
+            else if(pieceName.equals("highlight")) { // set the color of the highlight.
+
+                piece = decodeSampledBitmapFromResource(c.getResources(), R.drawable.bluesquare, 50,50);
+                hasRook = false;
+                hasKing = false;
+                hasQueen = false;
+                this.pieceName = pieceName;
+            }
 
             canvas.drawBitmap(piece, null, tileRect, null); // draw our bitmap image.
             hasRook = false;
@@ -433,6 +413,8 @@ public final class TileUI  {
     public void setTileRect(final Rect tileRect) {
         this.tileRect = tileRect;
     }
+
+
 
 
 }

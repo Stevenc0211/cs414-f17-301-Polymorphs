@@ -2,6 +2,10 @@ package polymorphs.a301.f17.cs414.thexgame.ui;
 
 import android.graphics.Rect;
 
+import java.util.ArrayList;
+
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
+
 /**
  * Created by thenotoriousrog on 11/5/17.
  * This is a custom listener that doesn't really behave in the true listener sense of the word. What this does is takes in two parameters a row and a col. It then checks if a piece was selected using Tile to report that.
@@ -16,12 +20,16 @@ public class MovePieceActionListener {
     private int fromCol = 0; // the col that was selected when teh moveActions has started.
     private TileUI fromTile; // the tile that was selected when the moveAction has started.
     private String pieceName = " "; // holds the name of the piece and what it contains and what not.
+    private Driver driver; // holds a copy of the driver object that we are using.
 
     Rect tileRect; // copy
+
+    private ArrayList<int[]> availableMoves = new ArrayList<>(); // this is the moves that we are trying to grab right here.
 
     MovePieceActionListener(BoardUI boardUI)
     {
         this.boardUI = boardUI;
+        System.out.println("The driver in MovePieceActionListener = " + driver);
     }
 
 
@@ -33,6 +41,92 @@ public class MovePieceActionListener {
         fromCol = 0;
         fromTile = null;
         pieceName = " ";
+    }
+
+    // TODO: we need to make sure that when it is time for the other player to move that the user cannot move any pieces. That is important!!
+
+
+    // gets all of the moves for a black piece.
+    private ArrayList<int[]> getBlackPieceMoves(String pieceName, int row, int col)
+    {
+        ArrayList<int[]> moves = new ArrayList<>(); // holds all of the moves for the classes
+
+        // not sure if the if check here is actually grabbing everything that it should.
+        if(pieceName.equals("brook")) // generate all of the pieces for a rook.
+        {
+            moves = boardUI.getDriver().getAvailableMoves(row, col); // get the moves for this piece.
+        }
+        else if(pieceName.equals("bqueen")) // generate all of the pieces for a queen.
+        {
+            moves = boardUI.getDriver().getAvailableMoves(row, col); // get the moves for this piece.
+        }
+        else if(pieceName.equals("bking")) // generate all of the pieces for a king.
+        {
+            moves = boardUI.getDriver().getAvailableMoves(row, col); // get the moves for this piece.
+        }
+        else
+        {
+            return null; // return the moves available for this certain piece.
+        }
+
+        return moves; // return the moves available for a specific piece.
+
+    }
+
+    // gets all of the moves for the white piece.
+    private ArrayList<int[]> getWhitePieceMoves(String pieceName, int row, int col)
+    {
+        ArrayList<int[]> moves = new ArrayList<>(); // holds all of the moves for the classes
+
+        // not sure if the if check here is actually grabbing everything that it should.
+        if(pieceName.equals("wrook")) // generate all of the pieces for a rook.
+        {
+            System.out.println("grabbing moves for wrook now");
+            moves = boardUI.getDriver().getAvailableMoves(11-row, col); // get the moves for this piece.
+        }
+        else if(pieceName.equals("wqueen")) // generate all of the pieces for a queen.
+        {
+            moves = boardUI.getDriver().getAvailableMoves(11-row, col); // get the moves for this piece.
+        }
+        else if(pieceName.equals("wking")) // generate all of the pieces for a king.
+        {
+            moves = boardUI.getDriver().getAvailableMoves(11-row, col); // get the moves for this piece.
+        }
+        else
+        {
+            System.out.println("no moves were grabbed for the white piece!");
+            return null; // return the moves available for this certain piece.
+        }
+
+        return moves; // return the moves available for a specific piece.
+    }
+
+    // takes in the same list of moves and replaces the tile to be that of the normal green square.
+    private void unhighlightSquares(ArrayList<int[]> availableMoves)
+    {
+        for(int i = 0; i < availableMoves.size(); i++)
+        {
+            int row = availableMoves.get(i)[0];
+            int col = availableMoves.get(i)[1];
+            TileUI tile = new TileUI(row, col, boardUI.getContext()); // create the new tile that we need to work with.
+            boardUI.replaceAndUpdateTile(tile, 11-row, col, " "); // replace this tile and update it show to that of the tiles.
+        }
+        // tell the board to hightlight the squares.
+        // boardUI.setHighlightedSquares(availableMoves); // set's the available squares for the board to be able to redraw and highlight the squares as needed.
+    }
+
+    // This method takes in a list of available moves and tells the boardUI to highlight the board correctly.
+    private void highlightSquares(ArrayList<int[]> availableMoves)
+    {
+        for(int i = 0; i < availableMoves.size(); i++)
+        {
+            int row = availableMoves.get(i)[0];
+            int col = availableMoves.get(i)[1];
+            TileUI tile = new TileUI(row, col, boardUI.getContext()); // create the new tile that we need to work with.
+            boardUI.replaceAndUpdateTile(tile, 11-row, col, "highlight"); // replace this tile and update it show to that of the tiles.
+        }
+        // tell the board to hightlight the squares.
+        // boardUI.setHighlightedSquares(availableMoves); // set's the available squares for the board to be able to redraw and highlight the squares as needed.
     }
 
     // this is the method that is called whenever a tile is clicked.
@@ -51,6 +145,32 @@ public class MovePieceActionListener {
             fromCol = col;
             this.pieceName = pieceName;
             moveActionStarted = true; // a move action started has started.
+            //String currentPlayerColor = driver.getCurrentPlayerColor();
+
+            // make a call to grab the right amount of pieces and begin highlighting the moves.
+           // if(currentPlayerColor.equals("black"))
+            //{
+               // availableMoves = getBlackPieceMoves(pieceName, row, col); // get black piece moves.
+           // }
+           // else if(currentPlayerColor.equals("white"))
+           // {
+                availableMoves = getWhitePieceMoves(pieceName, row, col); // get the white piece moves.
+           // }
+
+
+            if(availableMoves == null)
+            {
+                System.out.println("The moves available for this piece are null");
+            }
+            else
+            {
+                System.out.println("The piece that was clicked has name: " + pieceName);
+                System.out.println("The number of available moves for the piece clicked is " + availableMoves.size());
+                highlightSquares(availableMoves); // highlight the squares and wait for the next move to take place.
+                boardUI.invalidate(); // force the UI to draw again.
+            }
+
+
         }
         else if(moveActionStarted == true && !clickedTile.hasPiece()) // check to make sure that the clicked tile does not have a piece and a click action has already started.
         {
@@ -59,28 +179,33 @@ public class MovePieceActionListener {
 
 
             // TODO: @Team, we need to make sure that the pieces that clicks is not one of the his own. Basically ensure that the location that the player wants to move is a valid move.
-            /* the way to get to do the above to do is followed in this code bracket.
 
-                if(validMove)
-                {
-                    // do the code below
-                }
-                else {
-                    // call the reset method as this move is not good. DO NOT throw an error, simply reset the MovePieceActionListener
-                    // have the board unhighlight all of the squares (again, not quite implemented yet).
-                }
-             */
 
-            // create the updated tiles.
-            TileUI updatedFromTile = new TileUI(fromRow, fromCol, boardUI.getContext()); // update the fromTile using the coordinates.
-            TileUI updatedToTile = new TileUI(row, col, boardUI.getContext()); // create a new tile that will place the new tile into the board moving the pieces.
 
-            // replace the tiles in the correct array.
-            boardUI.replaceAndUpdateTile(updatedFromTile, fromRow, fromCol, " "); // update the fromTile to show no pieces.
-            boardUI.replaceAndUpdateTile(updatedToTile, row, col, this.pieceName); // update the toTile which will then place the pieces where they need to be.
+            // TODO: need to check that the move that the user wants to do is a valid move.
+            if()
+            {
+                // do the code below
+                // move the piece and unhighlight the board.
+                // create the updated tiles.
+                TileUI updatedFromTile = new TileUI(fromRow, fromCol, boardUI.getContext()); // update the fromTile using the coordinates.
+                TileUI updatedToTile = new TileUI(row, col, boardUI.getContext()); // create a new tile that will place the new tile into the board moving the pieces.
 
-            boardUI.invalidate(); // refresh the layout.
-            reset(); // reset the move action listener.
+                // replace the tiles in the correct array.
+                boardUI.replaceAndUpdateTile(updatedFromTile, fromRow, fromCol, " "); // update the fromTile to show no pieces.
+                boardUI.replaceAndUpdateTile(updatedToTile, row, col, this.pieceName); // update the toTile which will then place the pieces where they need to be.
+                unhighlightSquares(availableMoves);
+
+                boardUI.invalidate(); // refresh the layout.
+                reset(); // reset the move action listener.
+            }
+            else {
+                unhighlightSquares(availableMoves); // takes the moves that were created and removes the blue highlights.
+                boardUI.invalidate(); // refresh the layout.
+            }
+
+
+
         }
     }
 }
