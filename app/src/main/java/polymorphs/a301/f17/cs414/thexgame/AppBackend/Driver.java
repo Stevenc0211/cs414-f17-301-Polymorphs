@@ -91,22 +91,6 @@ public final class Driver implements UsernameListObserver { // will implement Ga
         return result;
     }
 
-    // return the color of the current player for the UI to keep track with who is moving.
-    public String getCurrentPlayerColor(int row, int col)
-    {
-        Color color = games.get(currentGameIndex).getBoard().getTile(row, col).getPiece().getColor(); // gets the color for the user that we are working with.
-
-        if(color == Color.BLACK)
-        {
-            return "black";
-        }
-        else
-        {
-            return "white";
-        }
-
-    }
-
     /*
         This method is used to grab all of the available moves for a piece that the user has clicked.
     */
@@ -117,7 +101,7 @@ public final class Driver implements UsernameListObserver { // will implement Ga
         Color currentPlayerColor =  games.get(currentGameIndex).getCurrentPlayer().getColor();
         Color movedPieceColor = from.getPiece().getColor();
         if (movedPieceColor != currentPlayerColor) return new ArrayList<>();
-        return games.get(currentGameIndex).getBoard().getAvailableMoves(row, col);
+        return games.get(currentGameIndex).getBoard().getAvailableMoves(row, col, games.get(currentGameIndex).getCurrentPlayer());
     }
 
 

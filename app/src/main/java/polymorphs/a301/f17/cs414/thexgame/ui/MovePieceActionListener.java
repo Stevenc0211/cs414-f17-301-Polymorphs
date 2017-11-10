@@ -73,6 +73,10 @@ public class MovePieceActionListener {
         // boardUI.setHighlightedSquares(availableMoves); // set's the available squares for the board to be able to redraw and highlight the squares as needed.
     }
 
+    User user1 = new User("tmp", "tmp", "white"); // BreadCrumb: turn order hack
+    User user2 = new User("tmp", "tmp", "black"); // BreadCrumb: turn order hack
+    User currentUser = user1; // BreadCrumb: turn order hack
+
     // this is the method that is called whenever a tile is clicked.
     public void click(TileUI clickedTile, int row, int col, String pieceName)
     {
@@ -88,7 +92,6 @@ public class MovePieceActionListener {
             fromRow = row;
             fromCol = col;
             this.pieceName = pieceName;
-            moveActionStarted = true; // a move action started has started.
             availableMoves = boardUI.getDriver().getAvailableMoves(row, col);
 
 
@@ -100,6 +103,7 @@ public class MovePieceActionListener {
             {
                 System.out.println("The piece that was clicked has name: " + pieceName);
                 System.out.println("The number of available moves for the piece clicked is " + availableMoves.size());
+                moveActionStarted = true; // a move action started has started.
                 highlightSquares(availableMoves); // highlight the squares and wait for the next move to take place.
                 boardUI.invalidate(); // force the UI to draw again.
             }
@@ -108,21 +112,16 @@ public class MovePieceActionListener {
         }
         else if(moveActionStarted == true && !clickedTile.hasPiece()) // check to make sure that the clicked tile does not have a piece and a click action has already started.
         {
-            //System.out.println("attempting to now move a piece!");
-            // TODO: need to add a check inside tileUI to make sure that it is not a friendly tile that we are working with i.e. make sure we can remove pieces if a player attacks their opponents piece. This skips that for now.
-
-
-            // TODO: @Team, we need to make sure that the pieces that clicks is not one of the his own. Basically ensure that the location that the player wants to move is a valid move.
-
-
-
-            // TODO: need to check that the move that the user wants to do is a valid move.
-
-            // TODO: REMOVE, this is a hack to test the UI
-            String currentColor = boardUI.getDriver().getCurrentPlayerColor(fromRow,fromCol);
-            User tmpUser = new User("null", "null", currentColor);
-            if(boardUI.getDriver().makeMove(tmpUser, fromRow, fromCol, row, col) == 1)
+            // TODO: get user into here so we can verify turn order
+            int moveResult = boardUI.getDriver().makeMove(currentUser, fromRow, fromCol, row, col);
+            if(moveResult == 1)
             {
+                if (currentUser.equals(user1)) {    // BreadCrumb: turn order hack
+                    currentUser = user2;            // BreadCrumb: turn order hack
+                } else {                            // BreadCrumb: turn order hack
+                    currentUser = user1;            // BreadCrumb: turn order hack
+                }                                   // BreadCrumb: turn order hack
+                unhighlightSquares(availableMoves);
                 // do the code below
                 // move the piece and unhighlight the board.
                 // create the updated tiles.
@@ -132,10 +131,12 @@ public class MovePieceActionListener {
                 // replace the tiles in the correct array.
                 boardUI.replaceAndUpdateTile(updatedFromTile, fromRow, fromCol, " "); // update the fromTile to show no pieces.
                 boardUI.replaceAndUpdateTile(updatedToTile, row, col, this.pieceName); // update the toTile which will then place the pieces where they need to be.
-                unhighlightSquares(availableMoves);
 
                 boardUI.invalidate(); // refresh the layout.
                 reset(); // reset the move action listener.
+            }
+            else if (moveResult == 0) {
+                System.out.println("Move resulted in checkmate!");
             }
             else {
                 unhighlightSquares(availableMoves); // takes the moves that were created and removes the blue highlights.
