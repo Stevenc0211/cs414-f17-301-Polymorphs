@@ -57,43 +57,17 @@ public final class TileUI  {
     // tells us if a tile is on the opponent castle wall.
     public boolean isOpponentCastle()
     {
-        // right three rooks
-        if(col == 7 && row == 9 ) {
-            return true;
-        }
-        if(col == 8 && row == 9 ) {
-            return true;
-        }
-        if(col == 9 && row == 9 ) {
-            return true;
-        }
 
-        if(col == 7 && row == 8 ) { // bottom center rook.
+        if ((col == 7 || col == 8 || col == 9) && (row == 2 || row == 3 || row == 4)) {
             return true;
         }
-        if(col == 7 && row == 7 ) { // bottom right rook.
-            return true;
-        }
-
-        if(col ==9 && row == 8 ) { // top center rook.
-            return true;
-        }
-
-        if(col == 9 && row == 7 ) { // top left rook.
-            return true;
-        }
-
-        if(col == 8 && row == 7 ) { // left center rook.
-            return true;
-        }
-
         return false;
     }
 
     // tells the BoardUI if the current tile we are looking at is in the center of the player's castle (white)
     public boolean isPlayerKingLoc()
     {
-        if(row == 3 && col == 3)
+        if(row == 8 && col == 3)
         {
             return true; // we are at the center of player's castle.
         }
@@ -104,7 +78,7 @@ public final class TileUI  {
     // tells the BoardUI if the current tile we are looking at is in the center of the player's castle (white)
     public boolean isOpponentKingLoc()
     {
-        if(row == 8 && col == 8)
+        if(row == 3 && col == 8)
         {
             return true; // we are at the center of player's castle.
         }
@@ -115,37 +89,7 @@ public final class TileUI  {
     // returns true if tiles are within the player's castle.
     public boolean isPlayerCastle()
     {
-        // top three rooks.
-        if(col == 4 && row == 4 ) {
-            return true;
-        }
-        if(col == 4 && row == 3 ) {
-            return true;
-        }
-        if(col == 4 && row == 2 ) {
-            return true;
-        }
-
-        if(col == 3 && row == 4 ) { // right center rook.
-            return true;
-        }
-
-        if(col == 2 && row == 4 ) { // bottom right rook.
-            return true;
-        }
-
-        if(col ==2 && row == 3 ) { // bottom center rook.
-            return true;
-        }
-
-
-
-        if(col == 2 && row == 2 ) { // bottom left rook.
-            return true;
-        }
-
-
-        if(col == 3 && row == 2 ) { // left center rook
+        if ((row == 7 || row == 8 || row == 9) && (col == 2 || col == 3 || col == 4)) {
             return true;
         }
 
@@ -157,44 +101,10 @@ public final class TileUI  {
     // sets the bounds of the opponent
     protected void setOpponentBounds()
     {
-        if(col == 7 && row == 10 ) {
+        if ((row == 1 || row == 5) && (col == 7 || col == 8 || col == 9)) {
             squareColor.setColor(Color.YELLOW);
         }
-        if(col == 8 && row == 10 ) {
-            squareColor.setColor(Color.YELLOW);
-        }
-        if(col == 9 && row == 10 ) {
-            squareColor.setColor(Color.YELLOW);
-        }
-
-        if(col == 6 && row == 9 ) {
-            squareColor.setColor(Color.YELLOW);
-        }
-        if(col == 6 && row == 8 ) {
-            squareColor.setColor(Color.YELLOW);
-        }
-        if(col == 6 && row == 7 ) {
-            squareColor.setColor(Color.YELLOW);
-        }
-
-        if(col == 10 && row == 9 ) {
-            squareColor.setColor(Color.YELLOW);
-        }
-
-        if(col ==10 && row == 8 ) {
-            squareColor.setColor(Color.YELLOW);
-        }
-
-        if(col == 10 && row == 7 ) {
-            squareColor.setColor(Color.YELLOW);
-        }
-        if(col == 9 && row == 6 ) {
-            squareColor.setColor(Color.YELLOW);
-        }
-        if(col == 8 && row == 6 ) {
-            squareColor.setColor(Color.YELLOW);
-        }
-        if(col == 7 && row == 6 ) {
+        if ((col == 6 || col == 10) && (row == 2 || row == 3 || row == 4)) {
             squareColor.setColor(Color.YELLOW);
         }
     }
@@ -202,47 +112,13 @@ public final class TileUI  {
     // sets the player bounds.
     protected void setPlayerBounds()
     {
-        if(col == 5 && row == 4 ) {
+        if ((col == 1 || col == 5) && (row == 7 || row == 8 || row == 9)) {
             squareColor.setColor(Color.YELLOW);
         }
-        if(col == 5 && row == 3 ) {
-            squareColor.setColor(Color.YELLOW);
-        }
-        if(col == 5 && row == 2 ) {
+        if ((row == 6 || row == 10) && (col == 2 || col == 3 || col == 4)) {
             squareColor.setColor(Color.YELLOW);
         }
 
-        if(col == 4 && row == 5 ) {
-            squareColor.setColor(Color.YELLOW);
-        }
-        if(col == 3 && row == 5 ) {
-            squareColor.setColor(Color.YELLOW);
-        }
-        if(col == 2 && row == 5 ) {
-            squareColor.setColor(Color.YELLOW);
-        }
-
-        if(col == 1 && row == 4 ) {
-            squareColor.setColor(Color.YELLOW);
-        }
-        if(col ==1 && row == 3 ) {
-            squareColor.setColor(Color.YELLOW);
-        }
-
-        if(col == 1 && row == 2 ) {
-            squareColor.setColor(Color.YELLOW);
-        }
-
-
-        if(col == 4 && row == 1 ) {
-            squareColor.setColor(Color.YELLOW);
-        }
-        if(col == 3 && row ==  1) {
-            squareColor.setColor(Color.YELLOW);
-        }
-        if(col == 2 && row ==  1) {
-            squareColor.setColor(Color.YELLOW);
-        }
     }
 
     // constructor for tile

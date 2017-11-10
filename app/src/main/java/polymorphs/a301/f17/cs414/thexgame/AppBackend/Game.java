@@ -58,7 +58,20 @@ class Game {
      */
     public int makeMove(User user, int fromRow, int fromCol, int toRow,int toCol)
     {
-        Player activePlayer = getPlayerForUser(user);
+//        Player activePlayer = getPlayerForUser(user);
+
+        // TODO: REVERT TO NORMAL (line above), hacks active player to test UI
+        Player activePlayer;
+        if (user.getNickname().equals("white")) {
+            currentPlayer = p1;
+            activePlayer = p1;
+        } else {
+            currentPlayer = p2;
+            activePlayer = p2;
+        }
+        // END HACK
+
+
         if (activePlayer == null) return -1;
 
         if (!this.currentPlayer.equals(activePlayer)) return -1;

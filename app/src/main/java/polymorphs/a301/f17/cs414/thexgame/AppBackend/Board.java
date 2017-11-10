@@ -344,4 +344,27 @@ class Board {
         }
         return false;
     }
+
+    /**
+     * Returns the valid move coordinates for the piece at the passed row and col.
+     * @param row - the row to calculate moves from
+     * @param col - the col to calculate moves from
+     * @return array list of coordinates [row,col], empty list if the tile was empty
+     */
+    ArrayList<int[]> getAvailableMoves(int row, int col)
+    {
+        ArrayList<int[]> result = new ArrayList<>();
+        if (boardTiles[row][col].isOccupied()) {
+            Color friendlyColor = boardTiles[row][col].getPiece().getColor();
+            ArrayList<ArrayList<Tile>> allMovePaths = boardTiles[row][col].getPiece().getAllMovePaths(this);
+            for(ArrayList<Tile> movePath : allMovePaths) {
+                if (validateMovePath(movePath, friendlyColor)) {
+                    for (Tile tile : movePath) {
+                        result.add(new int[]{tile.getRow(), tile.getCol()});
+                    }
+                }
+            }
+        }
+        return result;
+    }
 }

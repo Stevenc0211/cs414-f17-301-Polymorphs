@@ -149,8 +149,8 @@ public final class BoardUI extends View {
 
         for (int rows = 0; rows < ROWS; rows++) {
             for (int cols = 0; cols < COLS; cols++) {
-                final int xCoord = getXCoord(rows);
-                final int yCoord = getYCoord(cols);
+                final int xCoord = getXCoord(cols);
+                final int yCoord = getYCoord(rows);
 
                 final Rect tileRect = new Rect(
                         xCoord,               // left
@@ -168,17 +168,18 @@ public final class BoardUI extends View {
                 if(newlyStarted == true) // generate the castle walls.
                 {
                     // look for all of the pieces and ensure that the pieces have a place to end up on the castle wall.
-                    if(tileUIs[rows][cols].isOpponentCastle() == true) {
+                    if(tileUIs[rows][cols].isOpponentKingLoc()) {
+                        tileUIs[rows][cols].draw(canvas, "bking", getContext()); // set black king inside opponent's castle.
+
+                    }
+                    else if(tileUIs[rows][cols].isOpponentCastle()) {
                         tileUIs[rows][cols].draw(canvas, "brook", getContext()); // set black rooks on opponent's castle.
                     }
-                    else if(tileUIs[rows][cols].isOpponentKingLoc() == true) {
-                        tileUIs[rows][cols].draw(canvas, "bking", getContext()); // set black king inside opponent's castle.
-                    }
-                    else if(tileUIs[rows][cols].isPlayerCastle() == true) {
-                        tileUIs[rows][cols].draw(canvas, "wrook", getContext()); // set white rook inside opponent's castle.
-                    }
-                    else if(tileUIs[rows][cols].isPlayerKingLoc() == true){
+                    else if(tileUIs[rows][cols].isPlayerKingLoc()) {
                         tileUIs[rows][cols].draw(canvas, "wking", getContext()); // set white king inside opponent's castle.
+                    }
+                    else if(tileUIs[rows][cols].isPlayerCastle()){
+                        tileUIs[rows][cols].draw(canvas, "wrook", getContext()); // set white rook inside opponent's castle.
                     }
                     else {
                         tileUIs[rows][cols].draw(canvas, " ", getContext()); // set no pieces replace with a space to tell the tile to just draw the board.
@@ -267,16 +268,16 @@ public final class BoardUI extends View {
     }
 
     private int getXCoord(final int x) {
-        return x0 + squareSize * (flipped ? 12 - x : x);
+        return x0 + squareSize * x;
     }
 
     private int getYCoord(final int y) {
-        return y0 + squareSize * (flipped ? 12 : 7 - y);
+        return y0 + squareSize * y;
     }
 
     private void computeOrigins(final int width, final int height) {
-        this.x0 = (width  - squareSize * 12) / 2;
-        this.y0 = (height - squareSize * 12) / 2;
+        this.x0 = 0;
+        this.y0 = 0;
     }
 
 }
