@@ -58,9 +58,9 @@ class Game {
      */
     public int makeMove(User user, int fromRow, int fromCol, int toRow,int toCol)
     {
+        // TODO: UNCOMMENT!! this is what restricts turn order
         Player activePlayer = getPlayerForUser(user);
         if (activePlayer == null) return -1;
-
         if (!this.currentPlayer.equals(activePlayer)) return -1;
 
         if (board.isValidMove(activePlayer , fromRow, fromCol, toRow, toCol))
@@ -92,14 +92,18 @@ class Game {
         Tile to = board.getTile(toRow, toCol);
         to.occupyTile(from.getPiece()); // this will also update the coordinates of the piece
         from.occupyTile(null);
-        if (from.getPiece() instanceof Rook) {
-            if (from.getPiece().getColor() == Color.WHITE) {
-                if (from.getTileStatus() == Status.INSIDE_BLACK) {
-                    from.occupyTile(currentPlayer.promoteRook((Rook)from.getPiece()));
+        if (to.getPiece() instanceof Rook) {
+            if (to.getPiece().getColor() == Color.WHITE) {
+                if (to.getTileStatus() == Status.INSIDE_BLACK) {
+                    Queen newQueen = currentPlayer.promoteRook((Rook)to.getPiece());
+                    to.occupyTile(null);
+                    to.occupyTile(newQueen);
                 }
             } else {
-                if (from.getTileStatus() == Status.INSIDE_WHITE) {
-                    from.occupyTile(currentPlayer.promoteRook((Rook)from.getPiece()));
+                if (to.getTileStatus() == Status.INSIDE_WHITE) {
+                    Queen newQueen = currentPlayer.promoteRook((Rook)to.getPiece());
+                    to.occupyTile(null);
+                    to.occupyTile(newQueen);
                 }
             }
         }

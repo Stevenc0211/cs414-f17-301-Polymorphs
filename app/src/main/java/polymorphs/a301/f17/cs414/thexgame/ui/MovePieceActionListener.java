@@ -5,6 +5,8 @@ import android.graphics.Rect;
 import java.util.ArrayList;
 
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
+import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 
 /**
  * Created by thenotoriousrog on 11/5/17.
@@ -43,64 +45,6 @@ public class MovePieceActionListener {
         pieceName = " ";
     }
 
-    // TODO: we need to make sure that when it is time for the other player to move that the user cannot move any pieces. That is important!!
-
-
-    // gets all of the moves for a black piece.
-    private ArrayList<int[]> getBlackPieceMoves(String pieceName, int row, int col)
-    {
-        ArrayList<int[]> moves = new ArrayList<>(); // holds all of the moves for the classes
-
-        // not sure if the if check here is actually grabbing everything that it should.
-        if(pieceName.equals("brook")) // generate all of the pieces for a rook.
-        {
-            moves = boardUI.getDriver().getAvailableMoves(row, col); // get the moves for this piece.
-        }
-        else if(pieceName.equals("bqueen")) // generate all of the pieces for a queen.
-        {
-            moves = boardUI.getDriver().getAvailableMoves(row, col); // get the moves for this piece.
-        }
-        else if(pieceName.equals("bking")) // generate all of the pieces for a king.
-        {
-            moves = boardUI.getDriver().getAvailableMoves(row, col); // get the moves for this piece.
-        }
-        else
-        {
-            return null; // return the moves available for this certain piece.
-        }
-
-        return moves; // return the moves available for a specific piece.
-
-    }
-
-    // gets all of the moves for the white piece.
-    private ArrayList<int[]> getWhitePieceMoves(String pieceName, int row, int col)
-    {
-        ArrayList<int[]> moves = new ArrayList<>(); // holds all of the moves for the classes
-
-        // not sure if the if check here is actually grabbing everything that it should.
-        if(pieceName.equals("wrook")) // generate all of the pieces for a rook.
-        {
-            System.out.println("grabbing moves for wrook now");
-            moves = boardUI.getDriver().getAvailableMoves(11-row, col); // get the moves for this piece.
-        }
-        else if(pieceName.equals("wqueen")) // generate all of the pieces for a queen.
-        {
-            moves = boardUI.getDriver().getAvailableMoves(11-row, col); // get the moves for this piece.
-        }
-        else if(pieceName.equals("wking")) // generate all of the pieces for a king.
-        {
-            moves = boardUI.getDriver().getAvailableMoves(11-row, col); // get the moves for this piece.
-        }
-        else
-        {
-            System.out.println("no moves were grabbed for the white piece!");
-            return null; // return the moves available for this certain piece.
-        }
-
-        return moves; // return the moves available for a specific piece.
-    }
-
     // takes in the same list of moves and replaces the tile to be that of the normal green square.
     private void unhighlightSquares(ArrayList<int[]> availableMoves)
     {
@@ -109,7 +53,7 @@ public class MovePieceActionListener {
             int row = availableMoves.get(i)[0];
             int col = availableMoves.get(i)[1];
             TileUI tile = new TileUI(row, col, boardUI.getContext()); // create the new tile that we need to work with.
-            boardUI.replaceAndUpdateTile(tile, 11-row, col, " "); // replace this tile and update it show to that of the tiles.
+            boardUI.replaceAndUpdateTile(tile, row, col, " "); // replace this tile and update it show to that of the tiles.
         }
         // tell the board to hightlight the squares.
         // boardUI.setHighlightedSquares(availableMoves); // set's the available squares for the board to be able to redraw and highlight the squares as needed.
@@ -123,11 +67,15 @@ public class MovePieceActionListener {
             int row = availableMoves.get(i)[0];
             int col = availableMoves.get(i)[1];
             TileUI tile = new TileUI(row, col, boardUI.getContext()); // create the new tile that we need to work with.
-            boardUI.replaceAndUpdateTile(tile, 11-row, col, "highlight"); // replace this tile and update it show to that of the tiles.
+            boardUI.replaceAndUpdateTile(tile, row, col, "highlight"); // replace this tile and update it show to that of the tiles.
         }
         // tell the board to hightlight the squares.
         // boardUI.setHighlightedSquares(availableMoves); // set's the available squares for the board to be able to redraw and highlight the squares as needed.
     }
+
+    User user1 = new User("tmp", "tmp", "white"); // BreadCrumb: turn order hack
+    User user2 = new User("tmp", "tmp", "black"); // BreadCrumb: turn order hack
+    User currentUser = user1; // BreadCrumb: turn order hack
 
     // this is the method that is called whenever a tile is clicked.
     public void click(TileUI clickedTile, int row, int col, String pieceName)
@@ -144,21 +92,10 @@ public class MovePieceActionListener {
             fromRow = row;
             fromCol = col;
             this.pieceName = pieceName;
-            moveActionStarted = true; // a move action started has started.
-            //String currentPlayerColor = driver.getCurrentPlayerColor();
-
-            // make a call to grab the right amount of pieces and begin highlighting the moves.
-           // if(currentPlayerColor.equals("black"))
-            //{
-               // availableMoves = getBlackPieceMoves(pieceName, row, col); // get black piece moves.
-           // }
-           // else if(currentPlayerColor.equals("white"))
-           // {
-                availableMoves = getWhitePieceMoves(pieceName, row, col); // get the white piece moves.
-           // }
+            availableMoves = boardUI.getDriver().getAvailableMoves(row, col);
 
 
-            if(availableMoves == null)
+            if(availableMoves.isEmpty())
             {
                 System.out.println("The moves available for this piece are null");
             }
@@ -166,6 +103,7 @@ public class MovePieceActionListener {
             {
                 System.out.println("The piece that was clicked has name: " + pieceName);
                 System.out.println("The number of available moves for the piece clicked is " + availableMoves.size());
+                moveActionStarted = true; // a move action started has started.
                 highlightSquares(availableMoves); // highlight the squares and wait for the next move to take place.
                 boardUI.invalidate(); // force the UI to draw again.
             }
@@ -174,17 +112,16 @@ public class MovePieceActionListener {
         }
         else if(moveActionStarted == true && !clickedTile.hasPiece()) // check to make sure that the clicked tile does not have a piece and a click action has already started.
         {
-            //System.out.println("attempting to now move a piece!");
-            // TODO: need to add a check inside tileUI to make sure that it is not a friendly tile that we are working with i.e. make sure we can remove pieces if a player attacks their opponents piece. This skips that for now.
-
-
-            // TODO: @Team, we need to make sure that the pieces that clicks is not one of the his own. Basically ensure that the location that the player wants to move is a valid move.
-
-
-
-            // TODO: need to check that the move that the user wants to do is a valid move.
-            if()
+            // TODO: get user into here so we can verify turn order
+            int moveResult = boardUI.getDriver().makeMove(currentUser, fromRow, fromCol, row, col);
+            if(moveResult == 1)
             {
+                if (currentUser.equals(user1)) {    // BreadCrumb: turn order hack
+                    currentUser = user2;            // BreadCrumb: turn order hack
+                } else {                            // BreadCrumb: turn order hack
+                    currentUser = user1;            // BreadCrumb: turn order hack
+                }                                   // BreadCrumb: turn order hack
+                unhighlightSquares(availableMoves);
                 // do the code below
                 // move the piece and unhighlight the board.
                 // create the updated tiles.
@@ -194,10 +131,12 @@ public class MovePieceActionListener {
                 // replace the tiles in the correct array.
                 boardUI.replaceAndUpdateTile(updatedFromTile, fromRow, fromCol, " "); // update the fromTile to show no pieces.
                 boardUI.replaceAndUpdateTile(updatedToTile, row, col, this.pieceName); // update the toTile which will then place the pieces where they need to be.
-                unhighlightSquares(availableMoves);
 
                 boardUI.invalidate(); // refresh the layout.
                 reset(); // reset the move action listener.
+            }
+            else if (moveResult == 0) {
+                System.out.println("Move resulted in checkmate!");
             }
             else {
                 unhighlightSquares(availableMoves); // takes the moves that were created and removes the blue highlights.

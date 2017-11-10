@@ -84,8 +84,8 @@ public class HomescreenActivity extends AppCompatActivity
         boardUI = (BoardUI) findViewById(R.id.chessboard);
 
         // TODO: @Roger remove this because we are hard creating a game and this should not happen! Very important!
-        User user1 = new User();
-        User user2 = new User();
+        User user1 = new User("tmp", "tmp", "white"); // BreadCrumb: turn order hack
+        User user2 = new User("tmp", "tmp", "black");// BreadCrumb: turn order hack
         driver.createGame(user1, user2); // create a game with two random players, pretty important.
         driver.setCurrentGameIndex(0); // TODO: @Team, remove this because it setting the game index to always be 0 and this will not be allowed for our game.
 

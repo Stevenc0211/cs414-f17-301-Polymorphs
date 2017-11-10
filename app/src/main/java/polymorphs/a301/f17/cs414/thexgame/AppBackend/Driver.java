@@ -91,147 +91,17 @@ public final class Driver implements UsernameListObserver { // will implement Ga
         return result;
     }
 
-    // return the color of the current player for the UI to keep track with who is moving.
-    public String getCurrentPlayerColor()
-    {
-        Color color = games.get(currentGameIndex).getCurrentPlayer().getColor(); // gets the color for the user that we are working with.
-
-        if(color == Color.BLACK)
-        {
-            return "black";
-        }
-        else
-        {
-            return "white";
-        }
-
-    }
-
-    /**
-        Grabs all of the available moves for a rook sent in by the getAvailableMoves method.
-        @param rook - the rook that is sent in.
-        @param selectedTile - the tile that was selected by the user on the UI that contains the rook.
-     */
-    private ArrayList<int[]> getRookMoves(Rook rook, Tile selectedTile)
-    {
-
-        ArrayList<int[]> availableMoves = new ArrayList<>();
-
-        // go through every row and col and check if it is a valid move, if so, add to our list of available moves.
-        for(int row = 0; row < 12; row++)
-        {
-            for(int col = 0; col < 12; col++)
-            {
-                if(rook.isValidMove(row, col) == true)
-                {
-                    int moves[] = new int[2];
-                    moves[0] = row;
-                    moves[1] = col;
-                    availableMoves.add(moves); // add the tile to the list of valid tiles.
-                }
-            }
-        }
-
-        return availableMoves;
-    }
-
-    /**
-     Grabs all of the available moves for a rook sent in by the getAvailableMoves method.
-     @param king - the king that is sent in.
-     @param selectedTile - the tile that was selected by the user on the UI that contains the king.
-     */
-    private ArrayList<int[]> getKingMoves(King king, Tile selectedTile)
-    {
-
-        ArrayList<int[]> availableMoves = new ArrayList<>();
-
-        // go through every row and col and check if it is a valid move, if so, add to our list of available moves.
-        for(int row = 0; row < 12; row++)
-        {
-            for(int col = 0; col < 12; col++)
-            {
-                if(king.isValidMove(row, col) == true)
-                {
-                    int moves[] = new int[2];
-                    moves[0] = row;
-                    moves[1] = col;
-                    availableMoves.add(moves); // add the tile to the list of valid tiles.
-                }
-            }
-        }
-
-        return availableMoves;
-    }
-
-    /**
-     Grabs all of the available moves for a rook sent in by the getAvailableMoves method.
-     @param queen - the rook that is sent in.
-     @param selectedTile - the tile that was selected by the user on the UI that contains the rook.
-     */
-    private ArrayList<int[]> getQueenMoves(Queen queen, Tile selectedTile)
-    {
-
-        ArrayList<int[]> availableMoves = new ArrayList<>();
-
-        // go through every row and col and check if it is a valid move, if so, add to our list of available moves.
-        for(int row = 0; row < 12; row++)
-        {
-            for(int col = 0; col < 12; col++)
-            {
-                if(queen.isValidMove(row, col) == true)
-                {
-                    int moves[] = new int[2];
-                    moves[0] = row;
-                    moves[1] = col;
-                    availableMoves.add(moves); // add the tile to the list of valid tiles.
-                }
-            }
-        }
-
-        return availableMoves;
-    }
-
     /*
         This method is used to grab all of the available moves for a piece that the user has clicked.
     */
     public ArrayList<int[]> getAvailableMoves(int row, int col)
     {
-        ArrayList<int[]> availableMoves = new ArrayList<>(); // holds the list of moves that the player is able to make.
-        Tile selectedTile = games.get(currentGameIndex).getBoard().getTile(row, col); // get the tile that was selected by the player.
-
-        if(selectedTile.isOccupied() == true) // tile has a piece.
-        {
-            Piece piece = selectedTile.getPiece(); // grab the piece that this tile has and see what piece it is.
-            if(piece.isAvailable())
-            {
-                // figure out what piece this actually is and find the moves for it.
-                if(piece instanceof Rook)
-                {
-                    Rook rook = (Rook) piece; // piece is a rook
-                    availableMoves = getRookMoves(rook, selectedTile); // grabs the selected tile from the board. Pretty important.
-                    return availableMoves; // return the moves to the UI
-                }
-                else if(piece instanceof Queen)
-                {
-                    Queen queen = (Queen) piece; // piece is a queen.
-                    availableMoves = getQueenMoves(queen, selectedTile); // grab moves for this piece, then return the arraylist.
-                    return availableMoves; // return the moves to the UI.
-                }
-                else if(piece instanceof King)
-                {
-                    King king = (King) piece; // piece is a king.
-                    availableMoves = getKingMoves(king, selectedTile); // grab moves for this piece, then return the arraylist.
-                    return availableMoves;
-                }
-            }
-        }
-        else {
-            System.out.println("The tile does not have a piece on it!");
-            return null; // return a null set in which the UI will not highlight anything.
-        }
-
-        return null; // this should not be reached, but if it is, the UI will not display highlighted tiles.
-
+        Tile from = games.get(currentGameIndex).getBoard().getTile(row, col);
+        if (!from.isOccupied()) return new ArrayList<>();
+        Color currentPlayerColor =  games.get(currentGameIndex).getCurrentPlayer().getColor();
+        Color movedPieceColor = from.getPiece().getColor();
+        if (movedPieceColor != currentPlayerColor) return new ArrayList<>();
+        return games.get(currentGameIndex).getBoard().getAvailableMoves(row, col, games.get(currentGameIndex).getCurrentPlayer());
     }
 
 
