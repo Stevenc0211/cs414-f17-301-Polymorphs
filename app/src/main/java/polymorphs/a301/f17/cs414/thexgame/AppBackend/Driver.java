@@ -88,6 +88,9 @@ public final class Driver implements UsernameListObserver { // will implement Ga
         } else if (result > 1) {
             // book keeping to sync the opponents board with the new game state. Will need to wait until the DB is set up to handle games
         }
+
+        System.out.println("THE RESULT RETURNED FROM DRIVER WAS == " + result);
+
         return result;
     }
 

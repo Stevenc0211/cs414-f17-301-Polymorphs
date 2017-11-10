@@ -1,7 +1,7 @@
 package polymorphs.a301.f17.cs414.thexgame.ui;
 
 /**
- * * Found on https://gist.github.com/Oshuma/3352280 updated and modified for our implementation. ~ Roger
+    This is the TileUI that is in control of each tile within BoardUI. Written and worked on by Roger and Miles.
  */
 
 import android.content.Context;
@@ -24,7 +24,9 @@ public final class TileUI  {
 
     private final Paint squareColor; // color of the square itself.
     private final Paint squareBorder; // color of the boarder of each square (black)
+    private final Paint highlightColor; // color of the highlight that we are working with.
     private Rect tileRect; // holds the rectangle of the tile itself where pieces move to.
+    private Rect highlightRect;  // holds the rectangle that will highlight the board.
 
     // TODO: @miles, @Andy should we allow the Piece class from backend be in here? It sure will make things easier for me to store certain pieces so I can see if this board has a piece or not.
     private boolean hasRook = false;
@@ -128,15 +130,19 @@ public final class TileUI  {
 
         this.squareColor = new Paint();
         this.squareBorder = new Paint();
+        this.highlightColor = new Paint();
 
-
-        //squareColor.setColor(isDark() ? ContextCompat.getColor(context, R.color.Green) : ContextCompat.getColor(context, R.color.Green));
         squareColor.setStyle(Paint.Style.FILL);
         squareColor.setColor(ContextCompat.getColor(context, R.color.Green)); // set the color to be green.
 
         squareBorder.setStyle(Paint.Style.STROKE); // the black lines of the board.
         squareBorder.setColor(Color.BLACK); // color of the stroke itself.
         squareBorder.setStrokeWidth(3);
+
+
+        highlightColor.setStyle(Paint.Style.FILL);
+        highlightColor.setColor(Color.BLUE);
+
 
 
         setOpponentBounds(); // set opponent bounds
@@ -189,8 +195,17 @@ public final class TileUI  {
     // draws our board including tiles and pieces.
     public void draw(Canvas canvas, String pieceName, Context c) // TODO: decide if I need to send in the piece her when I call tile within chessboard so that we can be able to get this working properly.
     {
-        canvas.drawRect(tileRect, squareColor); // canvas requires these two elements here.
-        canvas.drawRect(tileRect, squareBorder); // set the boarder of the squares themselves
+        if(highlightRect != null) // draw the hightlighted squares instead of the normal board sqaures.
+        {
+            canvas.drawRect(highlightRect, highlightColor);
+            canvas.drawRect(highlightRect, squareBorder);
+        }
+        else
+        {
+            canvas.drawRect(tileRect, squareColor); // canvas requires these two elements here.
+            canvas.drawRect(tileRect, squareBorder); // set the boarder of the squares themselves
+        }
+
 
         Bitmap piece = null; // holds the piece that we want to draw.
 
@@ -242,14 +257,14 @@ public final class TileUI  {
                 hasQueen = true;
                 this.pieceName = pieceName;
             }
-            else if(pieceName.equals("highlight")) { // set the color of the highlight.
-
-                piece = decodeSampledBitmapFromResource(c.getResources(), R.drawable.bluesquare, 50,50);
-                hasRook = false;
-                hasKing = false;
-                hasQueen = false;
-                this.pieceName = pieceName;
-            }
+//            else if(pieceName.equals("highlight")) { // set the color of the highlight.
+//
+//                piece = decodeSampledBitmapFromResource(c.getResources(), R.drawable.bluesquare, 50,50);
+//                hasRook = false;
+//                hasKing = false;
+//                hasQueen = false;
+//                this.pieceName = pieceName;
+//            }
 
             canvas.drawBitmap(piece, null, tileRect, null); // draw our bitmap image.
             hasRook = false;
@@ -290,7 +305,10 @@ public final class TileUI  {
         this.tileRect = tileRect;
     }
 
-
+    public void setHighlightRect(final Rect highlightRect)
+    {
+        this.highlightRect = highlightRect;
+    }
 
 
 }

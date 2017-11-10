@@ -48,6 +48,10 @@ public class MovePieceActionListener {
     // takes in the same list of moves and replaces the tile to be that of the normal green square.
     private void unhighlightSquares(ArrayList<int[]> availableMoves)
     {
+        availableMoves.clear(); // remove all of the moves from the available moves in order to reset everything that it should be reset to.
+        boardUI.setHighlightedSquares(availableMoves);
+
+        /* removed this. Again this is part of the old system.
         for(int i = 0; i < availableMoves.size(); i++)
         {
             int row = availableMoves.get(i)[0];
@@ -55,6 +59,7 @@ public class MovePieceActionListener {
             TileUI tile = new TileUI(row, col, boardUI.getContext()); // create the new tile that we need to work with.
             boardUI.replaceAndUpdateTile(tile, row, col, " "); // replace this tile and update it show to that of the tiles.
         }
+        */
         // tell the board to hightlight the squares.
         // boardUI.setHighlightedSquares(availableMoves); // set's the available squares for the board to be able to redraw and highlight the squares as needed.
     }
@@ -62,6 +67,9 @@ public class MovePieceActionListener {
     // This method takes in a list of available moves and tells the boardUI to highlight the board correctly.
     private void highlightSquares(ArrayList<int[]> availableMoves)
     {
+
+        boardUI.setHighlightedSquares(availableMoves); // set the available moves that will tell the board which ui elements should be used to generate the highlighted squares.
+        /* removed for now to test the new square highlights. Just uncomment this to get back to the old system.
         for(int i = 0; i < availableMoves.size(); i++)
         {
             int row = availableMoves.get(i)[0];
@@ -69,6 +77,7 @@ public class MovePieceActionListener {
             TileUI tile = new TileUI(row, col, boardUI.getContext()); // create the new tile that we need to work with.
             boardUI.replaceAndUpdateTile(tile, row, col, "highlight"); // replace this tile and update it show to that of the tiles.
         }
+        */
         // tell the board to hightlight the squares.
         // boardUI.setHighlightedSquares(availableMoves); // set's the available squares for the board to be able to redraw and highlight the squares as needed.
     }
@@ -93,7 +102,6 @@ public class MovePieceActionListener {
             fromCol = col;
             this.pieceName = pieceName;
             availableMoves = boardUI.getDriver().getAvailableMoves(row, col);
-
 
             if(availableMoves.isEmpty())
             {
@@ -137,13 +145,44 @@ public class MovePieceActionListener {
             }
             else if (moveResult == 0) {
                 System.out.println("Move resulted in checkmate!");
+                // TODO: still needs to be handled.
+            }
+            else if( moveResult == -1) // move was invalid
+            {
+                // remove the highlights but don't do anything else.
+                unhighlightSquares(availableMoves);
+                boardUI.invalidate();
+                reset(); // reset the click action listener to allow for the rest of the board to behave in the way that it should
+            }
+            else if( moveResult == 2) // promote black rook to a queen.
+            {
+                TileUI updatedFromTile = new TileUI(fromRow, fromCol, boardUI.getContext()); // update the fromTile using the coordinates.
+                TileUI updatedToTile = new TileUI(row, col, boardUI.getContext()); // create a new tile that will place the new tile into the board moving the pieces.
+
+                System.out.println("A promotion has occurred!");
+
+                if(this.pieceName.equals("wrook")) // check if a white queen had entered into a castle
+                {
+                    System.out.println("White rook was promoted!");
+                    boardUI.replaceAndUpdateTile(updatedFromTile, fromRow, fromCol, " "); // update the fromTile to show no pieces.
+                    boardUI.replaceAndUpdateTile(updatedToTile, row, col, "wqueen"); // update the toTile which will then place the pieces where they need to be.
+                }
+                else if(this.pieceName.equals("brook")) // check if a black queen has entered into a castle.
+                {
+                    System.out.println("Black rook was promoted!");
+                    boardUI.replaceAndUpdateTile(updatedFromTile, fromRow, fromCol, " "); // update the fromTile to show no pieces.
+                    boardUI.replaceAndUpdateTile(updatedToTile, row, col, "bqueen"); // update the toTile which will then place the pieces where they need to be.
+                }
+
+                unhighlightSquares(availableMoves); // remove the highlights.
+                boardUI.invalidate(); // refresh the board layout.
+                reset(); // reset the move action listener so that we are able to get things working.
             }
             else {
                 unhighlightSquares(availableMoves); // takes the moves that were created and removes the blue highlights.
                 boardUI.invalidate(); // refresh the layout.
+                reset(); // reset the move action listener.
             }
-
-
 
         }
     }

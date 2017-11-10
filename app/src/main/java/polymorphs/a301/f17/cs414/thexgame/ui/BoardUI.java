@@ -2,6 +2,7 @@ package polymorphs.a301.f17.cs414.thexgame.ui;
 
 /**
  * Found on https://gist.github.com/Oshuma/3352280 updated and modified for our implementation. ~Roger
+ * This was greatly worked on and modified by Roger and Miles to work with the AppBackend and ensures that as little code goes into the actual UI elements as possible
  */
 
 import android.content.Context;
@@ -133,6 +134,23 @@ public final class BoardUI extends View {
         }
     }
 
+    // Checks if the tile needs to be drawn again to when the board is rewritten.
+    public boolean toBeHighlighted(int row, int col)
+    {
+        for(int i = 0; i < highlightedSquares.size(); i++)
+        {
+            int rowToCheck = highlightedSquares.get(i)[0]; // get the row.
+            int colToCheck = highlightedSquares.get(i)[1]; // get the col.
+
+            if(rowToCheck == row && colToCheck == col)
+            {
+                return true; // this tile needs to be highlighted.
+            }
+        }
+
+        return false; // no square was found that was in need to be highlighted.
+    }
+
     // Makes calls to tileUIs and tells it to graw the pieces and will eventually tell it what to do in terms of what to build and what not.
     @Override
     protected void onDraw(final Canvas canvas) {
@@ -159,8 +177,28 @@ public final class BoardUI extends View {
                         yCoord + squareSize   // bottom
                 );
 
+                final Rect highlightRect = new Rect(
+                        xCoord,               // left
+                        yCoord,               // top
+                        xCoord + squareSize,  // right
+                        yCoord + squareSize   // bottom
+                );
+
+
                 tileUIs[rows][cols].setTileRect(tileRect); // set the tileRect which controls coloring of the tiles.
+
+                if(toBeHighlighted(rows, cols)) // check if the tile needs to be highlighted when the board is drawn again.
+                {
+                    System.out.println("tile needs to be highlighted right now ");
+                    tileUIs[rows][cols].setHighlightRect(highlightRect);
+                }
+                else
+                {
+                    tileUIs[rows][cols].setHighlightRect(null); // set null so that the original board colors are written.
+                }
                 // TODO: add the code here to check if this board ui class has just been started, if so, then we want to setup the game, otherwise we do no want to reset the pieces.
+
+                // TODO: add the code here to check to see if the tiles need to be the highlighted tiles
 
 
                 // TODO: Need to make use of the Driver objec that will be sent in to help us generate the UI with the correct UI elements to ensure that everything is working out the way it should!
@@ -170,7 +208,6 @@ public final class BoardUI extends View {
                     // look for all of the pieces and ensure that the pieces have a place to end up on the castle wall.
                     if(tileUIs[rows][cols].isOpponentKingLoc()) {
                         tileUIs[rows][cols].draw(canvas, "bking", getContext()); // set black king inside opponent's castle.
-
                     }
                     else if(tileUIs[rows][cols].isOpponentCastle()) {
                         tileUIs[rows][cols].draw(canvas, "brook", getContext()); // set black rooks on opponent's castle.
@@ -213,8 +250,9 @@ public final class BoardUI extends View {
                 }
                 else if(tileUIs[rows][cols].getPieceName().equals("highlight") ) // we have squares that we need to highlight.
                 {
-                    tileUIs[rows][cols].draw(canvas, "highlight", getContext());
-                    //System.out.println("we are highlighting squares is row = " + rows);
+                   // tileUIs[rows][cols].draw(canvas, "highlight", getContext()); removed for now to test the tile hightlight system.
+
+                    System.out.println("we are highlighting squares is row = " + rows);
                     // this causes my thing to be incorrect and this is a problem.!
                    // highlightTiles(canvas, rows, cols); // highlight the squares.
                 }
