@@ -104,17 +104,59 @@ public class TestDriver {
         testDriver.createGame(user1,user2);
         testDriver.setCurrentGameIndex(0);
     }
-    // NOTE: user.getName() is used for the registration key
-    private void addGameToDriverWithRegistration(User user1, User user2) throws IllegalArgumentException {
-        testDriver.usernameAdded(user1.getNickname(), user1.getName());
-        testDriver.usernameAdded(user2.getNickname(), user2.getName());
-        testDriver.createGame(user1, user2);
-    }
 
     @Test
     public void testMakeValidMove() {
         setupDriver();
         int result = testDriver.makeMove(user1, 7, 3, 4, 3);
-        assertTrue("ERROR: first player should be able to move top center white rook up 3 tiles", result == 1);
+        assertTrue("first player should be able to move top center white rook up 3 tiles", result == 1);
+    }
+
+    @Test
+    public void testMakeInvalidMove() {
+        setupDriver();
+        int result = testDriver.makeMove(user2, 7, 3, 4, 3);
+        assertTrue("Black should not be able to move on whites turn", result == -1);
+    }
+
+    @Test
+    public void testMakeMoveCheckmate() {
+        setupDriver();
+        testDriver.makeMove(user2, 7, 3, 4, 3);
+        testDriver.makeMove(user1,7,2,2,2);
+        testDriver.makeMove(user2,4,7,11,7);
+        testDriver.makeMove(user1,7,3,4,3);
+        testDriver.makeMove(user2,3,7,10,7);
+        testDriver.makeMove(user1,7,4,7,5);
+        testDriver.makeMove(user2, 2,7,9,7);
+        testDriver.makeMove(user1,7,5,7,7);
+        testDriver.makeMove(user2, 9,7, 9,8);
+        assertEquals("Move should result in checkmate, white 8,4 -> 3,4",0 ,testDriver.makeMove(user1, 8,4, 3,4));
+    }
+
+    @Test
+    public void testGameSeparationRepeatMove() {
+        setupDriver();
+        testDriver.createGame(user1,user2);
+        testDriver.setCurrentGameIndex(0);
+        testDriver.makeMove(user1, 7, 3, 4, 3);
+        testDriver.setCurrentGameIndex(1);
+        assertEquals("User should be able to make the same starting move in two different games", 1, testDriver.makeMove(user1, 7, 3, 4, 3));
+    }
+
+    @Test
+    public void testGameSeparationInverseColor() {
+        setupDriver();
+        testDriver.createGame(user2,user1);
+        testDriver.setCurrentGameIndex(0);
+        testDriver.makeMove(user1, 7, 3, 4, 3);
+        testDriver.setCurrentGameIndex(1);
+        assertEquals("User is black in game 2, should not be able to make move", -1, testDriver.makeMove(user1, 7, 3, 4, 3));
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testGameIndexOutOfBounds() {
+        setupDriver();
+        testDriver.setCurrentGameIndex(20);
     }
 }
