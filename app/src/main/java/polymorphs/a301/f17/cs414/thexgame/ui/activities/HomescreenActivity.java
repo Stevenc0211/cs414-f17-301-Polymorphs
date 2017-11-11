@@ -24,6 +24,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
 import polymorphs.a301.f17.cs414.thexgame.ui.BoardUI;
 import polymorphs.a301.f17.cs414.thexgame.R;
@@ -59,6 +60,8 @@ public class HomescreenActivity extends AppCompatActivity
     private final int SET_USERNAME = 9001; // details what we are doing for the username.
 
 
+    private Driver driver = new Driver(); // the driver that we will be working with within homescreen activity.
+
     // These will be populated by the shared preferences.
     private String email; // email of the user.
     private String name; // name of the user.
@@ -79,11 +82,22 @@ public class HomescreenActivity extends AppCompatActivity
     protected void setupGamePager()  {
 
         boardUI = (BoardUI) findViewById(R.id.chessboard);
+
+        // TODO: @Roger remove this because we are hard creating a game and this should not happen! Very important!
+        User user1 = new User("tmp", "tmp", "white"); // BreadCrumb: turn order hack
+        User user2 = new User("tmp", "tmp", "black");// BreadCrumb: turn order hack
+        driver.createGame(user1, user2); // create a game with two random players, pretty important.
+        driver.setCurrentGameIndex(0); // TODO: @Team, remove this because it setting the game index to always be 0 and this will not be allowed for our game.
+
+        System.out.println("SETTING THE DRIVER FOR BOARDUI");
+        boardUI.setDriver(driver); // set the driver for the boardUI to be working with.
+        boardUI.setHomescreenActivity(this); // send a copy of the homescreen activity to allow for certain displaying of certain UI elements.
+
         gamePager = (ViewPager) findViewById(R.id.gamesListPager); // get the game pager that will basically fill out the games!
 
         // todo: we should have a list of our boards pulled from our database with the information about the piece places. This is pretty important!
         games.add(boardUI); // add once.
-        games.add(boardUI); // add twice.
+       // games.add(boardUI); // add twice.
 
         gamePagerAdapter = new GamePagerAdapter(games, inGameUI); // send in the games that we want to work with that will allow us to send our games to the adapter to update the ViewPager (to swipe horizontally)
         // TODO: create the Gamepage listener that will be in charge of getting this thing working correctly.
