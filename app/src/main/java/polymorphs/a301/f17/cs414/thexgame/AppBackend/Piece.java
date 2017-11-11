@@ -134,8 +134,23 @@ abstract class Piece {
         return result;
     }
 
+    private String getType(Piece piece){
+        if(piece instanceof Rook){
+            return "Rook";
+        }
+        else if(piece instanceof Queen){
+            return "Queen";
+        }
+        else if(piece instanceof King){
+            return "King";
+        }
+        else{
+            return null;
+        }
+    }
+
     public String toString(){
-        return myRow + ", " + myCol + ", " + available + ", " + color;
+        return getType(this) + "," + myRow + "," + myCol + "," + available + "," + color;
     }
 
 }

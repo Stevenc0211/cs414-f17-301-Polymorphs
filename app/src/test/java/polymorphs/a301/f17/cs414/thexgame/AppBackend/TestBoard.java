@@ -26,7 +26,7 @@ public class TestBoard {
     @Before
     public void setup() {
         b = new Board();
-        white = new Player(new User("test", "test", "user1"), Color.WHITE);
+        white = new Player("name", Color.WHITE);
     }
 
 
@@ -315,7 +315,7 @@ public class TestBoard {
 
     @Test
     public void testInitWhiteRookPlacement() {
-        Player black = new Player(new User("1", "2", "3"), Color.BLACK);
+        Player black = new Player("name", Color.BLACK);
         b = new Board(white,black);
         int[][] coordinates = {{7,2},{7,3},{7,4},{8,2},{8,4},{9,2},{9,3},{9,4}};
         boolean test;
@@ -329,7 +329,7 @@ public class TestBoard {
 
     @Test
     public void testInitWhiteKingPlacement() {
-        Player black = new Player(new User("1", "2", "3"), Color.BLACK);
+        Player black = new Player("name", Color.BLACK);
         b = new Board(white,black);
         boolean test = b.getTile(8,3).isOccupied();
         test = test & b.getTile(8,3).getPiece().getColor() == Color.WHITE;
@@ -339,7 +339,7 @@ public class TestBoard {
 
     @Test
     public void testInitBlackRookPlacement() {
-        Player black = new Player(new User("1", "2", "3"), Color.BLACK);
+        Player black = new Player("name", Color.BLACK);
         b = new Board(white,black);
         int[][] coordinates = {{2,7},{2,8},{2,9},{3,7},{3,9},{4,7},{4,8},{4,9}};
         boolean test;
@@ -353,7 +353,7 @@ public class TestBoard {
 
     @Test
     public void testInitBlackKingPlacement() {
-        Player black = new Player(new User("1", "2", "3"), Color.BLACK);
+        Player black = new Player("name", Color.BLACK);
         b = new Board(white,black);
         boolean test = b.getTile(3,8).isOccupied();
         test = test & b.getTile(3,8).getPiece().getColor() == Color.BLACK;

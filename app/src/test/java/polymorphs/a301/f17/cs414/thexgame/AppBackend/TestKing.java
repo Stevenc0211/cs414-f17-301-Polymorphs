@@ -86,7 +86,7 @@ public class TestKing {
     @Test
     public void testToString(){
         King king = new King(3,8,true,Color.BLACK);
-        assertEquals("3, 8, true, BLACK",king.toString());
+        assertEquals("King,3,8,true,BLACK",king.toString());
     }
 
     @Test
@@ -97,5 +97,19 @@ public class TestKing {
         for (ArrayList<Tile> movePath : temp) {
             assertTrue("getAllMoves returned and invalid tile", king.isValidMove(movePath.get(movePath.size()-1).getRow(),movePath.get(movePath.size()-1).getCol()));
         }
+    }
+
+    @Test
+    public void testEqualsMethodTrue(){
+        King king = new King(3,3,true,Color.BLACK);
+        King other = new King(3,3,true,Color.BLACK);
+        assertTrue("Kings should be equal",king.equals(other));
+    }
+
+    @Test
+    public void testEqualsMethodFalse(){
+        King king = new King(3,3,true,Color.BLACK);
+        King other = new King(3,3,true,Color.WHITE);
+        assertFalse("Kings should not be equal",king.equals(other));
     }
 }
