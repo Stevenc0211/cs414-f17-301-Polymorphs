@@ -25,11 +25,11 @@ class Game {
         this.board = new Board(p1,p2);
     }
 
-    public String getCurrentPlayerNickname(){
+    String getCurrentPlayerNickname(){
         return currentPlayer.getNickname();
     }
 
-    public Player getCurrentPlayer() {
+    Player getCurrentPlayer() {
         return currentPlayer;
     }
 
@@ -41,9 +41,9 @@ class Game {
         return p2;
     }
 
-    public String getP1Nickname() { return p1.getNickname();}
+    String getP1Nickname() { return p1.getNickname();}
 
-    public String getP2Nickname() { return p2.getNickname();}
+    String getP2Nickname() { return p2.getNickname();}
 
     public Board getBoard(){
         return board;
@@ -59,7 +59,7 @@ class Game {
      * @param toCol- the y coordinate of the moves ending tile
      * @return -1 if the move was invalid, 1 if the move was successful, 0 if the move ended the game
      */
-    public int makeMove(String nickname, int fromRow, int fromCol, int toRow,int toCol)
+    int makeMove(String nickname, int fromRow, int fromCol, int toRow,int toCol)
     {
         Player activePlayer = getPlayerForNickname(nickname);
         if (activePlayer == null) return -1;
@@ -140,7 +140,7 @@ class Game {
     /**
      * Updates the game with a snap shot
      */
-    public void updateFromSnapshot(GameSnapshot snapshot){
+    void updateFromSnapshot(GameSnapshot snapshot){
         //set nickname of players
         p1.setNickname(snapshot.getNicknameWhite());
         p2.setNickname(snapshot.getNicknameBlack());

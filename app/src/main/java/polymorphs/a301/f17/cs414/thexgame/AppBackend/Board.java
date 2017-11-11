@@ -41,7 +41,7 @@ class Board {
      * @param player - the player with pieces to add
      * @throws IllegalArgumentException - if any of the pieces from the player would be added to an occupied tile or tile outside the board bounds
      */
-    public void addPlayerPieces(Player player) throws IllegalArgumentException {
+    void addPlayerPieces(Player player) throws IllegalArgumentException {
         for (Piece piece : player.getPieces()) {
             if (!piece.isAvailable()) continue;
             addPiece(piece);
@@ -124,16 +124,16 @@ class Board {
      * @param col- the column of the desired tile
      * @return the tile if row and col are in the bounds of the board, null if not
      */
-    public Tile getTile(int row,int col){
+    Tile getTile(int row,int col){
         if (row < 0 || row > 11 || col < 0 || col > 11) return null;
         return boardTiles[row][col];
     }
 
-    public int getRows() {
+    int getRows() {
         return 12;
     }
 
-    public int getColumns(){
+    int getColumns(){
         return 12;
     }
 
@@ -228,7 +228,7 @@ class Board {
      *
      * made public to allow for UI to highlight the king that is in check, remove if there's a better way. ~Roger
      */
-     public boolean kingInCheck(King king) {
+     boolean kingInCheck(King king) {
         if (checkEngine(king,1,0)) return true; // check for threat below king (row +)
         if (checkEngine(king,-1,0)) return true; // check for threat above king (row -)
         if (checkEngine(king,0,1)) return true; // check for threat right of king (col +)
@@ -292,12 +292,7 @@ class Board {
             return false;
         }
         from.occupyTile(null);
-        if (kingInCheck(king)) {
-            result = true;
-        } else {
-            result = false;
-        }
-
+        result = kingInCheck(king);
         from.occupyTile(savedFromPiece);
         to.occupyTile(savedToPiece);
         if (savedToPiece != null) {
@@ -311,7 +306,7 @@ class Board {
      * @param player - the player to check
      * @return true if the player is in checkmate, false if otherwise
      */
-    public boolean inCheckmate(Player player) {
+    boolean inCheckmate(Player player) {
         King king = player.getKing();
         if (!kingInCheck(king)) return false;
         Tile lastTile;
