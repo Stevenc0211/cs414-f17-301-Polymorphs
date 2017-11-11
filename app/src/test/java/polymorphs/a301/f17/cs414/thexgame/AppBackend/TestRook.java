@@ -51,6 +51,20 @@ public class TestRook {
     @Test
     public void testToString(){
         Rook rook = new Rook(4,3,true,Color.WHITE);
-        assertEquals("4, 3, true, WHITE", rook.toString());
+        assertEquals("Rook,4,3,true,WHITE", rook.toString());
+    }
+
+    @Test
+    public void testEqualsMethodTrue(){
+        Rook rook = new Rook(3,3,true,Color.BLACK);
+        Rook other = new Rook(3,3,true,Color.BLACK);
+        assertTrue("Rooks should be equal",rook.equals(other));
+    }
+
+    @Test
+    public void testEqualsMethodFalse(){
+        Rook rook = new Rook(3,3,true,Color.BLACK);
+        Rook other = new Rook(2,1,true,Color.BLACK);
+        assertFalse("Rooks should not be equal",rook.equals(other));
     }
 }

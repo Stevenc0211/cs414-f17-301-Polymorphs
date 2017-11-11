@@ -242,6 +242,13 @@ public class TestPiece {
 
     @Test
     public void testToString(){
+        King king = new King(4,4,true,Color.BLACK);
+        assertEquals("King,4,4,true,BLACK",king.toString());
+    }
 
+    @Test
+    public void testToStringWhite(){
+        Queen queen = new Queen(1,6,false,Color.WHITE);
+        assertEquals("Queen,1,6,false,WHITE",queen.toString());
     }
 }
