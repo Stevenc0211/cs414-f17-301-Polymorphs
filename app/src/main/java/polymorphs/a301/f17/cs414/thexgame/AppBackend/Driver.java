@@ -40,7 +40,10 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
             games.put(key,game);
         }
         else{
-            throw new IllegalArgumentException("ERROR: both passed users must be registered");
+            // MANUALLY ADDING THIS CODE WHERE WE BYPASS THE REGISTRATION TO GET USERS INTO THE GAME.
+             Game game = new Game(nickname1, nickname2);
+             games.put("key", game);
+            // throw new IllegalArgumentException("ERROR: both passed users must be registered");
         }
     }
 
@@ -87,6 +90,37 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
             // book keeping to sync the opponents board with the new game state. Will need to wait until the DB is set up to handle games
         }
         return result;
+    }
+
+    // returns the name of the player who won the game!
+    public String getCurrentPlayerNickname()
+    {
+        return games.get(currentGameKey).getCurrentPlayerNickname();
+    }
+
+    // tells the calling method if the user we are looking for is in check
+    public int[] isInCheck()
+    {
+        King king = games.get(currentGameKey).getCurrentPlayer().getKing(); // get the king for the current player.
+        if(games.get(currentGameKey).getBoard().kingInCheck(king)) // if the king is in check.
+        {
+            int[] coords = new int[2];
+            coords[0] = king.getRow();
+            coords[1] = king.getCol();
+            return coords; // returning this will tell the UI that the game is in not in check.
+        }
+        return null; // return null saying that this king is not in check.
+    }
+
+
+    public ArrayList<int[]> getAvailableMoves(int row, int col)
+    {
+        Tile from = games.get(currentGameKey).getBoard().getTile(row, col);
+        if (!from.isOccupied()) return new ArrayList<>();
+        Color currentPlayerColor =  games.get(currentGameKey).getCurrentPlayer().getColor();
+        Color movedPieceColor = from.getPiece().getColor();
+        if (movedPieceColor != currentPlayerColor) return new ArrayList<>();
+        return games.get(currentGameKey).getBoard().getAvailableMoves(row, col, games.get(currentGameKey).getCurrentPlayer());
     }
 
     /**
