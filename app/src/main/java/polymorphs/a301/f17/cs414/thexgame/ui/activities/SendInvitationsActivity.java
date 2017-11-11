@@ -9,10 +9,11 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import polymorphs.a301.f17.cs414.thexgame.Invitation;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Invite;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListObserver;
+import polymorphs.a301.f17.cs414.thexgame.ui.InviteDecorator;
 import polymorphs.a301.f17.cs414.thexgame.ui.adapters.InviteListAdapter;
 
 /**
@@ -23,7 +24,7 @@ import polymorphs.a301.f17.cs414.thexgame.ui.adapters.InviteListAdapter;
 public class SendInvitationsActivity extends Activity implements UsernameListObserver {
 
     // TODO: miles you will want to send the data base stuff here you will want to send in the list from the data base, i.e. an ArrayList of whatever object. It does have to be an arraylist.
-    private ArrayList<Invitation> allInvites = new ArrayList<>(); // list of database items that we are working with.
+    private ArrayList<InviteDecorator> allInvites = new ArrayList<>(); // list of database items that we are working with.
     private InviteListAdapter inviteListAdapter; // the adapter that will populate the invite list.
     private HashMap<String, Integer> inviteIdxByDBKey = new HashMap<>();
     // removed for now --> private final int SEND_INVITES = 4000; // this is the request code for sending invites to players very important.
@@ -39,7 +40,7 @@ public class SendInvitationsActivity extends Activity implements UsernameListObs
 
                 for (int idx = 0; idx < allInvites.size(); idx++) {
                     if (inviteListAdapter.getItem(idx).isSelected()) {
-                        DBIOCore.sendInvite(allInvites.get(idx));
+                        DBIOCore.sendInvite(allInvites.get(idx).unDecorate());
                     }
                 }
 
@@ -49,7 +50,7 @@ public class SendInvitationsActivity extends Activity implements UsernameListObs
 
         // Setup the listview.
         ListView inviteList = (ListView) findViewById(R.id.inviteList);
-        inviteListAdapter = new InviteListAdapter(getApplicationContext(), R.layout.item, new ArrayList<Invitation>());
+        inviteListAdapter = new InviteListAdapter(getApplicationContext(), R.layout.item, new ArrayList<InviteDecorator>());
         inviteList.setAdapter(inviteListAdapter);
         inviteListAdapter.notifyDataSetChanged(); // tell the list that the items have updated.
     }
@@ -70,9 +71,9 @@ public class SendInvitationsActivity extends Activity implements UsernameListObs
     @Override
     public void usernameAdded(String addedUsername, String precedingUsernameKey) {
         if (!addedUsername.equals(DBIOCore.getCurrentUserUsername())) {
-            Invitation invite = new Invitation(DBIOCore.getCurrentUserUsername(), addedUsername);
-            allInvites.add(invite);
-            inviteListAdapter.add(invite);
+            Invite invite = new Invite(DBIOCore.getCurrentUserUsername(), addedUsername);
+            allInvites.add(new InviteDecorator(invite));
+            inviteListAdapter.add(new InviteDecorator(invite));
             int idx = allInvites.size()-1;
             inviteIdxByDBKey.put(precedingUsernameKey, idx);
             inviteListAdapter.notifyDataSetChanged();

@@ -9,16 +9,18 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import polymorphs.a301.f17.cs414.thexgame.Invitation;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Invitation;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Invite;
 import polymorphs.a301.f17.cs414.thexgame.R;
+import polymorphs.a301.f17.cs414.thexgame.ui.InviteDecorator;
 
 /**
  * Created by steve-0 on 10/17/17. Updated and commented by Roger.
  */
 
-public class InviteListAdapter extends ArrayAdapter<Invitation> {
+public class InviteListAdapter extends ArrayAdapter<InviteDecorator> {
 
-    public InviteListAdapter(Context context, int resource, List<Invitation> invites){
+    public InviteListAdapter(Context context, int resource, List<InviteDecorator> invites){
         super(context, resource, invites);
     }
 
@@ -36,7 +38,7 @@ public class InviteListAdapter extends ArrayAdapter<Invitation> {
             v.setSelected(false);
         }
 
-        Invitation invite = getItem(position); // grab the game string that we are working with.
+        InviteDecorator invite = getItem(position); // grab the game string that we are working with.
 
         // todo: Team, watch what is happening here, this is how we get the populated list to show the name of the people we want to invite to show up in the list view.
         TextView userToInvite = (TextView) v.findViewById(R.id.item); // notice that the name of the TextView in the .xml file is also called item. Bad practice, but this file is going to be removed anyways.

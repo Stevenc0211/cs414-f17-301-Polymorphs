@@ -47,12 +47,6 @@ public class CreateNewGameButtonListener implements View.OnClickListener, UserOb
                 invitePlayersDialog.dismiss(); // close the invitePlayersDialog box.
 
                 Intent sendInvitesIntent = new Intent(homescreenActivity, SendInvitationsActivity.class);
-//                Bundle args = new Bundle(); // bundle to send to SendInvitationsActivity
-//                ArrayList<String> users = new ArrayList<>( usernames.values() );
-//                args.putStringArrayList("usernames", users);
-//                args.putString("currentUser", currentUser.getNickname());
-//                sendInvitesIntent.putExtra("args", args); // put the bundle into the intent to be grabbed.
-
 
                 homescreenActivity.startActivity(sendInvitesIntent); // start the activity.
             }

@@ -12,7 +12,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import polymorphs.a301.f17.cs414.thexgame.Invitation;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Invite;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.persistence.InviteListObserver;
@@ -28,7 +28,7 @@ import polymorphs.a301.f17.cs414.thexgame.ui.adapters.InvitationsListAdapter;
 
 public class NotificationsFragment extends Fragment implements InviteListObserver{
 
-    private HashMap<String, Invitation> invitationsData = new HashMap<>(); // todo: we will likely want to change this to an invitations class. For now I am going to use strings just for us to have a UI up and running!
+    private HashMap<String, Invite> invitationsData = new HashMap<>(); // todo: we will likely want to change this to an invitations class. For now I am going to use strings just for us to have a UI up and running!
     private ArrayList<String> eventsData = new ArrayList<>(); // TODO: This needs to be pulled from the database so that users can be able to get information which is pretty important for us to get this working!
 
     private ListView invitationsList;  // holds the invitations list.
@@ -86,7 +86,7 @@ public class NotificationsFragment extends Fragment implements InviteListObserve
     }
 
     @Override
-    public void inviteAdded(Invitation addedInvite, String precedingInviteKey) {
+    public void inviteAdded(Invite addedInvite, String precedingInviteKey) {
         invitationsListAdapter.add(addedInvite);
         invitationsData.put(precedingInviteKey, addedInvite);
         invitationsListAdapter.notifyDataSetChanged();
@@ -96,7 +96,7 @@ public class NotificationsFragment extends Fragment implements InviteListObserve
     }
 
     @Override
-    public void inviteChanged(Invitation changedInvite, String precedingInviteKey) {
+    public void inviteChanged(Invite changedInvite, String precedingInviteKey) {
         invitationsListAdapter.remove(invitationsData.get(precedingInviteKey));
         invitationsData.put(precedingInviteKey, changedInvite);
         invitationsListAdapter.add(changedInvite);
@@ -107,7 +107,7 @@ public class NotificationsFragment extends Fragment implements InviteListObserve
     }
 
     @Override
-    public void inviteRemoved(Invitation removedInvite) {
+    public void inviteRemoved(Invite removedInvite) {
         invitationsListAdapter.remove(removedInvite);
         String rmKey = "";
         for (String key : invitationsData.keySet()) {

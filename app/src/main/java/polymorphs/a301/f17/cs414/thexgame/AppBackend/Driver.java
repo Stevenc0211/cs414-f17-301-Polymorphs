@@ -50,7 +50,7 @@ public final class Driver implements UsernameListObserver { // will implement Ga
         else{
 
             // MANUALLY ADDING THIS CODE WHERE WE BYPASS THE REGISTRATION TO GET USERS INTO THE GAME.
-            Game game = new Game(player1, player2);
+            Game game = new Game(nicknameWhite, nicknameBlack);
             games.add(game);
 
             //throw new IllegalArgumentException("ERROR: both passed users must be registered");

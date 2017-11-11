@@ -35,6 +35,11 @@ class Game {
         return nicknameB;
     }
 
+    public Player getCurrentPlayer()
+    {
+        return currentPlayer;
+    }
+
     public Board getBoard(){
         return board;
     }
