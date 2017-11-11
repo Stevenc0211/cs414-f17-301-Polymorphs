@@ -21,6 +21,7 @@ class Tile {
         return piece;
     }
 
+
     public int getRow() {
         return row;
     }
@@ -52,10 +53,9 @@ class Tile {
      * that piece will be set to unavailable and will be replaced with the passed piece.
      * NOTE: the piece row and column will be updated with this tiles row and column
      * @param piece - the piece to place on the tile
-     * @throws IllegalArgumentException - if a piece of the same color as the passed piece is all ready on the tile
+     * @throws IllegalArgumentException - if a piece of the same color as the passed piece is allready on the tile
      */
     public void occupyTile(Piece piece) throws IllegalArgumentException {
-        //if tile is currently occupied with another piece and is not the same color
         if (piece != null) {
             if(this.piece != null && this.piece.getColor() != piece.getColor()){
                 this.piece.setAvailable(false);
@@ -67,5 +67,6 @@ class Tile {
         }
         this.piece = piece;
     }
+
 
 }

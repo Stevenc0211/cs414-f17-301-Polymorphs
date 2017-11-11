@@ -29,6 +29,11 @@ class Game {
         this.board = new Board(p1,p2);
     }
 
+    public Player getCurrentPlayer()
+    {
+        return currentPlayer;
+    }
+
     public User getUser1(){
         return user1;
     }
@@ -53,15 +58,15 @@ class Game {
      */
     public int makeMove(User user, int fromRow, int fromCol, int toRow,int toCol)
     {
+        // TODO: UNCOMMENT!! this is what restricts turn order
         Player activePlayer = getPlayerForUser(user);
         if (activePlayer == null) return -1;
-
         if (!this.currentPlayer.equals(activePlayer)) return -1;
 
+        boolean promotionOccurred = false; // default to no promotion.
         if (board.isValidMove(activePlayer , fromRow, fromCol, toRow, toCol))
         {
-
-            movePiece(fromRow, fromCol, toRow, toCol);
+            promotionOccurred = movePiece(fromRow, fromCol, toRow, toCol);
             if (currentPlayer == p1) {
                 currentPlayer = p2;
             } else {
@@ -70,6 +75,12 @@ class Game {
             if (board.inCheckmate(currentPlayer)) {
                 return 0;
             }
+
+            if(promotionOccurred) // a promotion has occured.
+            {
+                return 2;
+            }
+
             return 1;
         } else {
             return -1;
@@ -83,22 +94,30 @@ class Game {
      * @param toRow - the row where the move ends
      * @param toCol - the column where the move ends
      */
-    private void movePiece(int fromRow, int fromCol, int toRow, int toCol) {
+    private boolean movePiece(int fromRow, int fromCol, int toRow, int toCol) {
         Tile from = board.getTile(fromRow, fromCol);
         Tile to = board.getTile(toRow, toCol);
         to.occupyTile(from.getPiece()); // this will also update the coordinates of the piece
         from.occupyTile(null);
-        if (from.getPiece() instanceof Rook) {
-            if (from.getPiece().getColor() == Color.WHITE) {
-                if (from.getTileStatus() == Status.INSIDE_BLACK) {
-                    from.occupyTile(currentPlayer.promoteRook((Rook)from.getPiece()));
+        if (to.getPiece() instanceof Rook) {
+            if (to.getPiece().getColor() == Color.WHITE) {
+                if (to.getTileStatus() == Status.INSIDE_BLACK) {
+                    Queen newQueen = currentPlayer.promoteRook((Rook)to.getPiece());
+                    to.occupyTile(null);
+                    to.occupyTile(newQueen);
+                    return true; // tell make move to return 2.
                 }
             } else {
-                if (from.getTileStatus() == Status.INSIDE_WHITE) {
-                    from.occupyTile(currentPlayer.promoteRook((Rook)from.getPiece()));
+                if (to.getTileStatus() == Status.INSIDE_WHITE) {
+                    Queen newQueen = currentPlayer.promoteRook((Rook)to.getPiece());
+                    to.occupyTile(null);
+                    to.occupyTile(newQueen);
+                    return true; // tell make move to return 2.
                 }
             }
         }
+
+        return false; // if no checks are hit to return true, then return false, no promotion occurred.
     }
 
     /**

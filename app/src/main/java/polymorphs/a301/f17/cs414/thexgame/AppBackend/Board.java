@@ -66,7 +66,6 @@ class Board {
         }
         boardTiles[piece.getRow()][piece.getCol()].occupyTile(piece);
     }
-    //todo @Andy, do we still need to initialize the castle wall from within Board? -Steven
 
     private void initializeCastleWall(){
         getTile(1,7).setTileStatus(Status.WALL_BLACK);
@@ -161,24 +160,30 @@ class Board {
 
         if (moveResultsInCheck(player.getKing(),fromRow,fromCol,toRow,toCol)) return false;
 
-        return validateMovePath(p.getMovePath(this,toRow,toCol), p.getColor());
+        return validateMovePath(p.getMovePath(this,toRow,toCol), player);
     }
 
     /**
-     * Checks a given movePath to see if the move is valid. A move path is invalid if it moves through a piece or if the ending
-     * tile is occupied by a friendly piece
+     * Checks a given movePath to see if the move is valid. A move path is invalid if it moves through a piece, if the ending
+     * tile is occupied by a friendly piece, if the move results in check or if a king is moving and the move fails isValidKingMove
      * @param movePath - a move path from a call to Piece.getMovePath
      * @return true if the move path is valid
      */
-    private boolean validateMovePath(ArrayList<Tile> movePath, Color friendlyColor) {
+    private boolean validateMovePath(ArrayList<Tile> movePath, Player movingPlayer) {
         if (movePath == null) return false;
         Tile firstTile = movePath.get(0);
         if (!firstTile.isOccupied()) return false;
+        Tile lastTile = movePath.get(movePath.size()-1);
+        if (firstTile.getPiece() instanceof King) {
+            if (!isValidKingMove(firstTile.getRow(), firstTile.getCol(), lastTile.getRow(), lastTile.getCol())){
+                return false;
+            }
+        }
+        if (moveResultsInCheck(movingPlayer.getKing(), firstTile.getRow(), firstTile.getCol(), lastTile.getRow(), lastTile.getCol())) return false;
         for (int idx = 1; idx < movePath.size()-1; idx++) { // for all save first and last tile
             if (movePath.get(idx).isOccupied()) return false;
         }
-        Tile lastTile = movePath.get(movePath.size()-1);
-        return validCapture(firstTile,lastTile,friendlyColor);
+        return validCapture(firstTile,lastTile,movingPlayer.getColor());
     }
 
     /** Helper method for validateMovePath
@@ -219,8 +224,10 @@ class Board {
      * Given a king piece decides if the king is in check.
      * @param king - the king to check
      * @return true if the king is in check, false if otherwise
+     *
+     * made public to allow for UI to highlight the king that is in check, remove if there's a better way. ~Roger
      */
-    private boolean kingInCheck(King king) {
+    public boolean kingInCheck(King king) {
         if (checkEngine(king,1,0)) return true; // check for threat below king (row +)
         if (checkEngine(king,-1,0)) return true; // check for threat above king (row -)
         if (checkEngine(king,0,1)) return true; // check for threat right of king (col +)
@@ -278,7 +285,11 @@ class Board {
         Piece savedFromPiece = from.getPiece();
         Piece savedToPiece = to.getPiece();
 
-        to.occupyTile(from.getPiece());
+        try {
+            to.occupyTile(from.getPiece());
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
         from.occupyTile(null);
         if (kingInCheck(king)) {
             result = true;
@@ -308,7 +319,7 @@ class Board {
             if (!piece.isAvailable()) continue;;
             allMovePaths = piece.getAllMovePaths(this);
             for (ArrayList<Tile> movePath : allMovePaths) {
-                if (!validateMovePath(movePath, player.getColor())) continue;
+                if (!validateMovePath(movePath, player)) continue;
                 lastTile = movePath.get(movePath.size()-1);
                 if (piece instanceof King) {
                     if(!isValidKingMove(piece.getRow(),piece.getCol(),lastTile.getRow(),lastTile.getCol())) continue;
@@ -345,4 +356,33 @@ class Board {
         }
         return false;
     }
+
+    /**
+     * Returns the valid move coordinates for the piece at the passed row and col.
+     * @param row - the row to calculate moves from
+     * @param col - the col to calculate moves from
+     * @return array list of coordinates [row,col], empty list if the tile was empty
+     */
+    ArrayList<int[]> getAvailableMoves(int row, int col, Player playerMoving)
+    {
+        ArrayList<int[]> result = new ArrayList<>();
+        boolean firstTileOfPath;
+        if (boardTiles[row][col].isOccupied()) {
+            ArrayList<ArrayList<Tile>> allMovePaths = boardTiles[row][col].getPiece().getAllMovePaths(this);
+            for(ArrayList<Tile> movePath : allMovePaths) {
+                if (validateMovePath(movePath, playerMoving)) {
+                    firstTileOfPath = true;
+                    for (Tile tile : movePath) {
+                        if (firstTileOfPath) {
+                            firstTileOfPath = false;
+                            continue;
+                        }
+                        result.add(new int[]{tile.getRow(), tile.getCol()});
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
 }
