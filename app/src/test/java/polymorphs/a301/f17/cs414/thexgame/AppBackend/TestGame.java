@@ -158,7 +158,7 @@ public class TestGame {
     public void testMakeMovePlayerGraveyard(){
         setupNewGame();
 
-        game.makeMove(white,7,2,2,2);
+        game.makeMove(white,7,2,2,2); //jg
         game.makeMove(black,4,7,6,7); // move directly under 6,3 tile(same colum as wall
         game.makeMove(white,2,2,1,2); // white makes a random move
         game.makeMove(black,6,7,6,3); // on the wall moves up and  faces 7,3 enemy rook

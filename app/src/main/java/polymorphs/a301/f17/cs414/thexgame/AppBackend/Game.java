@@ -70,7 +70,7 @@ class Game {
             Piece toPiece = to.getPiece();
             promotionOccurred = movePiece(fromRow, fromCol, toRow, toCol);
             if (currentPlayer == p1) {
-                currentPlayer = p2;
+                currentPlayer =  p2;
             } else {
                 currentPlayer = p1;
             }

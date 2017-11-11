@@ -10,7 +10,7 @@ class Player {
     private User user; // saving the user instead to match between UI and backend
     private Color color;
     private ArrayList<Piece> pieces = new ArrayList<Piece>();
-    private ArrayList<Piece> player1graveyard = new ArrayList<Piece>();
+    private ArrayList<Piece> player1graveyard = new ArrayList<Piece>(); // player1 arraylist
     private ArrayList<Piece> player2graveyard= new ArrayList<Piece>();
     public Player(User user,Color color){
         this.user = user;
