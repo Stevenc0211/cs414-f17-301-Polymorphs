@@ -66,6 +66,8 @@ class Game {
         boolean promotionOccurred = false; // default to no promotion.
         if (board.isValidMove(activePlayer , fromRow, fromCol, toRow, toCol))
         {
+            Tile to = board.getTile(toRow, toCol);
+            Piece toPiece = to.getPiece();
             promotionOccurred = movePiece(fromRow, fromCol, toRow, toCol);
             if (currentPlayer == p1) {
                 currentPlayer = p2;
@@ -75,7 +77,11 @@ class Game {
             if (board.inCheckmate(currentPlayer)) {
                 return 0;
             }
+            if (toPiece != null) {
 
+                Player pieceCapturedPlayer = currentPlayer;
+                playerGraveyard(pieceCapturedPlayer, toPiece);
+            }
             if(promotionOccurred) // a promotion has occured.
             {
                 return 2;
@@ -83,6 +89,7 @@ class Game {
 
             return 1;
         } else {
+
             return -1;
         }
     }
@@ -98,6 +105,7 @@ class Game {
         Tile from = board.getTile(fromRow, fromCol);
         Tile to = board.getTile(toRow, toCol);
         to.occupyTile(from.getPiece()); // this will also update the coordinates of the piece
+
         from.occupyTile(null);
         if (to.getPiece() instanceof Rook) {
             if (to.getPiece().getColor() == Color.WHITE) {
@@ -120,6 +128,21 @@ class Game {
         return false; // if no checks are hit to return true, then return false, no promotion occurred.
     }
 
+    /** updates the arraylist for a player by adding the piece that was captured by the opponent
+     * @param player - the player whose piece was captured by the opponent
+     * @param piece - piece that was captured
+     * @return void
+     */
+     public void playerGraveyard(Player player,Piece piece){
+         if (player.equals(p1)){
+
+             p1.getPlayer1graveyard().add(piece);
+         }
+         else {
+
+             p2.getPlayer2graveyard().add(piece);
+         }
+     }
     /**
      * Returns the player for the passed user. If the user is not a player in the game null will be returned.
      * @param user - the user to retrieve the player for

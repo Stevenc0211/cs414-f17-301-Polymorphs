@@ -154,4 +154,21 @@ public class TestGame {
         assertEquals("Move should result in checkmate, white 8,4 -> 3,4",0 ,game.makeMove(white, 8,4, 3,4));
     }
 
+    @Test
+    public void testMakeMovePlayerGraveyard(){
+        setupNewGame();
+
+        game.makeMove(white,7,2,2,2);
+        game.makeMove(black,4,7,6,7); // move directly under 6,3 tile(same colum as wall
+        game.makeMove(white,2,2,1,2); // white makes a random move
+        game.makeMove(black,6,7,6,3); // on the wall moves up and  faces 7,3 enemy rook
+        game.makeMove(white,1,2,2,2); // white move another random move
+        game.makeMove(black,6,3,7,3);  // black rook is on wall and captures 7,3 enemy rook
+
+        assertEquals("White player which is player one should have one piece in the its graveyard list",1 ,game.getCurrentPlayer().getPlayer1graveyard().size());
+
+
+
+    }
+
 }

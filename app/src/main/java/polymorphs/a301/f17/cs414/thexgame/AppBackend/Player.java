@@ -10,7 +10,8 @@ class Player {
     private User user; // saving the user instead to match between UI and backend
     private Color color;
     private ArrayList<Piece> pieces = new ArrayList<Piece>();
-
+    private ArrayList<Piece> player1graveyard = new ArrayList<Piece>();
+    private ArrayList<Piece> player2graveyard= new ArrayList<Piece>();
     public Player(User user,Color color){
         this.user = user;
         this.color = color;
@@ -30,7 +31,12 @@ class Player {
         Player otherPlayer = (Player) o;
         return (user.equals(otherPlayer.user) && color == otherPlayer.color);
     }
-
+    public ArrayList<Piece> getPlayer1graveyard(){
+        return player1graveyard;
+    }
+    public ArrayList<Piece> getPlayer2graveyard(){
+        return player2graveyard;
+    }
     public ArrayList<Piece> getPieces(){
         return pieces;
     }
