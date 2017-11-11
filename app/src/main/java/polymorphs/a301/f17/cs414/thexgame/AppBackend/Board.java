@@ -166,7 +166,7 @@ class Board {
 
     /**
      * Checks a given movePath to see if the move is valid. A move path is invalid if it moves through a piece or if the ending
-     * tile is occupied by a friendly piece
+     * tile is occupied by a friendly piece, if the move results in check or if a king is moving and the move fails isValidKingMove
      * @param movePath - a move path from a call to Piece.getMovePath
      * @return true if the move path is valid
      */

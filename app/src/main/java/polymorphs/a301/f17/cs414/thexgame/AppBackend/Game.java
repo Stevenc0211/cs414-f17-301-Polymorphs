@@ -100,16 +100,16 @@ class Game {
         Tile to = board.getTile(toRow, toCol);
         to.occupyTile(from.getPiece()); // this will also update the coordinates of the piece
         from.occupyTile(null);
-        if (from.getPiece() instanceof Rook) {
-            if (from.getPiece().getColor() == Color.WHITE) {
-                if (from.getTileStatus() == Status.INSIDE_BLACK) {
+        if (to.getPiece() instanceof Rook) {
+            if (to.getPiece().getColor() == Color.WHITE) {
+                if (to.getTileStatus() == Status.INSIDE_BLACK) {
                     Queen newQueen = currentPlayer.promoteRook((Rook)to.getPiece());
                     to.occupyTile(null);
                     to.occupyTile(newQueen);
                     return true; // tell make move to return 2.
                 }
             } else {
-                if (from.getTileStatus() == Status.INSIDE_WHITE) {
+                if (to.getTileStatus() == Status.INSIDE_WHITE) {
                     Queen newQueen = currentPlayer.promoteRook((Rook)to.getPiece());
                     to.occupyTile(null);
                     to.occupyTile(newQueen);
