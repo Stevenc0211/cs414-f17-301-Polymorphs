@@ -34,6 +34,12 @@ class Queen extends Piece {
         return false;
     }
 
+    public boolean equals(Object o) {
+        if (!(o instanceof Queen)) return false;
+        Queen otherQueen = (Queen)o;
+        return (super.getRow() == otherQueen.getRow() && super.getCol() == otherQueen.getCol() && super.getColor().equals(otherQueen.getColor()));
+    }
+
     public String toString(){
         return super.toString();
     }

@@ -17,7 +17,7 @@ public class TestPlayer {
     public void testInstanceCreation(){
         User u = new User("a","b","c");
         try{
-            Player p = new Player(u, Color.WHITE);
+            Player p = new Player(u.getNickname(), Color.WHITE);
         }
         catch (Exception e){
             fail("ERROR: Board failed to instantiate");
@@ -27,28 +27,28 @@ public class TestPlayer {
     @Test
     public void testInitializePieces(){
         User u = new User("a","b","c");
-        Player p = new Player(u, Color.WHITE);
+        Player p = new Player(u.getNickname(), Color.WHITE);
         assertFalse("Should be false",p.getPieces().isEmpty());
     }
 
     @Test
     public void testInitializePiecesSize(){
         User u = new User("a","b","c");
-        Player p = new Player(u, Color.WHITE);
+        Player p = new Player(u.getNickname(), Color.WHITE);
         assertEquals(9,p.getPieces().size());
     }
 
     @Test
     public void testToString(){
         User u = new User("a","b","c");
-        Player p = new Player(u, Color.WHITE);
-        assertEquals("8, 3, true, WHITE, 7, 2, true, WHITE, 8, 2, true, WHITE, 9, 2, true, WHITE, 7, 3, true, WHITE, 9, 3, true, WHITE, 7, 4, true, WHITE, 8, 4, true, WHITE, 9, 4, true, WHITE", p.toString());
+        Player p = new Player(u.getNickname(), Color.WHITE);
+        assertEquals("King,8,3,true,WHITE*Rook,7,2,true,WHITE*Rook,8,2,true,WHITE*Rook,9,2,true,WHITE*Rook,7,3,true,WHITE*Rook,9,3,true,WHITE*Rook,7,4,true,WHITE*Rook,8,4,true,WHITE*Rook,9,4,true,WHITE", p.toString());
     }
 
     @Test
     public void testInitializedKing() {
         User u = new User("a","b","c");
-        Player p = new Player(u, Color.WHITE);
+        Player p = new Player(u.getNickname(), Color.WHITE);
         King k = p.getKing();
         assertNotNull("Player should have one King after initialization", k);
     }
@@ -71,7 +71,7 @@ public class TestPlayer {
     @Test
     public void testInitializeRookCount() {
         User u = new User("a","b","c");
-        Player p = new Player(u, Color.WHITE);
+        Player p = new Player(u.getNickname(), Color.WHITE);
         Rook r = new Rook(0,0,true,Color.BLACK);
         assertTrue("Player should have 8 Rooks after initialization", 8 == countPieceInstances(r, p));
     }
@@ -79,7 +79,7 @@ public class TestPlayer {
     @Test
     public void testPromoteCopiesValues() {
         User u = new User("a","b","c");
-        Player p = new Player(u, Color.WHITE);
+        Player p = new Player(u.getNickname(), Color.WHITE);
         Piece test = p.getPieces().get(0);
         if (test instanceof King) {
             test = p.getPieces().get(1);
@@ -93,7 +93,7 @@ public class TestPlayer {
     @Test
     public void testPromoteDecreasesRookCount() {
         User u = new User("a","b","c");
-        Player p = new Player(u, Color.WHITE);
+        Player p = new Player(u.getNickname(), Color.WHITE);
         Piece test = p.getPieces().get(0);
         if (test instanceof King) {
             test = p.getPieces().get(1);
@@ -107,7 +107,7 @@ public class TestPlayer {
     @Test
     public void testPromoteIncreasesQueenCount() {
         User u = new User("a","b","c");
-        Player p = new Player(u, Color.WHITE);
+        Player p = new Player(u.getNickname(), Color.WHITE);
         Piece test = p.getPieces().get(0);
         if (test instanceof King) {
             test = p.getPieces().get(1);
@@ -121,9 +121,28 @@ public class TestPlayer {
     @Test
     public void testPromoteFailure() {
         User u = new User("a","b","c");
-        Player p = new Player(u, Color.WHITE);
+        Player p = new Player(u.getNickname(), Color.WHITE);
         Rook r = new Rook(0,0,true,Color.BLACK);
         Queen q = p.promoteRook(r);
         assertNull("The passed rook should not be in the players pieces list",q);
+    }
+
+    @Test
+    public void testAddPiecesSize(){
+        User user = new User("name","email","nickname");
+        Player player = new Player(user.getNickname(),Color.BLACK);
+        player.clearPieces();
+        player.addPieces("King",3,3,true);
+        assertEquals(1,player.getPieces().size());
+    }
+
+    @Test
+    public void testAddPiecesActual(){
+        User user = new User("name","email","nickname");
+        Player player = new Player(user.getNickname(),Color.BLACK);
+        player.clearPieces();
+        player.addPieces("King",3,3,true);
+        King king = new King(3,3,true,Color.BLACK);
+        assertEquals(king,player.getPieces().get(0));
     }
 }

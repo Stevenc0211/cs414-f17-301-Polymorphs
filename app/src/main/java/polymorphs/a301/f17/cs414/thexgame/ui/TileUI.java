@@ -1,7 +1,7 @@
 package polymorphs.a301.f17.cs414.thexgame.ui;
 
 /**
-    This is the TileUI that is in control of each tile within BoardUI. Written and worked on by Roger and Miles.
+ This is the TileUI that is in control of each tile within BoardUI. Written and worked on by Roger and Miles.
  */
 
 import android.content.Context;

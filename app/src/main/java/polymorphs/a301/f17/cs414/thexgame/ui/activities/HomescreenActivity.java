@@ -84,10 +84,8 @@ public class HomescreenActivity extends AppCompatActivity
         boardUI = (BoardUI) findViewById(R.id.chessboard);
 
         // TODO: @Roger remove this because we are hard creating a game and this should not happen! Very important!
-        User user1 = new User("tmp", "tmp", "white"); // BreadCrumb: turn order hack
-        User user2 = new User("tmp", "tmp", "black");// BreadCrumb: turn order hack
-        driver.createGame(user1, user2); // create a game with two random players, pretty important.
-        driver.setCurrentGameIndex(0); // TODO: @Team, remove this because it setting the game index to always be 0 and this will not be allowed for our game.
+        driver.createGame("white", "black"); // create a game with two random players, pretty important.// BreadCrumb: turn order hack
+        driver.setCurrentGameKey("key"); // TODO: @Team, remove this because it setting the game index to always be 0 and this will not be allowed for our game.
 
         System.out.println("SETTING THE DRIVER FOR BOARDUI");
         boardUI.setDriver(driver); // set the driver for the boardUI to be working with.
@@ -97,7 +95,7 @@ public class HomescreenActivity extends AppCompatActivity
 
         // todo: we should have a list of our boards pulled from our database with the information about the piece places. This is pretty important!
         games.add(boardUI); // add once.
-       // games.add(boardUI); // add twice.
+        // games.add(boardUI); // add twice.
 
         gamePagerAdapter = new GamePagerAdapter(games, inGameUI); // send in the games that we want to work with that will allow us to send our games to the adapter to update the ViewPager (to swipe horizontally)
         // TODO: create the Gamepage listener that will be in charge of getting this thing working correctly.
