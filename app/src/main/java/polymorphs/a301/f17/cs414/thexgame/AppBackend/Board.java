@@ -347,8 +347,7 @@ class Board {
                 if (to.getTileStatus() != Status.INSIDE_BLACK) return false;
             }
             if (!king.isValidMove(toRow,toCol)) return false;
-            if (moveResultsInCheck(king,fromRow,fromCol,toRow,toCol)) return false;
-            return true;
+            return moveResultsInCheck(king,fromRow,fromCol,toRow,toCol);
         }
         return false;
     }
