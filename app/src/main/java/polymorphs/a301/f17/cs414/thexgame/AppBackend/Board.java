@@ -366,19 +366,12 @@ class Board {
     ArrayList<int[]> getAvailableMoves(int row, int col, Player playerMoving)
     {
         ArrayList<int[]> result = new ArrayList<>();
-        boolean firstTileOfPath;
         if (boardTiles[row][col].isOccupied()) {
             ArrayList<ArrayList<Tile>> allMovePaths = boardTiles[row][col].getPiece().getAllMovePaths(this);
             for(ArrayList<Tile> movePath : allMovePaths) {
                 if (validateMovePath(movePath, playerMoving)) {
-                    firstTileOfPath = true;
-                    for (Tile tile : movePath) {
-                        if (firstTileOfPath) {
-                            firstTileOfPath = false;
-                            continue;
-                        }
-                        result.add(new int[]{tile.getRow(), tile.getCol()});
-                    }
+                    Tile lastTile = movePath.get(movePath.size()-1);
+                    result.add(new int[]{lastTile.getRow(), lastTile.getCol()});
                 }
             }
         }
