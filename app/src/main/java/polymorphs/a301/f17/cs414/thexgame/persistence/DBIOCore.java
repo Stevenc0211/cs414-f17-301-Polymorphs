@@ -9,6 +9,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameRecord;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameSnapshot;
 import polymorphs.a301.f17.cs414.thexgame.Invitation;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
 
@@ -126,10 +128,17 @@ public class DBIOCore {
      * @param observer - the observer to register
      */
     public static void registerToGameRecordList(GameRecordListObserver observer) {
-        baseReference.child("gamerecordList").addChildEventListener(new GameRecordListListener(observer));
+        baseReference.child("gamerecordList").child(currentUser).addChildEventListener(new GameRecordListListener(observer));
     }
 
-    // TODO: 11/4/17 implement listener for GameSnapshotListListener 
+    /**
+     * This method registers the passed Observer to the game snapshot list.
+     * The Observers update methods will be called if there is any change in the list data
+     * @param observer - the observer to register
+     */
+    public static void registerToGameSnapshotList(GameSnapshotListObserver observer){
+        baseReference.child("gamesnapshotList").child(currentUser).addChildEventListener(new GameSnapshotListListener(observer));
+    }
 
     /**
      * This takes the passed invitation and adds it to the passed users invitation list.
@@ -145,6 +154,22 @@ public class DBIOCore {
 
     public static void removeInvite(Invitation invite) {
         baseReference.child("invites").child(invite.getInvitedUser()).child(invite.getDbKey()).removeValue();
+    }
+
+    public static void addGameRecord(GameRecord record){
+        String key = baseReference.child("gamerecordList").child(currentUser).push().getKey();
+        baseReference.child("gamerecordList").child(key).setValue(record);
+    }
+
+    public static String addGameSnapshot(GameSnapshot snapshot){
+        String key = baseReference.child("gamesnapshotList").child(currentUser).push().getKey();
+        baseReference.child("gamesnapshotList").child(currentUser).child(key).setValue(snapshot);
+        baseReference.child("gamesnapshotList").child(snapshot.getNicknameBlack()).child(key).setValue(snapshot);
+
+        //set key for snapshot
+        snapshot.setDbKey(key);
+
+        return key;
     }
 
     /**

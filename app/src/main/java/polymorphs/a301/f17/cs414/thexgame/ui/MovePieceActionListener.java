@@ -90,7 +90,7 @@ public class MovePieceActionListener {
         else if(moveActionStarted == true && !clickedTile.hasPiece()) // check to make sure that the clicked tile does not have a piece and a click action has already started.
         {
             // TODO: get user into here so we can verify turn order
-            int moveResult = boardUI.getDriver().makeMove(currentUser, fromRow, fromCol, row, col);
+            int moveResult = boardUI.getDriver().makeMove(currentUser.getNickname(), fromRow, fromCol, row, col);
             if(moveResult == 1)
             {
                 if (currentUser.equals(user1)) {    // BreadCrumb: turn order hack

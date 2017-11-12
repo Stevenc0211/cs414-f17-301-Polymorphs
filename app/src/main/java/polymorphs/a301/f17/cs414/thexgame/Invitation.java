@@ -15,6 +15,7 @@ public class Invitation implements Serializable {
     private boolean selected = false;
     private String dbKey;
 
+
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
