@@ -9,5 +9,4 @@
         android:text="Add the text here"
         android:textSize="20sp"
         />
-
 </RelativeLayout>
