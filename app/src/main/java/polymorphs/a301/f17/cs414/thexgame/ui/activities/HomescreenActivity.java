@@ -71,15 +71,23 @@ public class HomescreenActivity extends AppCompatActivity
     HashMap<String, String> usernames; // holds the list of people to invite keyed by the previous usernames database key
     User currentUser;
 
+    boolean gamePagerFirstKey = true;
+
 
     // adds a game to the game pager and also shows the person we are playing the game with.
     public void createNewGame(Invite invite)
     {
-        gameDriver.createGame(invite.getInvitingUser(), invite.getInvitedUser());
-        BoardUI newGameUI = (BoardUI) findViewById(R.id.chessboard);
+        String gameKey = driver.createGame(invite.getInvitingUser(), invite.getInvitedUser());
+        if (gamePagerFirstKey) {
+            boardUI.registerToSnapshot(gameKey);
+        } else {
+            BoardUI otherBoard = new BoardUI(getBaseContext(), null);
+            otherBoard.setHomescreenActivity(this);
+            otherBoard.registerToSnapshot(gameKey);
+            games.add(otherBoard);
+            gamePagerAdapter.notifyDataSetChanged();
+        }
 
-        gamePagerAdapter.addView(newGameUI);
-        gamePagerAdapter.notifyDataSetChanged();
     }
 
     // this method sets up our game pager.
@@ -87,26 +95,30 @@ public class HomescreenActivity extends AppCompatActivity
 
 
 
-        // TODO: @Roger remove this because we are hard creating a game and this should not happen! Very important!
-        String newGameKey = driver.createGame("tak", "black"); // create a game with two random players, pretty important.// BreadCrumb: turn order hack
-        driver.setCurrentGameKey(newGameKey); // TODO: @Team, remove this because it setting the game index to always be 0 and this will not be allowed for our game.
         boardUI = (BoardUI) findViewById(R.id.chessboard);
 //        boardUI.registerToSnapshot("-KyoASXbB7XAec-x-LNr");
-        System.out.println("SETTING THE DRIVER FOR BOARDUI");
         boardUI.setHomescreenActivity(this); // send a copy of the homescreen activity to allow for certain displaying of certain UI elements.
 
         gamePager = (ViewPager) findViewById(R.id.gamesListPager); // get the game pager that will basically fill out the games!
-        // todo: we should have a list of our boards pulled from our database with the information about the piece places. This is pretty important!
-        games.add(boardUI); // add once.
-        // games.add(boardUI); // add twice.
 
-        gamePagerAdapter = new GamePagerAdapter(games, inGameUI); // send in the games that we want to work with that will allow us to send our games to the adapter to update the ViewPager (to swipe horizontally)
-        // TODO: create the Gamepage listener that will be in charge of getting this thing working correctly.
+        games.add(boardUI); // add once.
+
+        gamePagerAdapter = new GamePagerAdapter(games, inGameUI, getBaseContext()); // send in the games that we want to work with that will allow us to send our games to the adapter to update the ViewPager (to swipe horizontally)
         GamePageChangeListener gpcl = new GamePageChangeListener(this); // holds the game as well as a copy of the InGameUI that will allow us to see a snack bar for the users to be able to see their game number.
+        for (String gameKey : Driver.getInstance().getGames().keySet()) {
+            if (gamePagerFirstKey) {
+                boardUI.registerToSnapshot(gameKey);
+            } else {
+                BoardUI otherBoard = new BoardUI(getBaseContext(), null);
+                otherBoard.setHomescreenActivity(this);
+                otherBoard.registerToSnapshot(gameKey);
+                games.add(otherBoard);
+            }
+        }
 
         gamePager.setAdapter(gamePagerAdapter);
-        gamePagerAdapter.notifyDataSetChanged(); // update the number of games in the list view pretty important!
         gamePager.addOnPageChangeListener(gpcl);
+        gamePagerAdapter.notifyDataSetChanged(); // update the number of games in the list view pretty important!
     }
 
     // checks the SharedPreferences to see if the username has correctly been set. If so, proceed to maingameui, otherwise show newusername layout.
@@ -165,9 +177,6 @@ public class HomescreenActivity extends AppCompatActivity
 
         setContentView(R.layout.homescreen);
         usernames = new HashMap<>();
-
-        setupGamePager(); // setup our game pager, pretty important.
-
         DBIOCore.getInstance().registerToUsernameList(this);
         DBIOCore.getInstance().registerToCurrentUser(this);
 
@@ -245,7 +254,7 @@ public class HomescreenActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         setupHeader(navigationView); // setup the header of the navigation view.
         updateNotificationsCount(); // update the count of notifications.
-
+        setupGamePager(); // setup our game pager, pretty important.
         usernames = new HashMap<>();
 
     }
