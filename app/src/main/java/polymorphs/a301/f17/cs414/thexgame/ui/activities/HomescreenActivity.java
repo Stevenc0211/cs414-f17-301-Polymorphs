@@ -36,7 +36,6 @@ import polymorphs.a301.f17.cs414.thexgame.ui.adapters.GamePagerAdapter;
 import polymorphs.a301.f17.cs414.thexgame.ui.adapters.SquareAdapter;
 import polymorphs.a301.f17.cs414.thexgame.ui.fragments.NotificationsFragment;
 import polymorphs.a301.f17.cs414.thexgame.ui.fragments.SettingsFragment;
-import polymorphs.a301.f17.cs414.thexgame.ui.fragments.helpFragment;
 import polymorphs.a301.f17.cs414.thexgame.ui.listeners.CreateNewGameButtonListener;
 import polymorphs.a301.f17.cs414.thexgame.ui.listeners.GamePageChangeListener;
 import polymorphs.a301.f17.cs414.thexgame.ui.listeners.SubmitButtonClickListener;
@@ -58,7 +57,6 @@ public class HomescreenActivity extends AppCompatActivity
     private boolean openCurrentGames = false; // tells inGameUI to just open the current list of games.
     private SubmitButtonClickListener submitClickListener;
     private SettingsFragment settingsUI = new SettingsFragment(); // holds a copy of our settingsUI.
-    private helpFragment helpUI = new helpFragment(); // this will hold a copy of the helpUI that has info on the game bois
     private final int SET_USERNAME = 9001; // details what we are doing for the username.
 
 
@@ -383,19 +381,6 @@ public class HomescreenActivity extends AppCompatActivity
         updateNotificationsCount(); // update the notifications as soon as something is pressed.
     }
 
-    protected void openHelpFragment()
-    {
-        Bundle fragmentArgs = new Bundle(); // the Bundle here allows us to send arguments to our fragment
-        RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen);
-        homescreenLayout.removeAllViews();
-        homescreenLayout.setBackground(null);
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.mainContentScreen, helpUI);
-        transaction.commit();
-        updateNotificationsCount();
-
-    }
-
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -419,11 +404,6 @@ public class HomescreenActivity extends AppCompatActivity
         } else if (id == R.id.settings)
         {
             openSettingsFragment();
-        }
-        else if( id == R.id.help)
-        {
-            // TODO: call a method here that will display your fragment
-            openHelpFragment();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
