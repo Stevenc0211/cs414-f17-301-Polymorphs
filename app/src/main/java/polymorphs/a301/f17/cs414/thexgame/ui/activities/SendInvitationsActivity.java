@@ -39,7 +39,7 @@ public class SendInvitationsActivity extends Activity implements UsernameListObs
 
                 for (int idx = 0; idx < allInvites.size(); idx++) {
                     if (inviteListAdapter.getItem(idx).isSelected()) {
-                        DBIOCore.sendInvite(allInvites.get(idx));
+                        DBIOCore.getInstance().sendInvite(allInvites.get(idx));
                     }
                 }
 
@@ -63,14 +63,14 @@ public class SendInvitationsActivity extends Activity implements UsernameListObs
         super.onCreate(savedInstanceState);
         setContentView(R.layout.send_invitations); // this will display our UI
         setupUI();
-        DBIOCore.registerToUsernameList(this);
+        DBIOCore.getInstance().registerToUsernameList(this);
     }
 
 
     @Override
     public void usernameAdded(String addedUsername, String precedingUsernameKey) {
-        if (!addedUsername.equals(DBIOCore.getCurrentUserUsername())) {
-            Invitation invite = new Invitation(DBIOCore.getCurrentUserUsername(), addedUsername);
+        if (!addedUsername.equals(DBIOCore.getInstance().getCurrentUserUsername())) {
+            Invitation invite = new Invitation(DBIOCore.getInstance().getCurrentUserUsername(), addedUsername);
             allInvites.add(invite);
             inviteListAdapter.add(invite);
             int idx = allInvites.size()-1;
@@ -81,7 +81,7 @@ public class SendInvitationsActivity extends Activity implements UsernameListObs
 
     @Override
     public void usernameChanged(String changedUsername, String precedingUsernameKey) {
-        if (!changedUsername.equals(DBIOCore.getCurrentUserUsername())) {
+        if (!changedUsername.equals(DBIOCore.getInstance().getCurrentUserUsername())) {
             allInvites.get(inviteIdxByDBKey.get(precedingUsernameKey)).setInvitedUser(changedUsername);
             inviteListAdapter.getItem(inviteIdxByDBKey.get(precedingUsernameKey)).setInvitedUser(changedUsername);
             inviteListAdapter.notifyDataSetChanged();
@@ -90,7 +90,7 @@ public class SendInvitationsActivity extends Activity implements UsernameListObs
 
     @Override
     public void usernameRemoved(String removedUsername) {
-        if (!removedUsername.equals(DBIOCore.getCurrentUserUsername())) {
+        if (!removedUsername.equals(DBIOCore.getInstance().getCurrentUserUsername())) {
             int idx = 0;
             for (; idx < allInvites.size(); idx++) {
                 if (allInvites.get(idx).getInvitedUser().equals(removedUsername)) {
