@@ -81,14 +81,14 @@ public class HomescreenActivity extends AppCompatActivity
     // this method sets up our game pager.
     protected void setupGamePager()  {
 
-        boardUI = (BoardUI) findViewById(R.id.chessboard);
+
 
         // TODO: @Roger remove this because we are hard creating a game and this should not happen! Very important!
-        String newGameKey = driver.createGame("white", "black"); // create a game with two random players, pretty important.// BreadCrumb: turn order hack
+        String newGameKey = driver.createGame("tak", "black"); // create a game with two random players, pretty important.// BreadCrumb: turn order hack
         driver.setCurrentGameKey(newGameKey); // TODO: @Team, remove this because it setting the game index to always be 0 and this will not be allowed for our game.
-
+        boardUI = (BoardUI) findViewById(R.id.chessboard);
+//        boardUI.registerToSnapshot("-KyoASXbB7XAec-x-LNr");
         System.out.println("SETTING THE DRIVER FOR BOARDUI");
-        boardUI.setDriver(driver); // set the driver for the boardUI to be working with.
         boardUI.setHomescreenActivity(this); // send a copy of the homescreen activity to allow for certain displaying of certain UI elements.
 
         gamePager = (ViewPager) findViewById(R.id.gamesListPager); // get the game pager that will basically fill out the games!
@@ -104,7 +104,6 @@ public class HomescreenActivity extends AppCompatActivity
         gamePager.setAdapter(gamePagerAdapter);
         gamePagerAdapter.notifyDataSetChanged(); // update the number of games in the list view pretty important!
         gamePager.addOnPageChangeListener(gpcl);
-
     }
 
     // checks the SharedPreferences to see if the username has correctly been set. If so, proceed to maingameui, otherwise show newusername layout.

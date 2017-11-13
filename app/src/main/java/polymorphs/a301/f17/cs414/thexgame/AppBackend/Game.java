@@ -98,8 +98,10 @@ class Game {
     private boolean movePiece(int fromRow, int fromCol, int toRow, int toCol) {
         Tile from = board.getTile(fromRow, fromCol);
         Tile to = board.getTile(toRow, toCol);
+        int pieceIndex = currentPlayer.getIndexFor(from.getPiece());
         to.occupyTile(from.getPiece()); // this will also update the coordinates of the piece
         from.occupyTile(null);
+        currentPlayer.setPieceAtIndex(pieceIndex, to.getPiece());
         if (to.getPiece() instanceof Rook) {
             if (to.getPiece().getColor() == Color.WHITE) {
                 if (to.getTileStatus() == Status.INSIDE_BLACK) {
@@ -168,6 +170,14 @@ class Game {
             String [] piece = player2Pieces[i].split(",");
             p2.addPieces(piece[0],Integer.parseInt(piece[1]),Integer.parseInt(piece[2]),Boolean.valueOf(piece[3]));
         }
+
+        for (int row = 0; row < board.getRows(); row++) {
+            for (int col = 0; col < board.getColumns(); col++) {
+                board.getTile(row, col).occupyTile(null);
+            }
+        }
+        board.addPlayerPieces(p1);
+        board.addPlayerPieces(p2);
         if(currPlayer.equals(p1.getNickname())){
             currentPlayer = p1;
         }
