@@ -130,7 +130,10 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
 
             System.out.println("Log in was a success");
 
-            Intent mainGameUIIntent = new Intent(StartupScreenActivity.this, HomescreenActivity.class); // main game ui intent that is sent when the app is started.
+            HomescreenActivity homescreenActivity = new HomescreenActivity();
+            homescreenActivity.setStartupScreenActivity(this); // set a copy of the startupscreen that we need to be working with.
+
+            Intent mainGameUIIntent = new Intent(StartupScreenActivity.this, homescreenActivity.getClass()); // main game ui intent that is sent when the app is started.
             startActivity(mainGameUIIntent);
         }
         else // Signed out, show unauthenticated UI.
@@ -146,6 +149,12 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
         System.out.println("Found the user's sign in account here");
+    }
+
+    // signs the user out now.
+    public void signOutNow()
+    {
+        signOut();
     }
 
     // [START signOut] // TODO: implement this somewhere in our code to be used for users to be able to sign out if they wish.

@@ -67,9 +67,16 @@ public class HomescreenActivity extends AppCompatActivity
     private String email; // email of the user.
     private String name; // name of the user.
     private String username; // username of the user
+    private StartupScreenActivity startupScreenActivity;
 
     HashMap<String, String> usernames; // holds the list of people to invite keyed by the previous usernames database key
     polymorphs.a301.f17.cs414.thexgame.AppBackend.User currentUser;
+
+    public void setStartupScreenActivity(StartupScreenActivity startupScreenActivity)
+    {
+        this.startupScreenActivity = startupScreenActivity;
+    }
+
 
 
     // adds a game to the game pager and also shows the person we are playing the game with.
@@ -390,6 +397,8 @@ public class HomescreenActivity extends AppCompatActivity
     protected void openSettingsFragment()
     {
         Bundle fragmentArgs = new Bundle(); // the Bundle here allows us to send arguments to our fragment!
+
+        settingsUI.setStartupScreenActivity(startupScreenActivity); // set the startup screen that we need to work with.
 
         RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
         homescreenLayout.removeAllViews();
