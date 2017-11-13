@@ -131,6 +131,7 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
 
             DBIOCore.getInstance().setCurrentUser(userGoogleDisplayName, email); // Starting DBIOCore, removed for now to follow the general flow of adding users to the database.
             System.out.println("Log in was a success");
+
             delayHandler.postDelayed(setupDriver, 1000); // Delays the homescreen load so the DBIOCore can get the current user
 
         }
