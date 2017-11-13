@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.text.AttributedCharacterIterator;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -97,15 +98,29 @@ public class HomescreenActivity extends AppCompatActivity
 
         // todo: we should have a list of our boards pulled from our database with the information about the piece places. This is pretty important!
         games.add(boardUI); // add once.
-       // games.add(boardUI); // add twice.
 
-        gamePagerAdapter = new GamePagerAdapter(games, inGameUI); // send in the games that we want to work with that will allow us to send our games to the adapter to update the ViewPager (to swipe horizontally)
+        gamePagerAdapter = new GamePagerAdapter(games, inGameUI, getBaseContext()); // send in the games that we want to work with that will allow us to send our games to the adapter to update the ViewPager (to swipe horizontally)
         // TODO: create the Gamepage listener that will be in charge of getting this thing working correctly.
         GamePageChangeListener gpcl = new GamePageChangeListener(this); // holds the game as well as a copy of the InGameUI that will allow us to see a snack bar for the users to be able to see their game number.
 
+        //gamePagerAdapter.addView(boardUI, 0); // add a view to the view pager.
+        //gamePagerAdapter.addView(boardUI, 1); // add another game
+
+        BoardUI b = new BoardUI(getBaseContext(), null);
+        b.setDriver(driver);
+        b.setHomescreenActivity(this);
+        //gamePagerAdapter.addView(boardUI, 1);
+
+        BoardUI br = new BoardUI(getBaseContext(), null);
+        br.setDriver(driver);
+        br.setHomescreenActivity(this);
+
+        games.add(b);
+        games.add(br);
+
         gamePager.setAdapter(gamePagerAdapter);
-        gamePagerAdapter.notifyDataSetChanged(); // update the number of games in the list view pretty important!
         gamePager.addOnPageChangeListener(gpcl);
+        gamePagerAdapter.notifyDataSetChanged(); // update the number of games in the list view pretty important!
 
     }
 
@@ -150,7 +165,9 @@ public class HomescreenActivity extends AppCompatActivity
 
         setContentView(R.layout.homescreen);
         usernames = new HashMap<>();
-        setupGamePager(); // setup our game pager, pretty important.
+        //setupGamePager(); // setup our game pager, pretty important.
+
+        System.out.println("testing the on create method for our app. ");
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
