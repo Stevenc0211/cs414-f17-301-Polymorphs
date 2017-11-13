@@ -16,7 +16,7 @@ import polymorphs.a301.f17.cs414.thexgame.ui.listeners.SubmitButtonClickListener
  * Created by thenotoriousrog on 10/26/17. This activity is for our users to be able to sign in with. Pretty important!
  */
 
-public class SetUsernameActivity extends Activity implements UserObserver{
+public class SetUsernameActivity extends Activity implements UserObserver {
 
     // These will be populated by the shared preferences.
     private String email; // email of the user.
@@ -55,7 +55,7 @@ public class SetUsernameActivity extends Activity implements UserObserver{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setusername); // the layout for us to be able to send our information with.
 
-        DBIOCore.registerToCurrentUser(this);
+        DBIOCore.getInstance().registerToCurrentUser(this);
 
         final EditText textField = (EditText) findViewById(R.id.usernameField); // grab the edit text username field.
         final Button submitButton = (Button) findViewById(R.id.submitButton); // grab the submit button.

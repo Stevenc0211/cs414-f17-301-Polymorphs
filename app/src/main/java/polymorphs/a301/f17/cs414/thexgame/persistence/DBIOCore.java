@@ -23,10 +23,21 @@ import static android.content.ContentValues.TAG;
 
 
 public class DBIOCore {
-    private static DatabaseReference baseReference = FirebaseDatabase.getInstance().getReference();
-    private static String currentUser;
-    private static String userEmail;
-    private static String userNickname;
+    private DatabaseReference baseReference;
+    private String currentUser;
+    private String userEmail;
+    private String userNickname;
+
+    private static DBIOCore instance = null;
+
+    private DBIOCore() {
+        baseReference = FirebaseDatabase.getInstance().getReference();
+    }
+
+    public static DBIOCore getInstance() {
+        if (instance == null) instance = new DBIOCore();
+        return instance;
+    }
 
 
     /**
@@ -35,7 +46,7 @@ public class DBIOCore {
      * @param name - the google display name for the user, will be the primary key of the current user
      * @param email - the users email
      */
-    public static void setCurrentUser(String name, String email) {
+    public void setCurrentUser(String name, String email) {
         currentUser = name;
         userEmail = email;
         DatabaseReference tmp = getUserReference();
@@ -69,7 +80,7 @@ public class DBIOCore {
      * This should be used when the username (nickname) of the current user needs to be set.
      * @param username - the new username (nickname)
      */
-    public static void setCurrentUserUsername(String username) {
+    public void setCurrentUserUsername(String username) {
         getUserReference().child("nickname").setValue(username);
         baseReference.child("usernameList").push();
         String key = baseReference.child("usernameList").push().getKey();
@@ -82,7 +93,7 @@ public class DBIOCore {
      * This can be used to retrieve the current users username (nickname).
      * @return the current users username (nickname)
      */
-    public static String getCurrentUserUsername()  {
+    public String getCurrentUserUsername()  {
         return userNickname;
     }
 
@@ -91,7 +102,7 @@ public class DBIOCore {
      * This is a checked reference, i.e. the user object is ensured to be there
      * @return DatabaseReference - the reference to the current users data
      */
-    private static DatabaseReference getUserReference() {
+    private DatabaseReference getUserReference() {
         return baseReference.child("users").child(currentUser);
     }
 
@@ -100,7 +111,7 @@ public class DBIOCore {
      * will be called if there is any change in the user data
      * @param observer - the observer to register
      */
-    public static void registerToCurrentUser(UserObserver observer) {
+    public void registerToCurrentUser(UserObserver observer) {
         getUserReference().addValueEventListener(new UserListener(observer));
     }
 
@@ -109,7 +120,7 @@ public class DBIOCore {
      * The Observers update methods will be called if there is any change in the list data
      * @param observer - the observer to register
      */
-    public static void registerToCurrentUserInviteList(InviteListObserver observer) {
+    public void registerToCurrentUserInviteList(InviteListObserver observer) {
         baseReference.child("invites").child(userNickname).addChildEventListener(new InviteListListener(observer));
     }
 
@@ -118,7 +129,7 @@ public class DBIOCore {
      * The Observers update methods will be called if there is any change in the list data
      * @param observer - the observer to register
      */
-    public static void registerToUsernameList(UsernameListObserver observer) {
+    public void registerToUsernameList(UsernameListObserver observer) {
         baseReference.child("usernameList").addChildEventListener(new UsernameListListener(observer));
     }
 
@@ -127,8 +138,8 @@ public class DBIOCore {
      * The Observers update methods will be called if there is any change in the list data
      * @param observer - the observer to register
      */
-    public static void registerToGameRecordList(GameRecordListObserver observer) {
-        baseReference.child("gamerecordList").child(currentUser).addChildEventListener(new GameRecordListListener(observer));
+    public void registerToGameRecordList(GameRecordListObserver observer) {
+        baseReference.child("gamerecordList").child(userNickname).addChildEventListener(new GameRecordListListener(observer));
     }
 
     /**
@@ -136,8 +147,8 @@ public class DBIOCore {
      * The Observers update methods will be called if there is any change in the list data
      * @param observer - the observer to register
      */
-    public static void registerToGameSnapshotList(GameSnapshotListObserver observer){
-        baseReference.child("gamesnapshotList").child(currentUser).addChildEventListener(new GameSnapshotListListener(observer));
+    public void registerToGameSnapshotList(GameSnapshotListObserver observer){
+        baseReference.child("gamesnapshotList").child(userNickname).addChildEventListener(new GameSnapshotListListener(observer));
     }
 
     /**
@@ -146,24 +157,24 @@ public class DBIOCore {
      * error (please don't)
      * @param invite - an invitation object, this should be created with both a invited and inviting user
      */
-    public static void sendInvite(Invitation invite) {
+    public void sendInvite(Invitation invite) {
         String key = baseReference.child("invites").child(invite.getInvitedUser()).push().getKey();
         invite.setDbKeyKey(key);
         baseReference.child("invites").child(invite.getInvitedUser()).child(key).setValue(invite);
     }
 
-    public static void removeInvite(Invitation invite) {
+    public void removeInvite(Invitation invite) {
         baseReference.child("invites").child(invite.getInvitedUser()).child(invite.getDbKey()).removeValue();
     }
 
-    public static void addGameRecord(GameRecord record){
-        String key = baseReference.child("gamerecordList").child(currentUser).push().getKey();
+    public void addGameRecord(GameRecord record){
+        String key = baseReference.child("gamerecordList").child(userNickname).push().getKey();
         baseReference.child("gamerecordList").child(key).setValue(record);
     }
 
-    public static String addGameSnapshot(GameSnapshot snapshot){
-        String key = baseReference.child("gamesnapshotList").child(currentUser).push().getKey();
-        baseReference.child("gamesnapshotList").child(currentUser).child(key).setValue(snapshot);
+    public String addGameSnapshot(GameSnapshot snapshot){
+        String key = baseReference.child("gamesnapshotList").child(snapshot.getNicknameWhite()).push().getKey();
+        baseReference.child("gamesnapshotList").child(snapshot.getNicknameWhite()).child(key).setValue(snapshot);
         baseReference.child("gamesnapshotList").child(snapshot.getNicknameBlack()).child(key).setValue(snapshot);
 
         //set key for snapshot
@@ -172,11 +183,16 @@ public class DBIOCore {
         return key;
     }
 
+    public void updateGameSnapshot(GameSnapshot snapshot) {
+        baseReference.child("gamesnapshotList").child(snapshot.getNicknameWhite()).child(snapshot.getDbKey()).setValue(snapshot);
+        baseReference.child("gamesnapshotList").child(snapshot.getNicknameBlack()).child(snapshot.getDbKey()).setValue(snapshot);
+    }
+
     /**
      * ONLY for junit tests to bypass errors with firebase not initializing
      * @param database
      */
-    static void setDatabase(FirebaseDatabase database) {
+    void setDatabase(FirebaseDatabase database) {
         baseReference = database.getReference();
     }
 }

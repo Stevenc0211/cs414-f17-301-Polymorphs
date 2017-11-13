@@ -3,6 +3,7 @@ package polymorphs.a301.f17.cs414.thexgame.ui.activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -16,6 +17,7 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.R;
 
@@ -71,7 +73,6 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
     @Override
     public void onStart() {
         super.onStart();
-
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(googleClient);
         if (opr.isDone()) {
             // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
@@ -118,6 +119,8 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
         }
     }
 
+    Handler delayHandler = new Handler();
+
     private void handleSignInResult(GoogleSignInResult result) {
         //Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
@@ -126,12 +129,10 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
             String userGoogleDisplayName = acct.getDisplayName(); // get this user's display name, pretty awesome!
             String email = acct.getEmail(); // get this user's email
 
-            DBIOCore.setCurrentUser(userGoogleDisplayName, email); // Starting DBIOCore, removed for now to follow the general flow of adding users to the database.
-
+            DBIOCore.getInstance().setCurrentUser(userGoogleDisplayName, email); // Starting DBIOCore, removed for now to follow the general flow of adding users to the database.
             System.out.println("Log in was a success");
+            delayHandler.postDelayed(setupDriver, 1000); // Delays the homescreen load so the DBIOCore can get the current user
 
-            Intent mainGameUIIntent = new Intent(StartupScreenActivity.this, HomescreenActivity.class); // main game ui intent that is sent when the app is started.
-            startActivity(mainGameUIIntent);
         }
         else // Signed out, show unauthenticated UI.
         {
@@ -141,6 +142,26 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
             //startActivity(mainGameUIIntent);
         }
     }
+
+    /**
+     * This class just starts the homescreen. It is used to let the DBIOCore populate the current user before the homescreen loads
+     */
+    private Runnable setupDriver = new Runnable() {
+        public void run() {
+            Driver.getInstance();
+            delayHandler.postDelayed(transferToHomescreen, 100);
+        }
+    };
+
+    /**
+     * This class just starts the homescreen. It is used to let the DBIOCore populate the current user before the homescreen loads
+     */
+    private Runnable transferToHomescreen = new Runnable() {
+        public void run() {
+            Intent mainGameUIIntent = new Intent(StartupScreenActivity.this, HomescreenActivity.class); // main game ui intent that is sent when the app is started.
+            startActivity(mainGameUIIntent);
+        }
+    };
 
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleClient);

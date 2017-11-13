@@ -60,7 +60,7 @@ public class HomescreenActivity extends AppCompatActivity
     private final int SET_USERNAME = 9001; // details what we are doing for the username.
 
 
-    private Driver driver = new Driver(); // the driver that we will be working with within homescreen activity.
+    private Driver driver; // the driver that we will be working with within homescreen activity.
 
     // These will be populated by the shared preferences.
     private String email; // email of the user.
@@ -84,8 +84,8 @@ public class HomescreenActivity extends AppCompatActivity
         boardUI = (BoardUI) findViewById(R.id.chessboard);
 
         // TODO: @Roger remove this because we are hard creating a game and this should not happen! Very important!
-        driver.createGame("white", "black"); // create a game with two random players, pretty important.// BreadCrumb: turn order hack
-        driver.setCurrentGameKey("key"); // TODO: @Team, remove this because it setting the game index to always be 0 and this will not be allowed for our game.
+        String newGameKey = driver.createGame("white", "black"); // create a game with two random players, pretty important.// BreadCrumb: turn order hack
+        driver.setCurrentGameKey(newGameKey); // TODO: @Team, remove this because it setting the game index to always be 0 and this will not be allowed for our game.
 
         System.out.println("SETTING THE DRIVER FOR BOARDUI");
         boardUI.setDriver(driver); // set the driver for the boardUI to be working with.
@@ -110,10 +110,8 @@ public class HomescreenActivity extends AppCompatActivity
     // checks the SharedPreferences to see if the username has correctly been set. If so, proceed to maingameui, otherwise show newusername layout.
     protected boolean isUsernameSet()
     {
-        // We are reading from main memory here. This is where we will have to have read/write permissions setup on the phone. The app will always ask for a username unless we have this here.
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        boolean usernameCreated = preferences.getBoolean("usernameCreated", false); // grabs the boolean named usernameCreated, if the boolean does not exist, the default boolean is false.
-        return usernameCreated;
+        if (DBIOCore.getInstance().getCurrentUserUsername() == null) return true;
+        return false;
     }
 
 
@@ -145,14 +143,11 @@ public class HomescreenActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         // TODO: @Roger, the app is getting to the point where it is lagging now. When we pull games from the database we need to do an AsynTask to load them up so the users can look at a loading screen while it loads.
-
-        setContentView(R.layout.homescreen);
-        usernames = new HashMap<>();
-        setupGamePager(); // setup our game pager, pretty important.
+        driver = Driver.getInstance();
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
-        if(isUsernameSet() == false)
+        if(isUsernameSet())
         {
             preferences.edit().putBoolean("usernameCreated", true).apply(); // sets this in main memory in a background thread.
             preferences.edit().putBoolean("userCreated", true).apply(); // sets this in main memory in a background thread.
@@ -166,8 +161,13 @@ public class HomescreenActivity extends AppCompatActivity
             displayHomescreen(); // setup the familiar homescreen layout that we are used to seeing.
         }
 
-        DBIOCore.registerToUsernameList(this);
-        DBIOCore.registerToCurrentUser(this);
+        setContentView(R.layout.homescreen);
+        usernames = new HashMap<>();
+
+        setupGamePager(); // setup our game pager, pretty important.
+
+        DBIOCore.getInstance().registerToUsernameList(this);
+        DBIOCore.getInstance().registerToCurrentUser(this);
 
     }
 
@@ -245,7 +245,6 @@ public class HomescreenActivity extends AppCompatActivity
         updateNotificationsCount(); // update the count of notifications.
 
         usernames = new HashMap<>();
-        setupGamePager(); // setup our game pager, pretty important.
 
     }
 

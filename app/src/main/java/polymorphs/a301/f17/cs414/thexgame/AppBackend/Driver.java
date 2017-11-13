@@ -11,14 +11,23 @@ import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListObserver;
  * Created by athai on 10/18/17.
  */
 
-public final class Driver implements UsernameListObserver,GameSnapshotListObserver { // will implement GameListObserver
+public final class Driver implements UsernameListObserver,GameSnapshotListObserver  { // will implement GameListObserver
     private HashMap<String, String> usernames;    // the master list of registered users usernames
     private HashMap<String,Game> games;
     private String currentGameKey = "";
 
-    public Driver(){
+    private static Driver instance = null;
+
+    private Driver(){
         this.usernames = new HashMap<>();
         this.games = new HashMap<>();
+        DBIOCore.getInstance().registerToUsernameList(this);
+        DBIOCore.getInstance().registerToGameSnapshotList(this);
+    }
+
+    public static Driver getInstance() {
+        if (instance == null) instance = new Driver();
+        return instance;
     }
 
     public HashMap<String, Game> getGames(){
@@ -29,20 +38,23 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
      * Builds a new game and adds it to the set of current games.
      * @param nickname1 - the inviting user for this game
      * @param nickname2 - the invited user for this game
+     * @return the key for the newly created game
      * @throws IllegalArgumentException - if either passed user are not registered with the system
      */
-    public void createGame(String nickname1,String nickname2) throws IllegalArgumentException{
+    public String createGame(String nickname1,String nickname2) throws IllegalArgumentException{
         //must check if both players are registered
         if(isRegistered(nickname1) && isRegistered(nickname2)) {
             Game game = new Game(nickname1, nickname2);
             GameSnapshot snapshot = new GameSnapshot(game);
-            String key = DBIOCore.addGameSnapshot(snapshot);
+            String key = DBIOCore.getInstance().addGameSnapshot(snapshot);
             games.put(key,game);
+            return key;
         }
         else{
             // MANUALLY ADDING THIS CODE WHERE WE BYPASS THE REGISTRATION TO GET USERS INTO THE GAME.
              Game game = new Game(nickname1, nickname2);
              games.put("key", game);
+            return "key";
             // throw new IllegalArgumentException("ERROR: both passed users must be registered");
         }
     }
@@ -86,8 +98,10 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
         int result = games.get(currentGameKey).makeMove(nickname,fromRow,fromCol,toRow,toCol);
         if (result == 0) {
             // book keeping for a finished game should go here. Will need to wait until the DB is set up to handle games and game results
-        } else if (result > 1) {
-            // book keeping to sync the opponents board with the new game state. Will need to wait until the DB is set up to handle games
+        } else if (result > 0) {
+            GameSnapshot snapshot = new GameSnapshot(games.get(currentGameKey));
+            snapshot.setDbKey(currentGameKey);
+            DBIOCore.getInstance().updateGameSnapshot(snapshot);
         }
         return result;
     }
@@ -170,7 +184,7 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
     @Override
     public void snapshotAdded(GameSnapshot addedSnapshot, String precedingSnapshotKey) {
         Game tempGame = new Game(addedSnapshot.getNicknameWhite(),addedSnapshot.getNicknameBlack());
-        games.put(precedingSnapshotKey,tempGame);
+        games.put(addedSnapshot.getDbKey(),tempGame);
         //update that game with snapshot
         tempGame.updateFromSnapshot(addedSnapshot);
     }
@@ -179,23 +193,13 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
     public void snapshotChanged(GameSnapshot changedSnapshot, String precedingSnapshotKey) {
         //update game with new snapshot
         Game tempGame = new Game(changedSnapshot.getNicknameWhite(),changedSnapshot.getNicknameBlack());
-        games.put(precedingSnapshotKey,tempGame);
+        games.put(changedSnapshot.getDbKey(),tempGame);
         //Update game with snapshot
         tempGame.updateFromSnapshot(changedSnapshot);
     }
 
     @Override
     public void snapshotRemoved(GameSnapshot removedSnapshot) {
-        //remove game from list
-        String rmKey = "";
-        for (String key : games.keySet()) {
-            if (games.get(key).equals(removedSnapshot)) {
-                rmKey = key;
-                break;
-            }
-        }
-        if (rmKey != "") {
-            games.remove(rmKey);
-        }
+        games.remove(removedSnapshot.getDbKey());
     }
 }
