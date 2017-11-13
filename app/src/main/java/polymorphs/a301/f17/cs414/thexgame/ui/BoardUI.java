@@ -19,13 +19,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameSnapshot;
 import polymorphs.a301.f17.cs414.thexgame.R;
+import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
+import polymorphs.a301.f17.cs414.thexgame.persistence.GameSnapshotObserver;
 import polymorphs.a301.f17.cs414.thexgame.ui.activities.HomescreenActivity;
 
 
-public final class BoardUI extends View {
+public final class BoardUI extends View implements GameSnapshotObserver {
     private static final String TAG = BoardUI.class.getSimpleName();
 
     private static final int ROWS = 12;
@@ -49,18 +53,18 @@ public final class BoardUI extends View {
     private boolean flipped = false;
 
     // todo: have the board UI take in a Driver object so that we can correctly be able to communicate with the board and update tiles as needed. Very important
-    public BoardUI(final Context context, final AttributeSet attrs ) {
+    public BoardUI(final Context context, final AttributeSet attrs) {
         super(context, attrs);
 
         this.tileUIs = new TileUI[ROWS][COLS];
         setFocusable(true);
         movePieceActionListener = new MovePieceActionListener(this); // create a new MovePieceActionListener that will be in charge of setting everything else up.
         buildTiles();
+        driver = Driver.getInstance();
     }
 
-    public void setDriver(Driver driver)
-    {
-        this.driver = driver;
+    public void registerToSnapshot(String snapshotKey) {
+        DBIOCore.getInstance().registerToGameSnapshot(this, snapshotKey);
     }
 
     // important for displaying the winner of the game.
@@ -343,4 +347,37 @@ public final class BoardUI extends View {
         this.y0 = 0;
     }
 
+    @Override
+    public void snapshotUpdated(GameSnapshot gs) {
+        newlyStarted = false;
+        String tempGame = gs.getGameString();
+        String [] playerPieces = tempGame.split("-")[1].split("\\|");
+        String [] pieces;
+        String [] pieceParts;
+        HashMap<String, String[]> piecePartsByLocation = new HashMap<>();
+        for (int playerIdx = 0; playerIdx < 2; playerIdx++) {
+            pieces = playerPieces[playerIdx].split("\\*");
+            for (String piece : pieces) {
+                pieceParts = piece.split(",");
+                if (!pieceParts[3].equals("true")) continue; // if graveyard needs to be done it should be added here
+                piecePartsByLocation.put(pieceParts[1] + "," + pieceParts[2], new String[]{pieceParts[0],pieceParts[4]});
+            }
+        }
+        String pieceName;
+        for (int row = 0; row < tileUIs.length; row++) {
+            for (int col = 0; col < tileUIs[row].length; col++) {
+                if (piecePartsByLocation.get(row + "," + col) != null) {
+                    pieceName = piecePartsByLocation.get(row + "," + col)[0].toLowerCase();
+                    if (piecePartsByLocation.get(row + "," + col)[1].equalsIgnoreCase("white")) {
+                        pieceName = "w" + pieceName;
+                    } else {
+                        pieceName = "b" + pieceName;
+                    }
+                    tileUIs[row][col].setPieceName(pieceName);
+                } else {
+                    tileUIs[row][col].setPieceName(" ");
+                }
+            }
+        }
+    }
 }
