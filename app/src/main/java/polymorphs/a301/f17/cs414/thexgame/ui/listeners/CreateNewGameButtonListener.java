@@ -73,6 +73,8 @@ public class CreateNewGameButtonListener implements View.OnClickListener, UserOb
     @Override
     public void onClick(View view)
     {
+       // Intent sendInvitesIntent = new Intent(homescreenActivity, SendInvitationsActivity.class);
+       // homescreenActivity.startActivity(sendInvitesIntent); // start the activity.
         askToSendInvites();
     }
 
