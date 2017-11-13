@@ -84,7 +84,7 @@ public class HomescreenActivity extends AppCompatActivity
         boardUI = (BoardUI) findViewById(R.id.chessboard);
 
         // TODO: @Roger remove this because we are hard creating a game and this should not happen! Very important!
-        String newGameKey = driver.createGame("tak", "ping"); // create a game with two random players, pretty important.// BreadCrumb: turn order hack
+        String newGameKey = driver.createGame("white", "black"); // create a game with two random players, pretty important.// BreadCrumb: turn order hack
         driver.setCurrentGameKey(newGameKey); // TODO: @Team, remove this because it setting the game index to always be 0 and this will not be allowed for our game.
 
         System.out.println("SETTING THE DRIVER FOR BOARDUI");
