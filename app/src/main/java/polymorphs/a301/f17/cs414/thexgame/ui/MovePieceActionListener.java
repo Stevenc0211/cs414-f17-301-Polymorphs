@@ -59,7 +59,7 @@ public class MovePieceActionListener {
         boardUI.setHighlightedSquares(availableMoves); // set the available moves that will tell the board which ui elements should be used to generate the highlighted squares.
     }
 
-    User user1 = new User("tmp", "tmp", "white"); // BreadCrumb: turn order hack
+    User user1 = new User("tmp", "tmp", "tak"); // BreadCrumb: turn order hack
     User user2 = new User("tmp", "tmp", "black"); // BreadCrumb: turn order hack
     User currentUser = user1; // BreadCrumb: turn order hack
 
