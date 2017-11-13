@@ -43,7 +43,7 @@ class Player {
     /**
      * This is used to add piece to list of pieces for database usage
      */
-    void addPieces(String type,int row,int col,boolean available){
+    public void addPieces(String type,int row,int col,boolean available){
         //add the appropriate piece
         if(type.equals("King")){
             King king = new King(row,col,available,color);
@@ -59,19 +59,11 @@ class Player {
         }
     }
 
-    int getIndexFor(Piece piece) {
-        return pieces.indexOf(piece);
-    }
-
-    void setPieceAtIndex(int index, Piece piece) {
-        pieces.set(index, piece);
-    }
-
-    ArrayList<Piece> getPieces(){
+    public ArrayList<Piece> getPieces(){
         return pieces;
     }
 
-    private void initializePieces(){
+    public void initializePieces(){
         if(color.equals(Color.WHITE)){
             pieces.add(new King(8,3,true,Color.WHITE));
             pieces.add(new Rook(7,2,true,Color.WHITE));

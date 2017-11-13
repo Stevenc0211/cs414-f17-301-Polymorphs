@@ -149,7 +149,7 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
     private Runnable setupDriver = new Runnable() {
         public void run() {
             Driver.getInstance();
-            delayHandler.postDelayed(transferToHomescreen, 1000);
+            delayHandler.postDelayed(transferToHomescreen, 100);
         }
     };
 
