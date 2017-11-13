@@ -411,9 +411,7 @@ public class HomescreenActivity extends AppCompatActivity
         }
         else if( id == R.id.help)
         {
-            // TODO: call a method here that will display your fragment mang
-           // String answer = "Check yo self fool -->  ¯\\_(ツ)_⌐╦╦═─ - - -  \\('^')//";
-           // Snackbar.make(homescreenLayout,answer,Snackbar.LENGTH_LONG).show();
+            // TODO: call a method here that will display your fragment
             openHelpFragment();
         }
 
