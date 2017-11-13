@@ -36,6 +36,7 @@ import polymorphs.a301.f17.cs414.thexgame.ui.adapters.GamePagerAdapter;
 import polymorphs.a301.f17.cs414.thexgame.ui.adapters.SquareAdapter;
 import polymorphs.a301.f17.cs414.thexgame.ui.fragments.NotificationsFragment;
 import polymorphs.a301.f17.cs414.thexgame.ui.fragments.SettingsFragment;
+import polymorphs.a301.f17.cs414.thexgame.ui.fragments.helpFragment;
 import polymorphs.a301.f17.cs414.thexgame.ui.listeners.CreateNewGameButtonListener;
 import polymorphs.a301.f17.cs414.thexgame.ui.listeners.GamePageChangeListener;
 import polymorphs.a301.f17.cs414.thexgame.ui.listeners.SubmitButtonClickListener;
@@ -57,6 +58,7 @@ public class HomescreenActivity extends AppCompatActivity
     private boolean openCurrentGames = false; // tells inGameUI to just open the current list of games.
     private SubmitButtonClickListener submitClickListener;
     private SettingsFragment settingsUI = new SettingsFragment(); // holds a copy of our settingsUI.
+    private helpFragment helpUI = new helpFragment(); // this will hold a copy of the helpUI that has info on the game bois
     private final int SET_USERNAME = 9001; // details what we are doing for the username.
 
 
@@ -95,9 +97,8 @@ public class HomescreenActivity extends AppCompatActivity
 
         // todo: we should have a list of our boards pulled from our database with the information about the piece places. This is pretty important!
         games.add(boardUI); // add once.
-        // games.add(boardUI); // add twice.
 
-        gamePagerAdapter = new GamePagerAdapter(games, inGameUI); // send in the games that we want to work with that will allow us to send our games to the adapter to update the ViewPager (to swipe horizontally)
+        gamePagerAdapter = new GamePagerAdapter(games, inGameUI, getBaseContext()); // send in the games that we want to work with that will allow us to send our games to the adapter to update the ViewPager (to swipe horizontally)
         // TODO: create the Gamepage listener that will be in charge of getting this thing working correctly.
         GamePageChangeListener gpcl = new GamePageChangeListener(this); // holds the game as well as a copy of the InGameUI that will allow us to see a snack bar for the users to be able to see their game number.
 
@@ -142,12 +143,17 @@ public class HomescreenActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
+        // Molto Importante: This needs to be displayed at the very beginning before we do any work on the app otherwise our UI elements will not be displayed properly this is very important!
+        // (cont): we need to display this first and then update it the app loads, putting this at the end caused the app to break which is not good!
+        setContentView(R.layout.homescreen);
+        usernames = new HashMap<>();
+
         // TODO: @Roger, the app is getting to the point where it is lagging now. When we pull games from the database we need to do an AsynTask to load them up so the users can look at a loading screen while it loads.
         driver = Driver.getInstance();
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
-        if(isUsernameSet())
+        if(isUsernameSet() == true)
         {
             preferences.edit().putBoolean("usernameCreated", true).apply(); // sets this in main memory in a background thread.
             preferences.edit().putBoolean("userCreated", true).apply(); // sets this in main memory in a background thread.
@@ -161,10 +167,6 @@ public class HomescreenActivity extends AppCompatActivity
             displayHomescreen(); // setup the familiar homescreen layout that we are used to seeing.
         }
 
-        setContentView(R.layout.homescreen);
-        usernames = new HashMap<>();
-
-        setupGamePager(); // setup our game pager, pretty important.
 
         DBIOCore.getInstance().registerToUsernameList(this);
         DBIOCore.getInstance().registerToCurrentUser(this);
@@ -245,7 +247,7 @@ public class HomescreenActivity extends AppCompatActivity
         updateNotificationsCount(); // update the count of notifications.
 
         usernames = new HashMap<>();
-
+        setupGamePager(); // setup the game pager here, this is what allows our game to be completed.
     }
 
     /*
@@ -381,6 +383,19 @@ public class HomescreenActivity extends AppCompatActivity
         updateNotificationsCount(); // update the notifications as soon as something is pressed.
     }
 
+    protected void openHelpFragment()
+    {
+        Bundle fragmentArgs = new Bundle(); // the Bundle here allows us to send arguments to our fragment
+        RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen);
+        homescreenLayout.removeAllViews();
+        homescreenLayout.setBackground(null);
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.mainContentScreen, helpUI);
+        transaction.commit();
+        updateNotificationsCount();
+
+    }
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -404,6 +419,11 @@ public class HomescreenActivity extends AppCompatActivity
         } else if (id == R.id.settings)
         {
             openSettingsFragment();
+        }
+        else if( id == R.id.help)
+        {
+            // TODO: call a method here that will display your fragment
+            openHelpFragment();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

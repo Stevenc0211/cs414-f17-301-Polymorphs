@@ -1,5 +1,6 @@
 package polymorphs.a301.f17.cs414.thexgame.ui.adapters;
 
+import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +25,15 @@ public class GamePagerAdapter extends PagerAdapter {
     private SquareAdapter squareAdapter; // holds our square adapter which will allow us to be able to work on our lists and update the information for the players to be able to play a game!
     private View inGameUI;
 
-    public GamePagerAdapter(ArrayList<BoardUI> gamesList, View ui) {
+    private ArrayList<View> views = new ArrayList<View>(); // views to be added to the GamePager
+    private Context fromContext;
+
+    public GamePagerAdapter(ArrayList<BoardUI> gamesList, View ui, Context context) {
         games = gamesList;
         inGameUI = ui;
+        fromContext = context;
     }
+
 
     // returns the number of games.
     @Override
@@ -35,14 +41,27 @@ public class GamePagerAdapter extends PagerAdapter {
         return games.size();
     }
 
+    // Note: that "Object" refers to the page.
+    @Override
+    public int getItemPosition(Object object)
+    {
+        int index = views.indexOf(object);
+
+        if(index == -1) {
+            return POSITION_NONE;
+        }
+        else {
+            return index;
+        }
+    }
+
     // This method sets up the GridView for the game for when the user swipes to the next game.
     // All of the user's game info should be created at a time for the user to be able to switch between games effectively.
     @Override
     public Object instantiateItem(ViewGroup container, int position)
     {
-        BoardUI game = games.get(position); // grab a game for a user to be able to work with.
-        container.removeView(game); // removes the old view (but still keeps the data contained)
-        container.addView(game); // add the game to the view group.
+        BoardUI game = (BoardUI) games.get(position);
+        container.addView(game);
         return game; // return the instantiated game.
     }
 
