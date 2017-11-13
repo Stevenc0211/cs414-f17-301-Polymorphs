@@ -82,12 +82,19 @@ public class HomescreenActivity extends AppCompatActivity
     protected void setupGamePager()  {
 
 
-
-        // TODO: @Roger remove this because we are hard creating a game and this should not happen! Very important!
-        String newGameKey = driver.createGame("tak", "black"); // create a game with two random players, pretty important.// BreadCrumb: turn order hack
-        driver.setCurrentGameKey(newGameKey); // TODO: @Team, remove this because it setting the game index to always be 0 and this will not be allowed for our game.
+        // For starting new games do the following
+        String newGameKey = driver.createGame("your_user_name", "black"); // BreadCrumb: turn order hack
+        driver.setCurrentGameKey(newGameKey);
         boardUI = (BoardUI) findViewById(R.id.chessboard);
-//        boardUI.registerToSnapshot("-KyoASXbB7XAec-x-LNr");
+        boardUI.registerToSnapshot(newGameKey);
+
+        /* For loading previous games do the following
+        driver.setCurrentGameKey(old_game_key);
+        boardUI = (BoardUI) findViewById(R.id.chessboard);
+        boardUI.registerToSnapshot(old_game_key);
+        // where old_game_key is a key from a previous session
+        */
+
         System.out.println("SETTING THE DRIVER FOR BOARDUI");
         boardUI.setHomescreenActivity(this); // send a copy of the homescreen activity to allow for certain displaying of certain UI elements.
 
