@@ -49,7 +49,7 @@ public class NotificationsFragment extends Fragment implements InviteListObserve
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getBaseContext());
         Bundle args = getArguments(); // get the arguments for the fragment activity.
         // TODO: we should grab any arguments that we have sent to the Notifications UI pretty important!!
-        DBIOCore.registerToCurrentUserInviteList(this);
+        DBIOCore.getInstance().registerToCurrentUserInviteList(this);
     }
 
 
