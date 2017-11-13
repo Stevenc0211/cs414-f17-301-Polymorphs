@@ -117,7 +117,16 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
     // tells the calling method if the user we are looking for is in check
     public int[] isInCheck()
     {
+
+       // System.out.println("games size = " + games.size());
+
+        if(games.size() == 0) // if no games, skip looking for king since we want to generate a new board before this game gets added. (a temp fix until we can remove the board ui)
+        {
+            return null;
+        }
+
         King king = games.get(currentGameKey).getCurrentPlayer().getKing(); // get the king for the current player.
+
         if(games.get(currentGameKey).getBoard().kingInCheck(king)) // if the king is in check.
         {
             int[] coords = new int[2];
@@ -133,6 +142,8 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
     */
     public ArrayList<int[]> getAvailableMoves(int row, int col)
     {
+        // TODO: @Miles, you will notice that the error takes you here. For some reason, we are getting a null board and I can't figure out exactly why right now. Very weird.
+
         Tile from = games.get(currentGameKey).getBoard().getTile(row, col);
         if (!from.isOccupied()) return new ArrayList<>();
         Color currentPlayerColor =  games.get(currentGameKey).getCurrentPlayer().getColor();

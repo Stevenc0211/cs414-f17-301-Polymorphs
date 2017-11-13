@@ -156,7 +156,17 @@ public class HomescreenActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        // TODO: @Roger, the app is getting to the point where it is lagging now. When we pull games from the database we need to do an AsynTask to load them up so the users can look at a loading screen while it loads.
+        // @Miles, this is important to keep these two lines right before super.onCreate(), especially setContentView, that is critical or the UI get's borked.
+        /*
+            A couple of things here:
+            1.) when the app is created, it is skipping the ability for users to create a user name which is very bad. I could not figure out why it was skipping, perhaps you will fare better!
+            2.) The app still crashes, however, I was able to get this up and running a little bit better. However, there are a few things still going wrong. You may want to merge my branch to master then update your code.
+
+            Sorry I couldn't get this thing finished and working.
+         */
+        setContentView(R.layout.homescreen);
+        usernames = new HashMap<>();
+
         driver = Driver.getInstance();
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -175,8 +185,7 @@ public class HomescreenActivity extends AppCompatActivity
             displayHomescreen(); // setup the familiar homescreen layout that we are used to seeing.
         }
 
-        setContentView(R.layout.homescreen);
-        usernames = new HashMap<>();
+
         DBIOCore.getInstance().registerToUsernameList(this);
         DBIOCore.getInstance().registerToCurrentUser(this);
 
