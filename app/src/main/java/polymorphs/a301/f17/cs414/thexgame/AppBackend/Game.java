@@ -119,6 +119,7 @@ class Game {
                 }
             }
         }
+
         return false; // if no checks are hit to return true, then return false, no promotion occurred.
     }
 

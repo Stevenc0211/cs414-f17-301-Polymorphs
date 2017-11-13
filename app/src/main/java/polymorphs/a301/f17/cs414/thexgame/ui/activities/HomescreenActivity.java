@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Invite;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
 import polymorphs.a301.f17.cs414.thexgame.ui.BoardUI;
 import polymorphs.a301.f17.cs414.thexgame.R;
@@ -68,13 +69,16 @@ public class HomescreenActivity extends AppCompatActivity
     private String username; // username of the user
 
     HashMap<String, String> usernames; // holds the list of people to invite keyed by the previous usernames database key
-    polymorphs.a301.f17.cs414.thexgame.AppBackend.User currentUser;
+    User currentUser;
 
 
     // adds a game to the game pager and also shows the person we are playing the game with.
-    public void addGameToPager(BoardUI boardToAdd, String opponent)
+    public void createNewGame(Invite invite)
     {
-        games.add(boardToAdd);
+        gameDriver.createGame(invite.getInvitingUser(), invite.getInvitedUser());
+        BoardUI newGameUI = (BoardUI) findViewById(R.id.chessboard);
+
+        gamePagerAdapter.addView(newGameUI);
         gamePagerAdapter.notifyDataSetChanged();
     }
 
@@ -92,7 +96,6 @@ public class HomescreenActivity extends AppCompatActivity
         boardUI.setHomescreenActivity(this); // send a copy of the homescreen activity to allow for certain displaying of certain UI elements.
 
         gamePager = (ViewPager) findViewById(R.id.gamesListPager); // get the game pager that will basically fill out the games!
-
         // todo: we should have a list of our boards pulled from our database with the information about the piece places. This is pretty important!
         games.add(boardUI); // add once.
         // games.add(boardUI); // add twice.

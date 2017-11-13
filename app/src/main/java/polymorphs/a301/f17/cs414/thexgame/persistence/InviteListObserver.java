@@ -1,6 +1,6 @@
 package polymorphs.a301.f17.cs414.thexgame.persistence;
 
-import polymorphs.a301.f17.cs414.thexgame.Invitation;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Invite;
 
 /**
  * Created by Miles on 10/20/2017.
@@ -14,18 +14,18 @@ public interface InviteListObserver {
      * @param addedInvite - the new invitation
      * @param precedingInviteKey - the database key of the preceding element in the invite list
      */
-    void inviteAdded(Invitation addedInvite, String precedingInviteKey);
+    void inviteAdded(Invite addedInvite, String precedingInviteKey);
 
     /**
      * Triggered when a invite is changed in the database
      * @param changedInvite - the changed invitation with updated data
      * @param precedingInviteKey - the database key of the preceding element in the invite list
      */
-    void inviteChanged(Invitation changedInvite, String precedingInviteKey);
+    void inviteChanged(Invite changedInvite, String precedingInviteKey);
 
     /**
      * Triggered when a invite is removed from the database
      * @param removedInvite - the invitation that was removed
      */
-    void inviteRemoved(Invitation removedInvite);
+    void inviteRemoved(Invite removedInvite);
 }

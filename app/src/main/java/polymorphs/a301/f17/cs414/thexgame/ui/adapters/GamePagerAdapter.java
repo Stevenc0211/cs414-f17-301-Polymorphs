@@ -41,7 +41,7 @@ public class GamePagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position)
     {
         BoardUI game = games.get(position); // grab a game for a user to be able to work with.
-        container.removeView(game); // removes the old view (but still keeps the data contained)
+//        container.removeView(game); // removes the old view (but still keeps the data contained)
         container.addView(game); // add the game to the view group.
         return game; // return the instantiated game.
     }
@@ -62,5 +62,10 @@ public class GamePagerAdapter extends PagerAdapter {
     public void destroyItem(ViewGroup container, int position, Object object)
     {
         container.removeView((BoardUI) object); // remove this view completely.
+    }
+
+    public boolean addView (BoardUI v)
+    {
+        return games.add(v);
     }
 }

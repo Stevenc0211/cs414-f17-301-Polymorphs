@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import polymorphs.a301.f17.cs414.thexgame.Invitation;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Invite;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.ui.activities.HomescreenActivity;
@@ -18,14 +18,14 @@ import polymorphs.a301.f17.cs414.thexgame.ui.activities.HomescreenActivity;
 /**
  * Created by thenotoriousrog on 10/13/17.
  *
- * WARNING: this adapter is not referring to any of the adapters used in the Invitation class nor the adapters in the inviteusers UI.
+ * WARNING: this adapter is not referring to any of the adapters used in the Invite class nor the adapters in the inviteusers UI.
  */
 
 public class InvitationsListAdapter extends ArrayAdapter {
 
     private HomescreenActivity primaryActivity;
 
-    public InvitationsListAdapter(Context context, int resource, ArrayList<Invitation> invitations, HomescreenActivity primaryActivity)
+    public InvitationsListAdapter(Context context, int resource, ArrayList<Invite> invitations, HomescreenActivity primaryActivity)
     {
         super(context, resource, invitations);
         this.primaryActivity = primaryActivity;
@@ -43,7 +43,7 @@ public class InvitationsListAdapter extends ArrayAdapter {
         }
 
         TextView text = v.findViewById(R.id.invitationMessage);
-        String invitingUser = ((Invitation)getItem(position)).getInvitingUser();
+        String invitingUser = ((Invite)getItem(position)).getInvitingUser();
         text.setText(invitingUser +  " invites you to a game of Chad");
         text.setTextSize(20);
 
@@ -53,10 +53,8 @@ public class InvitationsListAdapter extends ArrayAdapter {
             @Override
             public void onClick(View view) {
 
-                DBIOCore.getInstance().removeInvite((Invitation)getItem(position));
-                //primaryActivity.openCurrentGamesFragment();
-                // TODO: after clicking accept, a game will be added to the ViewPager in HomescreenActivity.
-                // TODO: @Miles if you can't figure it out it doesn't matter at this point, just focus on getting those invitations working right again.
+                DBIOCore.getInstance().removeInvite((Invite)getItem(position));
+                primaryActivity.createNewGame((Invite)getItem(position));
             }
         });
 
@@ -66,7 +64,7 @@ public class InvitationsListAdapter extends ArrayAdapter {
             @Override
             public void onClick(View view) {
 
-                DBIOCore.getInstance().removeInvite((Invitation)getItem(position));
+                DBIOCore.getInstance().removeInvite((Invite)getItem(position));
 
             }
         });

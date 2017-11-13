@@ -11,7 +11,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameRecord;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameSnapshot;
-import polymorphs.a301.f17.cs414.thexgame.Invitation;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Invitation;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Invite;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
 
 
@@ -168,7 +169,7 @@ public class DBIOCore {
      */
     public void sendInvite(Invitation invite) {
         String key = baseReference.child("invites").child(invite.getInvitedUser()).push().getKey();
-        invite.setDbKeyKey(key);
+        invite.setDbKey(key);
         baseReference.child("invites").child(invite.getInvitedUser()).child(key).setValue(invite);
     }
 

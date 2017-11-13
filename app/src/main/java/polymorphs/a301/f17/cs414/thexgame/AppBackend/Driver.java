@@ -8,7 +8,8 @@ import polymorphs.a301.f17.cs414.thexgame.persistence.GameSnapshotListObserver;
 import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListObserver;
 
 /**
- * Created by athai on 10/18/17.
+ * Created by athai on 10/18/17. Edited and modified by Roger and Miles
+ * Controls all of the features needed for the backend to work with the UI elements.
  */
 
 public final class Driver implements UsernameListObserver,GameSnapshotListObserver  { // will implement GameListObserver
@@ -51,6 +52,7 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
             return key;
         }
         else{
+
             // MANUALLY ADDING THIS CODE WHERE WE BYPASS THE REGISTRATION TO GET USERS INTO THE GAME.
              Game game = new Game(nickname1, nickname2);
              games.put("key", game);
@@ -126,7 +128,9 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
         return null; // return null saying that this king is not in check.
     }
 
-
+    /*
+        This method is used to grab all of the available moves for a piece that the user has clicked.
+    */
     public ArrayList<int[]> getAvailableMoves(int row, int col)
     {
         Tile from = games.get(currentGameKey).getBoard().getTile(row, col);
