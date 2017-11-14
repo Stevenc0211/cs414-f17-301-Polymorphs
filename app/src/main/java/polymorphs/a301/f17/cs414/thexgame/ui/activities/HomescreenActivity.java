@@ -213,8 +213,6 @@ public class HomescreenActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        //todo: @Miles, I should register this to the DBIOcore now for a gamesnapshot listener huh? if not please remove this line.
-
         // Molto Importante: This needs to be displayed at the very beginning before we do any work on the app otherwise our UI elements will not be displayed properly this is very important!
         // (cont): we need to display this first and then update it the app loads, putting this at the end caused the app to break which is not good!
         setContentView(R.layout.homescreen);
@@ -238,6 +236,8 @@ public class HomescreenActivity extends AppCompatActivity
             displayHomescreen(); // setup the familiar homescreen layout that we are used to seeing.
         }
 
+        // register items to the DBIOcore...
+        DBIOCore.getInstance().registerToGameSnapshotList(this);
         DBIOCore.getInstance().registerToUsernameList(this);
         DBIOCore.getInstance().registerToCurrentUser(this);
 
@@ -374,21 +374,24 @@ public class HomescreenActivity extends AppCompatActivity
         email = u.getEmail();
         username = u.getNickname();
         setupHeader(); // updates the header with the correct information for the user to see.
-
     }
 
     // A snapshot was added i.e. a game was added, we should create a new game inside the view pager as well as the database for this player.
     @Override
     public void snapshotAdded(GameSnapshot addedSnapshot, String precedingSnapshotKey)
     {
-        System.out.println("the snapshot added feature was called!!!");
 
+        // this get's repeatedly called, likely this method will not do anything
+
+       // System.out.println("the snapshot added feature was called!!!");
         // create a new game
+        /* this should not go here because this is freezing the application.
         BoardUI newGame = createNewGame(addedSnapshot.getNicknameWhite(), addedSnapshot.getNicknameBlack()); // creates a new game for this user.
         newGame.setHomescreenActivity(this);
         newGame.setGameID("test"); // todo: fix this so that the game ID's match and what not, this is very important.
         addGameToPager(newGame, addedSnapshot.getNicknameBlack());
         updateViewPager(); // updating view pager to hopefully see if some of the games are being added or not.
+        */
     }
 
     // not sure how this is used yet.
