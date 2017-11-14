@@ -46,6 +46,7 @@ public final class BoardUI extends View implements GameSnapshotObserver {
     private int squareSize = 0;
 
 
+    private String gameID = ""; // holds the gameID for this game, needed in order to keep track of the game and what it can do.
     private Driver driver; // the driver object that we are going to be using to communicate with the UI (this)
     private HomescreenActivity activity; // a copy of the homescreen activity so that we can display the proper winning screen for this game if a player sees it in real time.
 
@@ -65,6 +66,18 @@ public final class BoardUI extends View implements GameSnapshotObserver {
 
     public void registerToSnapshot(String snapshotKey) {
         DBIOCore.getInstance().registerToGameSnapshot(this, snapshotKey);
+    }
+
+    // sets the gameID for this game.
+    public void setGameID(String id)
+    {
+        this.gameID = id;
+    }
+
+    // gets the game ID, mainly used for removing games out of the view pager.
+    public String getGameID()
+    {
+        return gameID;
     }
 
     // important for displaying the winner of the game.
@@ -347,6 +360,7 @@ public final class BoardUI extends View implements GameSnapshotObserver {
         this.y0 = 0;
     }
 
+    // Updates the game based on the snapshot of the game sent in, used when a game is updated.
     @Override
     public void snapshotUpdated(GameSnapshot gs) {
         newlyStarted = false;

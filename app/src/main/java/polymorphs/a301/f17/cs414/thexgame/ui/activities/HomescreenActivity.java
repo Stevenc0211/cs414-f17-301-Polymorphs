@@ -25,7 +25,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameSnapshot;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
+import polymorphs.a301.f17.cs414.thexgame.persistence.GameSnapshotListObserver;
+import polymorphs.a301.f17.cs414.thexgame.persistence.GameSnapshotObserver;
 import polymorphs.a301.f17.cs414.thexgame.ui.BoardUI;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
@@ -41,7 +44,7 @@ import polymorphs.a301.f17.cs414.thexgame.ui.listeners.GamePageChangeListener;
 import polymorphs.a301.f17.cs414.thexgame.ui.listeners.SubmitButtonClickListener;
 
 public class HomescreenActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, UsernameListObserver, UserObserver {
+        implements NavigationView.OnNavigationItemSelectedListener, UsernameListObserver, UserObserver, GameSnapshotListObserver, GameSnapshotObserver {
 
     private NotificationsFragment notificationsFragment = new NotificationsFragment(); // a copy of the notifications UI that should be built for the user.
     private ArrayList<String> currentGames; // the list of current games.
@@ -59,7 +62,7 @@ public class HomescreenActivity extends AppCompatActivity
     private SettingsFragment settingsUI = new SettingsFragment(); // holds a copy of our settingsUI.
     private final int SET_USERNAME = 9001; // details what we are doing for the username.
 
-
+    private NavigationView navigationView; // the notification view to allow us to see our user's nickname and email on the app itself.
     private Driver driver; // the driver that we will be working with within homescreen activity.
 
     // These will be populated by the shared preferences.
@@ -71,11 +74,39 @@ public class HomescreenActivity extends AppCompatActivity
     polymorphs.a301.f17.cs414.thexgame.AppBackend.User currentUser;
 
 
+    // returns the current user, primarily used by InvitationsListAdapter.
+    public User getCurrentUser()
+    {
+        return currentUser;
+    }
+
+    // Simply invalidates the game pager which updates the UI portion of the gamepager itself.
+    public void updateViewPager()
+    {
+        gamePager.invalidate();
+    }
+
     // adds a game to the game pager and also shows the person we are playing the game with.
     public void addGameToPager(BoardUI boardToAdd, String opponent)
     {
         games.add(boardToAdd);
         gamePagerAdapter.notifyDataSetChanged();
+    }
+
+    // This method will create a new game called when an Invite is accepted from a player. WhitePlayerNickname is the player who sent the invite therefore goes first.
+    // NOTE: it does not set any of the important information such as setHomescreeActivity, and setGameID, that will need to be done before the new BoardUI can be used.
+    public BoardUI createNewGame(String whitePlayerNickname, String blackPlayerNickname)
+    {
+        // needs to take in the name of two players, the inviting user, and this user, and it should grab their nicknames.
+        String newGameKey = driver.createGame(whitePlayerNickname, blackPlayerNickname); // create the game in the backend.
+        driver.setCurrentGameKey(newGameKey);
+
+        BoardUI newGame = new BoardUI(getBaseContext(), null); // create a new board UI.
+        newGame.registerToSnapshot(newGameKey); // register the snapshot with this new board.
+
+        // TODO: may want o figure out how to generate a game ID in here so that it is automatically added, this is very important so resolve the game ID issues.
+
+        return newGame; // return the new game here to be used or whatever.
     }
 
     // this method sets up our game pager.
@@ -117,7 +148,7 @@ public class HomescreenActivity extends AppCompatActivity
 
 
         // NOTE: the following lines WILL NOT WORK you must replace this as per instructions above
-        String newGameKey = driver.createGame("white", "black"); // BreadCrumb: turn order hack
+        String newGameKey = driver.createGame("thenotoriousrog", "razor"); // BreadCrumb: turn order hack
         driver.setCurrentGameKey(newGameKey);
         boardUI = (BoardUI) findViewById(R.id.chessboard);
         boardUI.registerToSnapshot(newGameKey);
@@ -143,7 +174,10 @@ public class HomescreenActivity extends AppCompatActivity
     // checks the SharedPreferences to see if the username has correctly been set. If so, proceed to maingameui, otherwise show newusername layout.
     protected boolean isUsernameSet()
     {
-        if (DBIOCore.getInstance().getCurrentUserUsername() == null) return true;
+        if (DBIOCore.getInstance().getCurrentUserUsername() == null)
+        {
+            return true;
+        }
         return false;
     }
 
@@ -155,6 +189,9 @@ public class HomescreenActivity extends AppCompatActivity
     private void resetBasicInfoFromMainMemory()
     {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
+        System.out.println("Is the current user null? " + currentUser);
+
         name = prefs.getString("name", "");
         email = prefs.getString("email", "");
         username = prefs.getString("username", "");
@@ -205,7 +242,7 @@ public class HomescreenActivity extends AppCompatActivity
     }
 
     // This method sets up the header for the navigation view which will show the user's nickname and email so they know that they are logged in.
-    private void setupHeader(NavigationView navigationView)
+    private void setupHeader()
     {
         LinearLayout navHeaderView = (LinearLayout) navigationView.getHeaderView(0); // gets the header view of the nav_header_homescreen.
         TextView nameText = (TextView) navHeaderView.findViewById(R.id.nameText);
@@ -262,7 +299,6 @@ public class HomescreenActivity extends AppCompatActivity
 
         FloatingActionButton createNewGameButton = (FloatingActionButton) findViewById(R.id.createNewGameButton);
 
-        // TODO: @Miles for some weird reason, we are getting a null reference for the current user. This likely means the same for usernames. This is why sendInvites Don't work, try to get that fixed and we are golden.
         CreateNewGameButtonListener newGameButtonListener = new CreateNewGameButtonListener(HomescreenActivity.this);
         createNewGameButton.setOnClickListener(newGameButtonListener);
 
@@ -272,9 +308,9 @@ public class HomescreenActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        setupHeader(navigationView); // setup the header of the navigation view.
+        setupHeader(); // setup the header of the navigation view.
         updateNotificationsCount(); // update the count of notifications.
 
         usernames = new HashMap<>();
@@ -302,6 +338,7 @@ public class HomescreenActivity extends AppCompatActivity
 
     }
 
+// ------------------------------------------------ Observer and listener code START -----------------------------------------------------------------------------------------
 
     @Override
     public void usernameAdded(String addedUsername, String precedingUsernameKey) {
@@ -326,11 +363,54 @@ public class HomescreenActivity extends AppCompatActivity
         }
     }
 
+    // Keeps track of the data whenever the user is updated. Once updated, the header view for the navigation header is also updated showing the changes.
     @Override
     public void userUpdated(User u) {
         System.out.println("User in HomescreenActivity is " + u.getNickname());
         currentUser = u;
+        name = u.getName();
+        email = u.getEmail();
+        username = u.getNickname();
+        setupHeader(); // updates the header with the correct information for the user to see.
+
     }
+
+    // A snapshot was added i.e. a game was added, we should create a new game inside the view pager as well as the database for this player.
+    @Override
+    public void snapshotAdded(GameSnapshot addedSnapshot, String precedingSnapshotKey)
+    {
+        System.out.println("the snapshot added feature was called!!!");
+
+        // create a new game
+        BoardUI newGame = createNewGame(addedSnapshot.getNicknameWhite(), addedSnapshot.getNicknameBlack()); // creates a new game for this user.
+        newGame.setHomescreenActivity(this);
+        newGame.setGameID("test"); // todo: fix this so that the game ID's match and what not, this is very important.
+        addGameToPager(newGame, addedSnapshot.getNicknameBlack());
+        updateViewPager(); // updating view pager to hopefully see if some of the games are being added or not.
+    }
+
+    // not sure how this is used yet.
+    @Override
+    public void snapshotChanged(GameSnapshot changedSnapshot, String precedingSnapshotKey) {
+        System.out.println("There was a change in the gamesnapshot with players" + changedSnapshot.getNicknameWhite() + " and " + changedSnapshot.getNicknameBlack());
+
+    }
+
+    // remove the game from the view pager. // todo: @Team, decide if we also want to remove the game from the database although I doubt it.
+    @Override
+    public void snapshotRemoved(GameSnapshot removedSnapshot)
+    {
+        // todo: remove from viewpager.
+    }
+
+    // THis is likely not needed, but I'm adding it in an attempt to figure out how the listeners are behaving.
+    @Override
+    public void snapshotUpdated(GameSnapshot u)
+    {
+        System.out.println("We are in snapshot updated!!!");
+    }
+
+    // ------------------------------------------------ Observer and listener code END -----------------------------------------------------------------------------------------
 
     // Controls the actions when the back button is pressed, in this case, we make it so that the sliding drawer closes
     @Override
@@ -341,7 +421,7 @@ public class HomescreenActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             updateNotificationsCount();
-            super.onBackPressed();
+            super.onBackPressed(); // TODO: remove this line to prevent the resetting of game info problem, however, may cause issues if we are trying to close fragments wont know until we try.
         }
     }
 

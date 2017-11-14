@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import polymorphs.a301.f17.cs414.thexgame.Invitation;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
+import polymorphs.a301.f17.cs414.thexgame.ui.BoardUI;
 import polymorphs.a301.f17.cs414.thexgame.ui.activities.HomescreenActivity;
 
 /**
@@ -23,7 +24,7 @@ import polymorphs.a301.f17.cs414.thexgame.ui.activities.HomescreenActivity;
 
 public class InvitationsListAdapter extends ArrayAdapter {
 
-    private HomescreenActivity primaryActivity;
+    private HomescreenActivity primaryActivity; // the copy of the homescreen activity that will allow us to create a new game once the invitation is accepted.
 
     public InvitationsListAdapter(Context context, int resource, ArrayList<Invitation> invitations, HomescreenActivity primaryActivity)
     {
@@ -43,7 +44,7 @@ public class InvitationsListAdapter extends ArrayAdapter {
         }
 
         TextView text = v.findViewById(R.id.invitationMessage);
-        String invitingUser = ((Invitation)getItem(position)).getInvitingUser();
+        final String invitingUser = ((Invitation)getItem(position)).getInvitingUser();
         text.setText(invitingUser +  " invites you to a game of Chad");
         text.setTextSize(20);
 
@@ -56,7 +57,14 @@ public class InvitationsListAdapter extends ArrayAdapter {
                 DBIOCore.getInstance().removeInvite((Invitation)getItem(position));
                 //primaryActivity.openCurrentGamesFragment();
                 // TODO: after clicking accept, a game will be added to the ViewPager in HomescreenActivity.
-                // TODO: @Miles if you can't figure it out it doesn't matter at this point, just focus on getting those invitations working right again.
+
+                // TODO: if it fails, try to hardcode a game between thenotoriousrog and razor.
+                BoardUI newGame = primaryActivity.createNewGame(invitingUser, primaryActivity.getCurrentUser().getNickname()); // create a new game
+                newGame.setGameID("test"); // todo: remove this as this is used for testing in terms of the actual game id.
+                newGame.setHomescreenActivity(primaryActivity); // set the homescreen activity for this new game.
+                primaryActivity.addGameToPager(newGame, invitingUser); // add the game to the pager.
+                primaryActivity.updateViewPager(); // just force it to update hopefully showing the new games.
+
             }
         });
 
