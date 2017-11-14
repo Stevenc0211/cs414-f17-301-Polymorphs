@@ -151,6 +151,10 @@ public class DBIOCore {
         baseReference.child("gamesnapshotList").child(userNickname).addChildEventListener(new GameSnapshotListListener(observer));
     }
 
+    public void registerToGameSnapshot(GameSnapshotObserver observer, String snapshotKey) {
+        baseReference.child("gamesnapshotList").child(userNickname).child(snapshotKey).addValueEventListener(new GameSnapshotListener(observer));
+    }
+
     /**
      * This takes the passed invitation and adds it to the passed users invitation list.
      * NOTE: the passed user is not ensured to exist, i.e. a random username may be passed without

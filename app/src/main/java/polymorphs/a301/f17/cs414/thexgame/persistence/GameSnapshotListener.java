@@ -14,7 +14,7 @@ import static android.content.ContentValues.TAG;
  * Created by Miles on 11/14/2017.
  */
 
-public class GameSnapshotListener implements ValueEventListener {
+class GameSnapshotListener implements ValueEventListener {
     private GameSnapshotObserver observer;
 
     public GameSnapshotListener(GameSnapshotObserver observer) {
