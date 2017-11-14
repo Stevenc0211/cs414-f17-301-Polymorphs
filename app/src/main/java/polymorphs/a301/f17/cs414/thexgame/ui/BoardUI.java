@@ -364,7 +364,7 @@ public final class BoardUI extends View implements GameSnapshotObserver {
     @Override
     public void snapshotUpdated(GameSnapshot gs) {
         newlyStarted = false;
-        String tempGame = gs.getGameString();
+        String tempGame = gs.getGameString(); // todo: game snapshot is null for reason.
         String [] playerPieces = tempGame.split("-")[1].split("\\|");
         String [] pieces;
         String [] pieceParts;

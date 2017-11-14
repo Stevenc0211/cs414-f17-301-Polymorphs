@@ -101,7 +101,6 @@ public class HomescreenActivity extends AppCompatActivity
         // needs to take in the name of two players, the inviting user, and this user, and it should grab their nicknames.
         String newGameKey = driver.createGame(whitePlayerNickname, blackPlayerNickname); // create the game in the backend.
         driver.setCurrentGameKey(newGameKey);
-
         BoardUI newGame = new BoardUI(getBaseContext(), null); // create a new board UI.
         newGame.registerToSnapshot(newGameKey); // register the snapshot with this new board.
 
@@ -229,7 +228,7 @@ public class HomescreenActivity extends AppCompatActivity
 
             // Start the activity for setting a username.
             Intent setUsernameIntent = new Intent(this, SetUsernameActivity.class);
-            startActivityForResult(setUsernameIntent, SET_USERNAME); // start the activity for intent!
+            startActivityForResult(setUsernameIntent, SET_USERNAME); // start the activity to set a username.
         }
         else
         {
