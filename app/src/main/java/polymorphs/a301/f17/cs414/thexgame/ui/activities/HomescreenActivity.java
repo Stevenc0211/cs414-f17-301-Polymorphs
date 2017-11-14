@@ -44,7 +44,7 @@ import polymorphs.a301.f17.cs414.thexgame.ui.listeners.GamePageChangeListener;
 import polymorphs.a301.f17.cs414.thexgame.ui.listeners.SubmitButtonClickListener;
 
 public class HomescreenActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, UsernameListObserver, UserObserver, GameSnapshotListObserver, GameSnapshotObserver {
+        implements NavigationView.OnNavigationItemSelectedListener, UsernameListObserver, UserObserver, GameSnapshotListObserver {
 
     private NotificationsFragment notificationsFragment = new NotificationsFragment(); // a copy of the notifications UI that should be built for the user.
     private ArrayList<String> currentGames; // the list of current games.
@@ -97,6 +97,7 @@ public class HomescreenActivity extends AppCompatActivity
     // NOTE: it does not set any of the important information such as setHomescreeActivity, and setGameID, that will need to be done before the new BoardUI can be used.
     public BoardUI createNewGame(String whitePlayerNickname, String blackPlayerNickname)
     {
+
         // needs to take in the name of two players, the inviting user, and this user, and it should grab their nicknames.
         String newGameKey = driver.createGame(whitePlayerNickname, blackPlayerNickname); // create the game in the backend.
         driver.setCurrentGameKey(newGameKey);
@@ -212,12 +213,13 @@ public class HomescreenActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
+        //todo: @Miles, I should register this to the DBIOcore now for a gamesnapshot listener huh? if not please remove this line.
+
         // Molto Importante: This needs to be displayed at the very beginning before we do any work on the app otherwise our UI elements will not be displayed properly this is very important!
         // (cont): we need to display this first and then update it the app loads, putting this at the end caused the app to break which is not good!
         setContentView(R.layout.homescreen);
         usernames = new HashMap<>();
 
-        // TODO: @Roger, the app is getting to the point where it is lagging now. When we pull games from the database we need to do an AsynTask to load them up so the users can look at a loading screen while it loads.
         driver = Driver.getInstance();
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -401,13 +403,6 @@ public class HomescreenActivity extends AppCompatActivity
     public void snapshotRemoved(GameSnapshot removedSnapshot)
     {
         // todo: remove from viewpager.
-    }
-
-    // THis is likely not needed, but I'm adding it in an attempt to figure out how the listeners are behaving.
-    @Override
-    public void snapshotUpdated(GameSnapshot u)
-    {
-        System.out.println("We are in snapshot updated!!!");
     }
 
     // ------------------------------------------------ Observer and listener code END -----------------------------------------------------------------------------------------
