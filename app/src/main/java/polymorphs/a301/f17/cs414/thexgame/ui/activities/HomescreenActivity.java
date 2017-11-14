@@ -81,19 +81,47 @@ public class HomescreenActivity extends AppCompatActivity
     // this method sets up our game pager.
     protected void setupGamePager()  {
 
+        /* Case 1 - Running a new game locally
+        1. Create the new game passing your current username and a registered username (both 'white' and 'black' are registered for this purpose
+            String newGameKey = driver.createGame(your_username, other_reg_username);
+        2. Set returned key as the drivers current game key
+            driver.setCurrentGameKey(newGameKey);
+        3. Create the board ui
+            boardUI = (BoardUI) findViewById(R.id.chessboard);
+        4. Register the board UI to the new game
+            boardUI.registerToSnapshot(newGameKey);
+        5. go to MovePieceActionListener::93 and ensure the code is set for LOCAL
+         */
 
-        // For starting new games do the following
-        String newGameKey = driver.createGame("your_user_name", "black"); // BreadCrumb: turn order hack
+        /* Case 2 - Running a saved game locally
+        1. To do this you must copy the game key value for a previous Case1. Run the Case 1 save the key then exit and setup for Case 2
+        2. Set the driver to the saved game key (it should look something like '-KyrHJc4s6basDQ7qcor')
+            driver.setCurrentGameKey(savedGameKey);
+        3. Create the board ui
+            boardUI = (BoardUI) findViewById(R.id.chessboard);
+        4. Register the board UI to the saved game
+            boardUI.registerToSnapshot(savedGameKey);
+        5. go to MovePieceActionListener::93 and ensure the code is set for LOCAL
+         */
+
+        /* Case 3 - Running a shared game between users
+         1. Run a Case 1 passing your username as normal and the other users username as the second arg. Save the game key and exit
+         2. Set the driver to the saved game key (it should look something like '-KyrHJc4s6basDQ7qcor')
+            driver.setCurrentGameKey(savedGameKey);
+         3. Create the board ui
+            boardUI = (BoardUI) findViewById(R.id.chessboard);
+         4. Register the board UI to the saved game
+            boardUI.registerToSnapshot(savedGameKey);
+         5. go to MovePieceActionListener::93 and ensure the code is set for REMOTE
+         */
+
+
+        // NOTE: the following lines WILL NOT WORK you must replace this as per instructions above
+        String newGameKey = driver.createGame("white", "black"); // BreadCrumb: turn order hack
         driver.setCurrentGameKey(newGameKey);
         boardUI = (BoardUI) findViewById(R.id.chessboard);
         boardUI.registerToSnapshot(newGameKey);
 
-        /* For loading previous games do the following
-        driver.setCurrentGameKey(old_game_key);
-        boardUI = (BoardUI) findViewById(R.id.chessboard);
-        boardUI.registerToSnapshot(old_game_key);
-        // where old_game_key is a key from a previous session
-        */
 
         System.out.println("SETTING THE DRIVER FOR BOARDUI");
         boardUI.setHomescreenActivity(this); // send a copy of the homescreen activity to allow for certain displaying of certain UI elements.
@@ -147,7 +175,7 @@ public class HomescreenActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.homescreen);
         // TODO: @Roger, the app is getting to the point where it is lagging now. When we pull games from the database we need to do an AsynTask to load them up so the users can look at a loading screen while it loads.
         driver = Driver.getInstance();
 
@@ -167,7 +195,7 @@ public class HomescreenActivity extends AppCompatActivity
             displayHomescreen(); // setup the familiar homescreen layout that we are used to seeing.
         }
 
-        setContentView(R.layout.homescreen);
+
         usernames = new HashMap<>();
 
         setupGamePager(); // setup our game pager, pretty important.

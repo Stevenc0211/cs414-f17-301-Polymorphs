@@ -379,5 +379,6 @@ public final class BoardUI extends View implements GameSnapshotObserver {
                 }
             }
         }
+        invalidate();
     }
 }
