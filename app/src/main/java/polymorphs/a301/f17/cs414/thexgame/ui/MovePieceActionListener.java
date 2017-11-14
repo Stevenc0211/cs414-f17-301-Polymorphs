@@ -89,8 +89,13 @@ public class MovePieceActionListener {
         }
         else if(moveActionStarted == true && !clickedTile.hasPiece()) // check to make sure that the clicked tile does not have a piece and a click action has already started.
         {
-            // TODO: get user into here so we can verify turn order
-            int moveResult = boardUI.getDriver().makeMove(currentUser.getNickname(), fromRow, fromCol, row, col);
+            // For LOCAL running use the line below
+            // NOTE: to run game you MUST replace user1 nickname with your nickname
+             int moveResult = boardUI.getDriver().makeMove(currentUser.getNickname(), fromRow, fromCol, row, col);
+
+            // For REMOTE running use the line below (this will be our standard once everything is working)
+            // NOTE: to run game you MUST replace user1 nickname with your nickname
+//            int moveResult = boardUI.getDriver().makeMove(DBIOCore.getInstance().getCurrentUserUsername(), fromRow, fromCol, row, col);
             if(moveResult == 1)
             {
                 if (currentUser.equals(user1)) {    // BreadCrumb: turn order hack
@@ -115,11 +120,6 @@ public class MovePieceActionListener {
             else if (moveResult == 0) {
 
                 // needed to ensure that we can in fact set the queen's in the correct way.
-                if (currentUser.equals(user1)) {    // BreadCrumb: turn order hack
-                    currentUser = user2;            // BreadCrumb: turn order hack
-                } else {                            // BreadCrumb: turn order hack
-                    currentUser = user1;            // BreadCrumb: turn order hack
-                }
 
                 unhighlightSquares(availableMoves); // have the board unhighlight everyone
                 boardUI.invalidate(); // refresh the layout.

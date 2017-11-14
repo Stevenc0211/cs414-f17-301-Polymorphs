@@ -76,6 +76,11 @@ class Game {
                 currentPlayer = p1;
             }
             if (board.inCheckmate(currentPlayer)) {
+                if (currentPlayer == p1) {
+                    currentPlayer = p2;
+                } else {
+                    currentPlayer = p1;
+                }
                 return 0;
             }
             if(promotionOccurred) // a promotion has occured.

@@ -81,14 +81,49 @@ public class HomescreenActivity extends AppCompatActivity
     // this method sets up our game pager.
     protected void setupGamePager()  {
 
-        boardUI = (BoardUI) findViewById(R.id.chessboard);
+        /* Case 1 - Running a new game locally
+        1. Create the new game passing your current username and a registered username (both 'white' and 'black' are registered for this purpose
+            String newGameKey = driver.createGame(your_username, other_reg_username);
+        2. Set returned key as the drivers current game key
+            driver.setCurrentGameKey(newGameKey);
+        3. Create the board ui
+            boardUI = (BoardUI) findViewById(R.id.chessboard);
+        4. Register the board UI to the new game
+            boardUI.registerToSnapshot(newGameKey);
+        5. go to MovePieceActionListener::93 and ensure the code is set for LOCAL
+         */
 
-        // TODO: @Roger remove this because we are hard creating a game and this should not happen! Very important!
-        String newGameKey = driver.createGame("white", "black"); // create a game with two random players, pretty important.// BreadCrumb: turn order hack
-        driver.setCurrentGameKey(newGameKey); // TODO: @Team, remove this because it setting the game index to always be 0 and this will not be allowed for our game.
+        /* Case 2 - Running a saved game locally
+        1. To do this you must copy the game key value for a previous Case1. Run the Case 1 save the key then exit and setup for Case 2
+        2. Set the driver to the saved game key (it should look something like '-KyrHJc4s6basDQ7qcor')
+            driver.setCurrentGameKey(savedGameKey);
+        3. Create the board ui
+            boardUI = (BoardUI) findViewById(R.id.chessboard);
+        4. Register the board UI to the saved game
+            boardUI.registerToSnapshot(savedGameKey);
+        5. go to MovePieceActionListener::93 and ensure the code is set for LOCAL
+         */
+
+        /* Case 3 - Running a shared game between users
+         1. Run a Case 1 passing your username as normal and the other users username as the second arg. Save the game key and exit
+         2. Set the driver to the saved game key (it should look something like '-KyrHJc4s6basDQ7qcor')
+            driver.setCurrentGameKey(savedGameKey);
+         3. Create the board ui
+            boardUI = (BoardUI) findViewById(R.id.chessboard);
+         4. Register the board UI to the saved game
+            boardUI.registerToSnapshot(savedGameKey);
+         5. go to MovePieceActionListener::93 and ensure the code is set for REMOTE
+         */
+
+
+        // NOTE: the following lines WILL NOT WORK you must replace this as per instructions above
+        String newGameKey = driver.createGame("white", "black"); // BreadCrumb: turn order hack
+        driver.setCurrentGameKey(newGameKey);
+        boardUI = (BoardUI) findViewById(R.id.chessboard);
+        boardUI.registerToSnapshot(newGameKey);
+
 
         System.out.println("SETTING THE DRIVER FOR BOARDUI");
-        boardUI.setDriver(driver); // set the driver for the boardUI to be working with.
         boardUI.setHomescreenActivity(this); // send a copy of the homescreen activity to allow for certain displaying of certain UI elements.
 
         gamePager = (ViewPager) findViewById(R.id.gamesListPager); // get the game pager that will basically fill out the games!
@@ -103,7 +138,6 @@ public class HomescreenActivity extends AppCompatActivity
         gamePager.setAdapter(gamePagerAdapter);
         gamePagerAdapter.notifyDataSetChanged(); // update the number of games in the list view pretty important!
         gamePager.addOnPageChangeListener(gpcl);
-
     }
 
     // checks the SharedPreferences to see if the username has correctly been set. If so, proceed to maingameui, otherwise show newusername layout.
@@ -151,7 +185,7 @@ public class HomescreenActivity extends AppCompatActivity
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
-        if(isUsernameSet() == true)
+        if(isUsernameSet())
         {
             preferences.edit().putBoolean("usernameCreated", true).apply(); // sets this in main memory in a background thread.
             preferences.edit().putBoolean("userCreated", true).apply(); // sets this in main memory in a background thread.
@@ -164,7 +198,6 @@ public class HomescreenActivity extends AppCompatActivity
         {
             displayHomescreen(); // setup the familiar homescreen layout that we are used to seeing.
         }
-
 
         DBIOCore.getInstance().registerToUsernameList(this);
         DBIOCore.getInstance().registerToCurrentUser(this);
