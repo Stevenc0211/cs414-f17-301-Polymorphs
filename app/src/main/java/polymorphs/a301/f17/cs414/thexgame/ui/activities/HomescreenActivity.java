@@ -130,9 +130,8 @@ public class HomescreenActivity extends AppCompatActivity
 
         // todo: we should have a list of our boards pulled from our database with the information about the piece places. This is pretty important!
         games.add(boardUI); // add once.
-        // games.add(boardUI); // add twice.
 
-        gamePagerAdapter = new GamePagerAdapter(games, inGameUI); // send in the games that we want to work with that will allow us to send our games to the adapter to update the ViewPager (to swipe horizontally)
+        gamePagerAdapter = new GamePagerAdapter(games, inGameUI, getBaseContext()); // send in the games that we want to work with that will allow us to send our games to the adapter to update the ViewPager (to swipe horizontally)
         // TODO: create the Gamepage listener that will be in charge of getting this thing working correctly.
         GamePageChangeListener gpcl = new GamePageChangeListener(this); // holds the game as well as a copy of the InGameUI that will allow us to see a snack bar for the users to be able to see their game number.
 
@@ -175,7 +174,12 @@ public class HomescreenActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        // Molto Importante: This needs to be displayed at the very beginning before we do any work on the app otherwise our UI elements will not be displayed properly this is very important!
+        // (cont): we need to display this first and then update it the app loads, putting this at the end caused the app to break which is not good!
         setContentView(R.layout.homescreen);
+        usernames = new HashMap<>();
+
         // TODO: @Roger, the app is getting to the point where it is lagging now. When we pull games from the database we need to do an AsynTask to load them up so the users can look at a loading screen while it loads.
         driver = Driver.getInstance();
 
@@ -194,11 +198,6 @@ public class HomescreenActivity extends AppCompatActivity
         {
             displayHomescreen(); // setup the familiar homescreen layout that we are used to seeing.
         }
-
-
-        usernames = new HashMap<>();
-
-        setupGamePager(); // setup our game pager, pretty important.
 
         DBIOCore.getInstance().registerToUsernameList(this);
         DBIOCore.getInstance().registerToCurrentUser(this);
@@ -279,7 +278,7 @@ public class HomescreenActivity extends AppCompatActivity
         updateNotificationsCount(); // update the count of notifications.
 
         usernames = new HashMap<>();
-
+        setupGamePager(); // setup the game pager here, this is what allows our game to be completed.
     }
 
     /*

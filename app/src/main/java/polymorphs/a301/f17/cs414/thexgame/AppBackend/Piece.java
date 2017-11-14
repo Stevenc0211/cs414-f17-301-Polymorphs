@@ -153,9 +153,4 @@ abstract class Piece {
         return getType(this) + "," + myRow + "," + myCol + "," + available + "," + color;
     }
 
-    public boolean equals(Object o) {
-        if (!(o instanceof Piece)) return false;
-        return this.toString().equals(o.toString());
-    }
-
 }

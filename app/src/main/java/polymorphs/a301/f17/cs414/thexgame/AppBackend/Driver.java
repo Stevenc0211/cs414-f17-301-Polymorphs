@@ -184,14 +184,18 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
     @Override
     public void snapshotAdded(GameSnapshot addedSnapshot, String precedingSnapshotKey) {
         Game tempGame = new Game(addedSnapshot.getNicknameWhite(),addedSnapshot.getNicknameBlack());
-        tempGame.updateFromSnapshot(addedSnapshot);
         games.put(addedSnapshot.getDbKey(),tempGame);
+        //update that game with snapshot
+        tempGame.updateFromSnapshot(addedSnapshot);
     }
 
     @Override
     public void snapshotChanged(GameSnapshot changedSnapshot, String precedingSnapshotKey) {
         //update game with new snapshot
-        games.get(changedSnapshot.getDbKey()).updateFromSnapshot(changedSnapshot);
+        Game tempGame = new Game(changedSnapshot.getNicknameWhite(),changedSnapshot.getNicknameBlack());
+        games.put(changedSnapshot.getDbKey(),tempGame);
+        //Update game with snapshot
+        tempGame.updateFromSnapshot(changedSnapshot);
     }
 
     @Override

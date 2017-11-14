@@ -53,7 +53,7 @@ public final class BoardUI extends View implements GameSnapshotObserver {
     private boolean flipped = false;
 
     // todo: have the board UI take in a Driver object so that we can correctly be able to communicate with the board and update tiles as needed. Very important
-    public BoardUI(final Context context, final AttributeSet attrs) {
+    public BoardUI(final Context context, final AttributeSet attrs ) {
         super(context, attrs);
 
         this.tileUIs = new TileUI[ROWS][COLS];

@@ -152,15 +152,6 @@ public class DBIOCore {
     }
 
     /**
-     * This method registers the passed Observer to a game snapshot.
-     * The Observers update methods will be called if there is any change made to the snapshot
-     * @param observer - the observer to register
-     */
-    public void registerToGameSnapshot(GameSnapshotObserver observer, String snapshotKey) {
-        baseReference.child("gamesnapshotList").child(userNickname).child(snapshotKey).addValueEventListener(new GameSnapshotListener(observer));
-    }
-
-    /**
      * This takes the passed invitation and adds it to the passed users invitation list.
      * NOTE: the passed user is not ensured to exist, i.e. a random username may be passed without
      * error (please don't)
@@ -183,10 +174,12 @@ public class DBIOCore {
 
     public String addGameSnapshot(GameSnapshot snapshot){
         String key = baseReference.child("gamesnapshotList").child(snapshot.getNicknameWhite()).push().getKey();
-        //set key for snapshot
-        snapshot.setDbKey(key);
         baseReference.child("gamesnapshotList").child(snapshot.getNicknameWhite()).child(key).setValue(snapshot);
         baseReference.child("gamesnapshotList").child(snapshot.getNicknameBlack()).child(key).setValue(snapshot);
+
+        //set key for snapshot
+        snapshot.setDbKey(key);
+
         return key;
     }
 
