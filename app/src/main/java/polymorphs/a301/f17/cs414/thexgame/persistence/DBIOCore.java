@@ -62,6 +62,7 @@ public class DBIOCore {
                 if (testUser == null) {
                     System.out.println("We are adding the user now!");
                     getUserReference().setValue(new User(currentUser, userEmail, ""));
+                    userNickname = "";
                 }
                 else
                 {

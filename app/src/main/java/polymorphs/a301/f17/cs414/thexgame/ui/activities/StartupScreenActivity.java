@@ -164,6 +164,11 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
         public void run() {
             if (DBIOCore.getInstance().getCurrentUserUsername() == null) {
                 delayHandler.postDelayed(setupDriver, 100);
+            } else if (DBIOCore.getInstance().getCurrentUserUsername().equals("")) {
+                // TODO: handle opening the set username screen
+
+                // might not be necessary depending on above implementation
+                delayHandler.post(setupDriver);
             } else {
                 Driver.getInstance();
                 delayHandler.post(transferToHomescreen);
