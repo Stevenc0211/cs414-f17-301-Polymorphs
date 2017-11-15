@@ -117,7 +117,7 @@ public class HomescreenActivity extends AppCompatActivity
 
 
         // NOTE: the following lines WILL NOT WORK you must replace this as per instructions above
-        String newGameKey = driver.createGame("white", "black"); // BreadCrumb: turn order hack
+        String newGameKey = driver.createGame("razor", "black"); // BreadCrumb: turn order hack
         driver.setCurrentGameKey(newGameKey);
         boardUI = (BoardUI) findViewById(R.id.chessboard);
         boardUI.registerToSnapshot(newGameKey);
@@ -201,7 +201,6 @@ public class HomescreenActivity extends AppCompatActivity
 
         DBIOCore.getInstance().registerToUsernameList(this);
         DBIOCore.getInstance().registerToCurrentUser(this);
-
     }
 
     // This method sets up the header for the navigation view which will show the user's nickname and email so they know that they are logged in.

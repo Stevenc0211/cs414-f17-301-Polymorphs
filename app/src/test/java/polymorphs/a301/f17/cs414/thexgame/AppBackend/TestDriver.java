@@ -13,7 +13,7 @@ public class TestDriver {
     @Test
     public void testInstanceCreation(){
         try{
-            Driver d = new Driver();
+            Driver d = Driver.getInstance();
         }
         catch (Exception e){
             fail("ERROR: Driver failed to instantiate");
@@ -30,27 +30,27 @@ public class TestDriver {
 
     @Test(expected = IllegalArgumentException.class)
     public void testNeitherUserRegistered() {
-        Driver d = new Driver();
+        Driver d = Driver.getInstance();
         d.createGame("name", "other");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testOnlyUser1Registered() {
-        Driver d = new Driver();
+        Driver d = Driver.getInstance();
         d.usernameAdded(username1, user1Key);
         d.createGame("name", "other");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testOnlyUser2Registered() {
-        Driver d = new Driver();
+        Driver d = Driver.getInstance();
         d.usernameAdded(username2, user2Key);
         d.createGame("name", "other");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testUserChangedFailure() {
-        Driver d = new Driver();
+        Driver d = Driver.getInstance();
         d.usernameAdded(username1, user1Key);
         d.usernameAdded(username2, user2Key);
         d.usernameChanged(username3, user1Key);
@@ -59,7 +59,7 @@ public class TestDriver {
 
     @Test(expected = IllegalArgumentException.class)
     public void testUserRemovedFailure() {
-        Driver d = new Driver();
+        Driver d = Driver.getInstance();
         d.usernameAdded(username1, user1Key);
         d.usernameAdded(username2, user2Key);
         d.usernameRemoved(username1);
@@ -99,7 +99,7 @@ public class TestDriver {
     User user2 = new User("user2Key", "test", "user2");
 
     private void setupDriver() {
-        testDriver = new Driver();
+        testDriver = Driver.getInstance();
         testDriver.usernameAdded(user1.getNickname(), user1.getName());
         testDriver.usernameAdded(user2.getNickname(), user2.getName());
         testDriver.createGame(user1.getNickname(),user2.getNickname());
