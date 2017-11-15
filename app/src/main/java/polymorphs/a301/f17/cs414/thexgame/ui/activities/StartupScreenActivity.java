@@ -16,6 +16,11 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
@@ -36,7 +41,9 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
     private ProgressDialog progressDialog; // TODO: deprecated, change this to something that is more recent!!!
 
     private static final int RC_SIGN_IN = 9001;
-    private boolean readyToDisplayHomescreen = false; // this turns true once everything in the database is ready to roll.
+
+    private String displayName;
+    private String email;
 
 
     // This is the first thing called when this class is called and will create the startup screen UI.
@@ -127,14 +134,11 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount(); // grabs this users account which can be used to assign the name to accounts in our game!!
-            String userGoogleDisplayName = acct.getDisplayName(); // get this user's display name, pretty awesome!
-            String email = acct.getEmail(); // get this user's email
+            displayName = acct.getDisplayName(); // get this user's display name, pretty awesome!
+            email = acct.getEmail(); // get this user's email
 
-            DBIOCore.getInstance().setCurrentUser(userGoogleDisplayName, email); // Starting DBIOCore, removed for now to follow the general flow of adding users to the database.
-            System.out.println("Log in was a success");
-
-            delayHandler.postDelayed(setupDriver, 1000); // Delays the homescreen load so the DBIOCore can get the current user
-
+            delayHandler.post(setupCore);
+            delayHandler.post(setupDriver);
         }
         else // Signed out, show unauthenticated UI.
         {
@@ -145,13 +149,31 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
         }
     }
 
+    private Runnable setupCore = new Runnable() {
+        @Override
+        public void run() {
+            DBIOCore.getInstance().setCurrentUser(displayName, email);
+        }
+    };
+
+
     /**
      * This class just starts the homescreen. It is used to let the DBIOCore populate the current user before the homescreen loads
      */
     private Runnable setupDriver = new Runnable() {
         public void run() {
-            Driver.getInstance();
-            delayHandler.postDelayed(transferToHomescreen, 100);
+            if (DBIOCore.getInstance().getCurrentUserUsername() == null) {
+                delayHandler.postDelayed(setupDriver, 100);
+            } else if (DBIOCore.getInstance().getCurrentUserUsername().equals("")) {
+                // TODO: handle opening the set username screen
+
+                // might not be necessary depending on above implementation
+                delayHandler.post(setupDriver);
+            } else {
+                Driver.getInstance();
+                delayHandler.post(transferToHomescreen);
+            }
+
         }
     };
 
@@ -160,9 +182,13 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
      */
     private Runnable transferToHomescreen = new Runnable() {
         public void run() {
+            if (Driver.getInstance().isSetup()) {
+                Intent mainGameUIIntent = new Intent(StartupScreenActivity.this, HomescreenActivity.class); // main game ui intent that is sent when the app is started.
+                startActivity(mainGameUIIntent);
+            } else {
+                delayHandler.postDelayed(transferToHomescreen, 100);
+            }
 
-            Intent mainGameUIIntent = new Intent(StartupScreenActivity.this, HomescreenActivity.class); // main game ui intent that is sent when the app is started.
-            startActivity(mainGameUIIntent);
         }
     };
 
