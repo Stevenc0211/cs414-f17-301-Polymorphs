@@ -8,6 +8,5 @@
         android:layout_height="match_parent"
         android:text="Add the text here"
         android:textSize="20sp"
-
         />
 </RelativeLayout>

@@ -31,7 +31,6 @@ public class helpFragment extends Fragment {
                 +"\n\n3) A Rook moves just like in traditional chess. If it makes it in\nthe enemies castle wall, the Rook is then promoted to Queen.\nThe Queen moves like the Queen in Chess, moves unhindered by castles and walls."
                 +"\n\n4) Lastly, just like in traditional chess there is check and checkmate, check\nmeaning the king must be moved to keep from being captured and has the ability\nto move.Checkmate is if a king has been put into check and he can't move because\nopponent pieces can move directly to him to capture him, the Game is over";
         textView.setText(helpText);
-
         return helpUI;
     }
 
