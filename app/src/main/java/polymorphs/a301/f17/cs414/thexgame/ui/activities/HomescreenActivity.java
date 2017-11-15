@@ -25,7 +25,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameSnapshot;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
+import polymorphs.a301.f17.cs414.thexgame.persistence.GameSnapshotListObserver;
+import polymorphs.a301.f17.cs414.thexgame.persistence.GameSnapshotObserver;
 import polymorphs.a301.f17.cs414.thexgame.ui.BoardUI;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
@@ -41,7 +44,7 @@ import polymorphs.a301.f17.cs414.thexgame.ui.listeners.GamePageChangeListener;
 import polymorphs.a301.f17.cs414.thexgame.ui.listeners.SubmitButtonClickListener;
 
 public class HomescreenActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, UsernameListObserver, UserObserver {
+        implements NavigationView.OnNavigationItemSelectedListener, UsernameListObserver, UserObserver, GameSnapshotListObserver {
 
     private NotificationsFragment notificationsFragment = new NotificationsFragment(); // a copy of the notifications UI that should be built for the user.
     private ArrayList<String> currentGames; // the list of current games.
@@ -58,7 +61,7 @@ public class HomescreenActivity extends AppCompatActivity
     private SubmitButtonClickListener submitClickListener;
     private SettingsFragment settingsUI = new SettingsFragment(); // holds a copy of our settingsUI.
     private final int SET_USERNAME = 9001; // details what we are doing for the username.
-
+    private String gameID = ""; // the game id used for each game.
 
     private Driver driver; // the driver that we will be working with within homescreen activity.
 
@@ -70,12 +73,47 @@ public class HomescreenActivity extends AppCompatActivity
     HashMap<String, String> usernames; // holds the list of people to invite keyed by the previous usernames database key
     polymorphs.a301.f17.cs414.thexgame.AppBackend.User currentUser;
 
+    private NavigationView navigationView; // a copy of the navigation view to populate our board layout.
 
     // adds a game to the game pager and also shows the person we are playing the game with.
     public void addGameToPager(BoardUI boardToAdd, String opponent)
     {
         games.add(boardToAdd);
         gamePagerAdapter.notifyDataSetChanged();
+    }
+
+    // sets the game id.
+    public void setGameID(String ID)
+    {
+        this.gameID = ID;
+    }
+
+    // gets the game ID primarily used by InvitationsListAdapter.
+    public String getGameID()
+    {
+        return gameID;
+    }
+
+    public User getCurrentUser()
+    {
+        return currentUser;
+    }
+
+    // Simply updates the view pager that we are working with.
+    public void updateViewPager()
+    {
+        gamePager.invalidate();
+    }
+
+    // creates a new game for us to be able to work with.
+    public BoardUI createNewGame(String whitePlayerNickname, String blackPlayerNickname)
+    {
+        String newGameKey = driver.createGame(whitePlayerNickname, blackPlayerNickname);
+        driver.setCurrentGameKey(newGameKey); // this may be causing the problems with not moving pieces since we are setting the current game key but no game shows up.
+        BoardUI newGame = new BoardUI(getBaseContext(), null);
+        newGame.registerToSnapshot(newGameKey); // register this new game to the snapshot.
+
+        return newGame; // send back the board UI to work with something.
     }
 
     // this method sets up our game pager.
@@ -117,7 +155,7 @@ public class HomescreenActivity extends AppCompatActivity
 
 
         // NOTE: the following lines WILL NOT WORK you must replace this as per instructions above
-        String newGameKey = driver.createGame("razor", "black"); // BreadCrumb: turn order hack
+        String newGameKey = driver.createGame("thenotoriousrog", "black"); // BreadCrumb: turn order hack
         driver.setCurrentGameKey(newGameKey);
         boardUI = (BoardUI) findViewById(R.id.chessboard);
         boardUI.registerToSnapshot(newGameKey);
@@ -146,7 +184,6 @@ public class HomescreenActivity extends AppCompatActivity
         if (DBIOCore.getInstance().getCurrentUserUsername() == null) return true;
         return false;
     }
-
 
 
     /*
@@ -180,7 +217,6 @@ public class HomescreenActivity extends AppCompatActivity
         setContentView(R.layout.homescreen);
         usernames = new HashMap<>();
 
-        // TODO: @Roger, the app is getting to the point where it is lagging now. When we pull games from the database we need to do an AsynTask to load them up so the users can look at a loading screen while it loads.
         driver = Driver.getInstance();
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -191,20 +227,22 @@ public class HomescreenActivity extends AppCompatActivity
             preferences.edit().putBoolean("userCreated", true).apply(); // sets this in main memory in a background thread.
 
             // Start the activity for setting a username.
-            Intent setUsernameIntent = new Intent(this, SetUsernameActivity.class);
-            startActivityForResult(setUsernameIntent, SET_USERNAME); // start the activity for intent!
+            // todo: removed because we want this to be asking to create username in startupscreen.
+            //Intent setUsernameIntent = new Intent(this, SetUsernameActivity.class);
+            //startActivityForResult(setUsernameIntent, SET_USERNAME); // start the activity for intent!
         }
         else
         {
             displayHomescreen(); // setup the familiar homescreen layout that we are used to seeing.
         }
 
+        DBIOCore.getInstance().registerToGameSnapshotList(this);
         DBIOCore.getInstance().registerToUsernameList(this);
         DBIOCore.getInstance().registerToCurrentUser(this);
     }
 
     // This method sets up the header for the navigation view which will show the user's nickname and email so they know that they are logged in.
-    private void setupHeader(NavigationView navigationView)
+    private void setupHeader()
     {
         LinearLayout navHeaderView = (LinearLayout) navigationView.getHeaderView(0); // gets the header view of the nav_header_homescreen.
         TextView nameText = (TextView) navHeaderView.findViewById(R.id.nameText);
@@ -271,18 +309,18 @@ public class HomescreenActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        setupHeader(navigationView); // setup the header of the navigation view.
+        setupHeader(); // setup the header of the navigation view.
         updateNotificationsCount(); // update the count of notifications.
 
         usernames = new HashMap<>();
         setupGamePager(); // setup the game pager here, this is what allows our game to be completed.
     }
 
-    /*
+    /* removed because we added it inside of StartupScreenActivity
         This method is called when the user set's up their username. The information is passed back from the SetUsernameActivity which is sent here.
-     */
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intentResult)
     {
@@ -300,7 +338,9 @@ public class HomescreenActivity extends AppCompatActivity
         }
 
     }
+    */
 
+    // -------------------------------------------------- Observer and Listener code START ----------------------------------------------------------------------------------------
 
     @Override
     public void usernameAdded(String addedUsername, String precedingUsernameKey) {
@@ -329,7 +369,33 @@ public class HomescreenActivity extends AppCompatActivity
     public void userUpdated(User u) {
         System.out.println("User in HomescreenActivity is " + u.getNickname());
         currentUser = u;
+        name = u.getName();
+        email = u.getEmail();
+        username = u.getNickname();
+        setupHeader(); // reset up the header so that we can see our credentials in the drawer layout.
     }
+
+    // tracks when a snapshot is added
+    @Override
+    public void snapshotAdded(GameSnapshot addedSnapshot, String precedingSnapshotKey)
+    {
+        // anything that is added into here will cause an infinite loop.
+    }
+
+    @Override
+    public void snapshotChanged(GameSnapshot changedSnapshot, String precedingSnapshotKey)
+    {
+        System.out.println("There was a change in the gamesnapshot with players" + changedSnapshot.getNicknameWhite() + " and " + changedSnapshot.getNicknameBlack());
+
+    }
+
+    @Override
+    public void snapshotRemoved(GameSnapshot removedSnapshot)
+    {
+        // todo: remove from the view pager.
+    }
+
+    // -------------------------------------------------- Observer and Listener code END ----------------------------------------------------------------------------------------
 
     // Controls the actions when the back button is pressed, in this case, we make it so that the sliding drawer closes
     @Override
@@ -342,6 +408,8 @@ public class HomescreenActivity extends AppCompatActivity
             updateNotificationsCount();
             super.onBackPressed();
         }
+
+        // TODO: add the code that will simply close our fragments instead of causing the app to restart each time which is a huge pain.
     }
 
     @Override

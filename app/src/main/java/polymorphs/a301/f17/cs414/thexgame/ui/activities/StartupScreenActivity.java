@@ -41,6 +41,8 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
     private ProgressDialog progressDialog; // TODO: deprecated, change this to something that is more recent!!!
 
     private static final int RC_SIGN_IN = 9001;
+    private final int SET_USERNAME = 9002; // details what we are doing for the username.
+
 
     private String displayName;
     private String email;
@@ -125,6 +127,25 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
 
             handleSignInResult(result);
         }
+        else if(requestCode == SET_USERNAME) // if the request code came from SetUsernameActivity.
+        {
+
+            System.out.println("Setting up username now...");
+            Bundle d = data.getBundleExtra("results");
+            String name = d.getString("name"); // this comes back as null
+            String email = d.getString("email"); // this comes back as null.
+            String username = d.getString("username"); // this comes back fine.
+
+            System.out.println("name we got from activity: " + name);
+            System.out.println("email we got from activity: " + email);
+            System.out.println("username we got from activity" + username);
+
+            DBIOCore.getInstance().setCurrentUserUsername(username); // set the username grabbed from the activity.
+
+            // note: in the very first run, we have our current user and we can grab their name and email, but when the app is closed we lose our current user.
+            //writeBasicInfoToMemory(currentUser.getName(), currentUser.getEmail(), username); // write the user's basic info to main memory.
+            //displayHomescreen();
+        }
     }
 
     Handler delayHandler = new Handler();
@@ -162,14 +183,21 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
      */
     private Runnable setupDriver = new Runnable() {
         public void run() {
-            if (DBIOCore.getInstance().getCurrentUserUsername() == null) {
+            if (DBIOCore.getInstance().getCurrentUserUsername() == null)
+            {
+                System.out.println("The currentUserUsername is null, waiting for dbio to start...");
                 delayHandler.postDelayed(setupDriver, 100);
             } else if (DBIOCore.getInstance().getCurrentUserUsername().equals("")) {
                 // TODO: handle opening the set username screen
 
+                System.out.println("asking to create username now!!");
+                Intent setUsernameIntent = new Intent(StartupScreenActivity.this, SetUsernameActivity.class);
+                startActivityForResult(setUsernameIntent, SET_USERNAME); // start the activity for intent!
+
                 // might not be necessary depending on above implementation
                 delayHandler.post(setupDriver);
             } else {
+                System.out.println("Everything running smoothely, loading homescreen now...");
                 Driver.getInstance();
                 delayHandler.post(transferToHomescreen);
             }
@@ -233,6 +261,7 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
         //Log.d(TAG, "onConnectionFailed:" + connectionResult);
         // TODO: should start a log for this to figure out what exactly is going on, also display a user name.
     }
+
 
     // TODO: the progress dialog is not working, I need to change this into something that is not deprecated.
     @Override
