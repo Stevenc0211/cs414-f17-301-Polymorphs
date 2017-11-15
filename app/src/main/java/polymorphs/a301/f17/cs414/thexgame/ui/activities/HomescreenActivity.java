@@ -160,6 +160,7 @@ public class HomescreenActivity extends AppCompatActivity
         boardUI = (BoardUI) findViewById(R.id.chessboard);
         boardUI.registerToSnapshot(newGameKey);
 
+        /*
         // Create a new game with corey in it so that we are able to see the games and when Corey starts the app it should allow me to see the new game which is pretty important.
         String coreyGameKey = driver.createGame("thenotoriousrog", "ODGBgaming");
         driver.setCurrentGameKey(coreyGameKey);
@@ -167,7 +168,7 @@ public class HomescreenActivity extends AppCompatActivity
         newBoard.setHomescreenActivity(this);
         newBoard.setGameID("coreyGame");
         newBoard.registerToSnapshot(coreyGameKey);
-
+        */
         System.out.println("SETTING THE DRIVER FOR BOARDUI");
         boardUI.setHomescreenActivity(this); // send a copy of the homescreen activity to allow for certain displaying of certain UI elements.
 
@@ -175,7 +176,7 @@ public class HomescreenActivity extends AppCompatActivity
 
         // todo: we should have a list of our boards pulled from our database with the information about the piece places. This is pretty important!
         games.add(boardUI); // add razor game (with Miles).
-        games.add(newBoard); // add corey game
+        //games.add(newBoard); // add corey game
         gamePagerAdapter = new GamePagerAdapter(games, inGameUI, getBaseContext()); // send in the games that we want to work with that will allow us to send our games to the adapter to update the ViewPager (to swipe horizontally)
         // TODO: create the Gamepage listener that will be in charge of getting this thing working correctly.
         GamePageChangeListener gpcl = new GamePageChangeListener(this); // holds the game as well as a copy of the InGameUI that will allow us to see a snack bar for the users to be able to see their game number.
@@ -390,6 +391,7 @@ public class HomescreenActivity extends AppCompatActivity
         newGame.registerToSnapshot(addedSnapshot.getDbKey()); // register this new game to the snapshot.
         games.add(newGame);
         gamePagerAdapter.notifyDataSetChanged();
+        updateViewPager();
     }
 
     @Override
