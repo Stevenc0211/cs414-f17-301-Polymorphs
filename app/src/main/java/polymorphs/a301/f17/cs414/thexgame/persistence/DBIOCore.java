@@ -84,6 +84,7 @@ public class DBIOCore {
      * @param username - the new username (nickname)
      */
     public void setCurrentUserUsername(String username) {
+        userNickname = username;
         getUserReference().child("nickname").setValue(username);
         baseReference.child("usernameList").push();
         String key = baseReference.child("usernameList").push().getKey();

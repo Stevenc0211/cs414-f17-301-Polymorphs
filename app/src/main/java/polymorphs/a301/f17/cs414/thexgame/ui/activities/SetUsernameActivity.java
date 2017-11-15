@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
@@ -39,6 +40,7 @@ public class SetUsernameActivity extends Activity implements UserObserver {
         System.out.println("username we want to send = " + username);
 
         // Send the user's data now.
+        // TODO: @Roger can we remove this bundle?
         Intent resultIntent = new Intent();
         Bundle data = new Bundle();
         data.putString("name", name);
