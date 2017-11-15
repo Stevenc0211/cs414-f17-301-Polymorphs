@@ -47,8 +47,6 @@ public class SubmitButtonClickListener implements View.OnClickListener {
     {
         username = usernameField.getText().toString();
         // TODO: if users enter a number instead of text we must ask them to enter another
-        // Adds the username to the user object of the new user
-        DBIOCore.getInstance().setCurrentUserUsername(username);
         setUsernameActivity.sendUserData(); // send the user data back to the SetUsernameActivity.
     }
 

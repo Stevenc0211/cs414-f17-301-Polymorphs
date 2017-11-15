@@ -141,7 +141,7 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
             System.out.println("username we got from activity" + username);
 
             DBIOCore.getInstance().setCurrentUserUsername(username); // set the username grabbed from the activity.
-
+            delayHandler.post(transferToHomescreen);
             // note: in the very first run, we have our current user and we can grab their name and email, but when the app is closed we lose our current user.
             //writeBasicInfoToMemory(currentUser.getName(), currentUser.getEmail(), username); // write the user's basic info to main memory.
             //displayHomescreen();
@@ -193,9 +193,6 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
                 System.out.println("asking to create username now!!");
                 Intent setUsernameIntent = new Intent(StartupScreenActivity.this, SetUsernameActivity.class);
                 startActivityForResult(setUsernameIntent, SET_USERNAME); // start the activity for intent!
-
-                // might not be necessary depending on above implementation
-                delayHandler.post(setupDriver);
             } else {
                 System.out.println("Everything running smoothely, loading homescreen now...");
                 Driver.getInstance();
