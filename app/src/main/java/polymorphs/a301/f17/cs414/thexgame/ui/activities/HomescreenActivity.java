@@ -155,7 +155,7 @@ public class HomescreenActivity extends AppCompatActivity
 
 
         // NOTE: the following lines WILL NOT WORK you must replace this as per instructions above
-        String newGameKey = driver.createGame("thenotoriousrog", "black"); // BreadCrumb: turn order hack
+        String newGameKey = driver.createGame("thenotoriousrog", "razor"); // BreadCrumb: turn order hack
         driver.setCurrentGameKey(newGameKey);
         boardUI = (BoardUI) findViewById(R.id.chessboard);
         boardUI.registerToSnapshot(newGameKey);
