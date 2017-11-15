@@ -53,6 +53,7 @@ public class DBIOCore {
 
         System.out.println("name of person we are adding: " + name);
         System.out.println("email of person we are adding: " + email);
+
         tmp.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -74,6 +75,7 @@ public class DBIOCore {
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
             }
         });
+
     }
 
     /**
@@ -178,12 +180,10 @@ public class DBIOCore {
 
     public String addGameSnapshot(GameSnapshot snapshot){
         String key = baseReference.child("gamesnapshotList").child(snapshot.getNicknameWhite()).push().getKey();
-        baseReference.child("gamesnapshotList").child(snapshot.getNicknameWhite()).child(key).setValue(snapshot);
-        baseReference.child("gamesnapshotList").child(snapshot.getNicknameBlack()).child(key).setValue(snapshot);
-
         //set key for snapshot
         snapshot.setDbKey(key);
-
+        baseReference.child("gamesnapshotList").child(snapshot.getNicknameWhite()).child(key).setValue(snapshot);
+        baseReference.child("gamesnapshotList").child(snapshot.getNicknameBlack()).child(key).setValue(snapshot);
         return key;
     }
 

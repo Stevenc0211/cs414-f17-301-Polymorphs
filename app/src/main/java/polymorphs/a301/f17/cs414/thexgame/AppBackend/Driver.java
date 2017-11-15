@@ -30,6 +30,10 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
         return instance;
     }
 
+    public boolean isSetup() {
+        return usernames.size() != 0;
+    }
+
     public HashMap<String, Game> getGames(){
         return games;
     }
