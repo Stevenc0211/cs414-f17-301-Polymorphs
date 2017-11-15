@@ -47,9 +47,7 @@
         <activity android:name=".ui.activities.SetUsernameActivity"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ui.activities.LoadingActivity"
-            android:screenOrientation="portrait">
-        </activity>
+
     </application>
 
 </manifest>

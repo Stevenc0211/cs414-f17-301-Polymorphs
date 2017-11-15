@@ -161,19 +161,8 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
     private Runnable transferToHomescreen = new Runnable() {
         public void run() {
 
-            if(readyToDisplayHomescreen == false)
-            {
-                Intent loadingUIIntent = new Intent(StartupScreenActivity.this, LoadingActivity.class);
-                startActivity(loadingUIIntent);
-            }
-            else // call the homescreen to generate some stuffs.
-            {
-                Intent mainGameUIIntent = new Intent(StartupScreenActivity.this, HomescreenActivity.class); // main game ui intent that is sent when the app is started.
-                startActivity(mainGameUIIntent);
-            }
-
-            // todo: @Miles, you may want to have a call that calls a method that starts the homescreen intent instead of checking for this boolean. The boolean just prevents the main screen from being shown.
-
+            Intent mainGameUIIntent = new Intent(StartupScreenActivity.this, HomescreenActivity.class); // main game ui intent that is sent when the app is started.
+            startActivity(mainGameUIIntent);
         }
     };
 
