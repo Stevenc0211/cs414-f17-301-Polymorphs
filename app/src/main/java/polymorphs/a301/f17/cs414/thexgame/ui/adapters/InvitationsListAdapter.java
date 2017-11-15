@@ -60,7 +60,6 @@ public class InvitationsListAdapter extends ArrayAdapter {
 
                 // TODO: if it fails, try to hardcode a game between thenotoriousrog and razor.
                 BoardUI newGame = primaryActivity.createNewGame(invitingUser, primaryActivity.getCurrentUser().getNickname()); // create a new game
-                newGame.setGameID("test"); // todo: remove this as this is used for testing in terms of the actual game id.
                 newGame.setHomescreenActivity(primaryActivity); // set the homescreen activity for this new game.
                 primaryActivity.addGameToPager(newGame, invitingUser); // add the game to the pager.
                 primaryActivity.updateViewPager(); // just force it to update hopefully showing the new games.
