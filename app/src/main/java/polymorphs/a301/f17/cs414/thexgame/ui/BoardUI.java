@@ -49,6 +49,8 @@ public final class BoardUI extends View implements GameSnapshotObserver {
     private String gameID = ""; // holds the gameID for this game, needed in order to keep track of the game and what it can do.
     private Driver driver; // the driver object that we are going to be using to communicate with the UI (this)
     private HomescreenActivity activity; // a copy of the homescreen activity so that we can display the proper winning screen for this game if a player sees it in real time.
+    private String whitePlayer = ""; // holds the name of the white player
+    private String blackPlayer = ""; // holds the name of the black player.
 
     /** 'true' if black is facing player. */
     private boolean flipped = false;
@@ -64,9 +66,33 @@ public final class BoardUI extends View implements GameSnapshotObserver {
         driver = Driver.getInstance();
     }
 
+    // TODO: @Miles this is not working for whatever reason.
     public void registerToSnapshot(String snapshotKey) {
+
+        System.out.println("The game is being registered with this snapshotkey ->" + snapshotKey);
+
         DBIOCore.getInstance().registerToGameSnapshot(this, snapshotKey);
         gameID = snapshotKey;
+    }
+
+    public void setWhitePlayer(String name)
+    {
+        whitePlayer = name;
+    }
+
+    public void setBlackPlayer(String name)
+    {
+        blackPlayer = name;
+    }
+
+    public String getWhiteplayer()
+    {
+        return whitePlayer;
+    }
+
+    public String getBlackPlayer()
+    {
+        return blackPlayer;
     }
 
     // gets the game ID, mainly used for removing games out of the view pager.
@@ -326,6 +352,7 @@ public final class BoardUI extends View implements GameSnapshotObserver {
                 // This will look for when a user releases their touch which let's us know that it is a click.
                 if (tileUI.isTouched(x, y) && event.getAction() == MotionEvent.ACTION_UP)
                 {
+                  //  getHomescreenActivity().switchToGameAt(0);
                     movePieceActionListener.click(tileUI, rows, cols, tileUI.getPieceName()); // determine a move click action listener.
                 }
             }
@@ -358,6 +385,9 @@ public final class BoardUI extends View implements GameSnapshotObserver {
     // Updates the game based on the snapshot of the game sent in, used when a game is updated.
     @Override
     public void snapshotUpdated(GameSnapshot gs) {
+
+        System.out.println("Is the gamesnapshot null? " + gs);
+
         newlyStarted = false;
         String tempGame = gs.getGameString(); // todo: game snapshot is null for reason.
         String [] playerPieces = tempGame.split("-")[1].split("\\|");
