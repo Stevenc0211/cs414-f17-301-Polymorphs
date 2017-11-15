@@ -164,7 +164,7 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
         else // Signed out, show unauthenticated UI.
         {
 
-            System.out.println("Log in was a failure");
+            System.out.println("Log in was a failure!!");
            // Intent mainGameUIIntent = new Intent(StartupScreenActivity.this, HomescreenActivity.class); // main game ui intent that is sent when the app is started.
             //startActivity(mainGameUIIntent);
         }
