@@ -29,6 +29,12 @@ class Rook extends Piece {
         return false;
     }
 
+    public boolean equals(Object o) {
+        if (!(o instanceof Rook)) return false;
+        Rook otherRook = (Rook) o;
+        return (super.getRow() == otherRook.getRow() && super.getCol() == otherRook.getCol() && super.getColor().equals(otherRook.getColor()));
+    }
+
     public String toString(){
         return super.toString();
     }

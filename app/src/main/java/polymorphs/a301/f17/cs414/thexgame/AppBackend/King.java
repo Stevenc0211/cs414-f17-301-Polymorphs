@@ -55,6 +55,12 @@ class King extends Piece {
         return false;
     }
 
+    public boolean equals(Object o) {
+        if (!(o instanceof King)) return false;
+        King otherKing = (King)o;
+        return (super.getRow() == otherKing.getRow() && super.getCol() == otherKing.getCol() && super.getColor().equals(otherKing.getColor()));
+    }
+
 
     public String toString(){
         return super.toString();

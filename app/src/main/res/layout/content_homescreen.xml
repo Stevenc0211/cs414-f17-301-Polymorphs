@@ -23,25 +23,35 @@
         <polymorphs.a301.f17.cs414.thexgame.ui.BoardUI
             android:id="@+id/chessboard"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
 
-        <!-- our game board is here.
-        <GridView
-            android:id="@+id/chessboard"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/SlateGray"
-            android:numColumns="12"
-            android:padding="0dp"
-            android:stretchMode="columnWidth"
-            android:horizontalSpacing="0dp"
-            android:verticalSpacing="0dp"
-            >
-        </GridView>
-         -->
+
+
+        </polymorphs.a301.f17.cs414.thexgame.ui.BoardUI>
 
 
     </android.support.v4.view.ViewPager>
 
-</RelativeLayout>
 
+
+    <!-- the view with the colors with a transparent black background!
+    removed for now because it does not work correctly! Need to get that working from within the UI itself!
+    <RelativeLayout
+        android:id="@+id/winnerLoserText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#CCFF0000"
+        >
+        <TextView
+            android:id="@+id/winnerLoserCaption"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:text="White wins!"
+            android:textSize="40sp"
+            />
+    </RelativeLayout>
+    -->
+
+</RelativeLayout>

@@ -87,6 +87,20 @@ public class TestQueen {
     @Test
     public void testToString(){
         Queen queen = new Queen(4,5,true,Color.WHITE);
-        assertEquals("4, 5, true, WHITE",queen.toString());
+        assertEquals("Queen,4,5,true,WHITE",queen.toString());
+    }
+
+    @Test
+    public void testEqualsMethodTrue(){
+        Queen queen = new Queen(4,3,true,Color.BLACK);
+        Queen other = new Queen(4,3,true,Color.BLACK);
+        assertTrue("Queens should be equal",queen.equals(other));
+    }
+
+    @Test
+    public void testEqualsMethodFalse(){
+        Queen queen = new Queen(4,3,true,Color.BLACK);
+        Queen other = new Queen(7,3,true,Color.BLACK);
+        assertFalse("Queens should not be equal",queen.equals(other));
     }
 }

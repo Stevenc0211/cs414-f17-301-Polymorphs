@@ -8,17 +8,26 @@ import java.util.Date;
 
 class Player {
     private User user; // saving the user instead to match between UI and backend
+    private String nickname;
     private Color color;
     private ArrayList<Piece> pieces = new ArrayList<Piece>();
 
-    public Player(User user,Color color){
-        this.user = user;
+    public Player(String nickname,Color color){
         this.color = color;
+        this.nickname = nickname;
         initializePieces();
     }
 
     public String getNickname(){
-        return user.getNickname();
+        return nickname;
+    }
+
+    public void setNickname(String nickname){
+        this.nickname = nickname;
+    }
+
+    public void setColor(Color color){
+        this.color = color;
     }
 
     public Color getColor(){
@@ -28,7 +37,26 @@ class Player {
     public boolean equals(Object o) {
         if (!(o instanceof Player)) return false;
         Player otherPlayer = (Player) o;
-        return (user.equals(otherPlayer.user) && color == otherPlayer.color);
+        return (nickname.equals(otherPlayer.nickname) && color == otherPlayer.color);
+    }
+
+    /**
+     * This is used to add piece to list of pieces for database usage
+     */
+    public void addPieces(String type,int row,int col,boolean available){
+        //add the appropriate piece
+        if(type.equals("King")){
+            King king = new King(row,col,available,color);
+            pieces.add(king);
+        }
+        else if(type.equals("Queen")){
+            Queen queen = new Queen(row,col,available,color);
+            pieces.add(queen);
+        }
+        else if(type.equals("Rook")){
+            Rook rook = new Rook(row,col,available,color);
+            pieces.add(rook);
+        }
     }
 
     public ArrayList<Piece> getPieces(){
@@ -92,9 +120,13 @@ class Player {
         String temp = "";
         for (int i = 0; i < pieces.size() - 1; i++) {
             temp += pieces.get(i).toString();
-            temp += ", ";
+            temp += "*";
         }
         temp += pieces.get(pieces.size() - 1).toString();
         return temp;
+    }
+
+    public void clearPieces(){
+        pieces.clear();
     }
 }
