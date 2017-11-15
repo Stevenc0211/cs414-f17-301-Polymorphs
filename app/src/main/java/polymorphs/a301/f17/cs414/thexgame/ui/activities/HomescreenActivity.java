@@ -160,8 +160,9 @@ public class HomescreenActivity extends AppCompatActivity
         boardUI = (BoardUI) findViewById(R.id.chessboard);
         boardUI.registerToSnapshot(newGameKey);
 
-        /*
+
         // Create a new game with corey in it so that we are able to see the games and when Corey starts the app it should allow me to see the new game which is pretty important.
+        /*
         String coreyGameKey = driver.createGame("thenotoriousrog", "ODGBgaming");
         driver.setCurrentGameKey(coreyGameKey);
         BoardUI newBoard = new BoardUI(getBaseContext(), null);
