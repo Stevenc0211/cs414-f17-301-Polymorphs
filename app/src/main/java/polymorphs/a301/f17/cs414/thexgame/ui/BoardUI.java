@@ -66,12 +66,7 @@ public final class BoardUI extends View implements GameSnapshotObserver {
 
     public void registerToSnapshot(String snapshotKey) {
         DBIOCore.getInstance().registerToGameSnapshot(this, snapshotKey);
-    }
-
-    // sets the gameID for this game.
-    public void setGameID(String id)
-    {
-        this.gameID = id;
+        gameID = snapshotKey;
     }
 
     // gets the game ID, mainly used for removing games out of the view pager.

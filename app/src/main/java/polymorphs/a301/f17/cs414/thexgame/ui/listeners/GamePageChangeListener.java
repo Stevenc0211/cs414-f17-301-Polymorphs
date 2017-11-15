@@ -38,6 +38,7 @@ public class GamePageChangeListener implements ViewPager.OnPageChangeListener {
     {
         // removed this as it is causing issues on the phone for Andy, need to find a new way to inform users that are being used by Roger, pretty important!
        Snackbar.make(homescreenActivity.findViewById(R.id.mainContentScreen), "GAME " + (position+1), Snackbar.LENGTH_SHORT).show(); // show the snackbar plus the game for the users to see, this is actually pretty cool!!! You'll see
+        homescreenActivity.switchToGameAt(position);
     }
 
 

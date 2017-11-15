@@ -116,6 +116,10 @@ public class HomescreenActivity extends AppCompatActivity
         return newGame; // send back the board UI to work with something.
     }
 
+    public void switchToGameAt(int position) {
+        Driver.getInstance().setCurrentGameKey( games.get(position).getGameID() );
+    }
+
     // this method sets up our game pager.
     protected void setupGamePager()  {
 
@@ -155,7 +159,7 @@ public class HomescreenActivity extends AppCompatActivity
 
 
         // NOTE: the following lines WILL NOT WORK you must replace this as per instructions above
-        String newGameKey = driver.createGame("thenotoriousrog", "razor"); // BreadCrumb: turn order hack
+        String newGameKey = driver.createGame("razor", "thenotoriousrog"); // BreadCrumb: turn order hack
         driver.setCurrentGameKey(newGameKey);
         boardUI = (BoardUI) findViewById(R.id.chessboard);
         boardUI.registerToSnapshot(newGameKey);
