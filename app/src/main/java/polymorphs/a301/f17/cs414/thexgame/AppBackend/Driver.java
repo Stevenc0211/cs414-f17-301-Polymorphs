@@ -55,13 +55,10 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
             return key;
         }
         else{
-            // MANUALLY ADDING THIS CODE WHERE WE BYPASS THE REGISTRATION TO GET USERS INTO THE GAME.
-             Game game = new Game(nickname1, nickname2);
-             games.put("key", game);
-            return "key";
-            // throw new IllegalArgumentException("ERROR: both passed users must be registered");
+            throw new IllegalArgumentException("ERROR: both passed users must be registered");
         }
     }
+
 
     /**
      * Sets the active game of the set of active games.

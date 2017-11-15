@@ -379,7 +379,10 @@ public class HomescreenActivity extends AppCompatActivity
     @Override
     public void snapshotAdded(GameSnapshot addedSnapshot, String precedingSnapshotKey)
     {
-        // anything that is added into here will cause an infinite loop.
+        BoardUI newGame = new BoardUI(getBaseContext(), null);
+        newGame.registerToSnapshot(addedSnapshot.getDbKey()); // register this new game to the snapshot.
+        games.add(newGame);
+        gamePagerAdapter.notifyDataSetChanged();
     }
 
     @Override
