@@ -43,7 +43,7 @@ public class User {
         return nickname;
     }
 
-    public Profile getProfile(){ return profile; }
+    //public Profile getProfile(){ return profile; }
 
 
     public boolean equals(Object o) {

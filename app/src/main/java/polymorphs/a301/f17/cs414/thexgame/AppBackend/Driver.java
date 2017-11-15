@@ -55,13 +55,10 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
             return key;
         }
         else{
-            // MANUALLY ADDING THIS CODE WHERE WE BYPASS THE REGISTRATION TO GET USERS INTO THE GAME.
-             Game game = new Game(nickname1, nickname2);
-             games.put("key", game);
-            return "key";
-            // throw new IllegalArgumentException("ERROR: both passed users must be registered");
+            throw new IllegalArgumentException("ERROR: both passed users must be registered");
         }
     }
+
 
     /**
      * Sets the active game of the set of active games.
@@ -119,6 +116,13 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
     // tells the calling method if the user we are looking for is in check
     public int[] isInCheck()
     {
+       // System.out.println("the number of games in Driver == " + games.size());
+        //System.out.println("What is the current game key? " + currentGameKey);
+        if(currentGameKey.equals("")) // this should not happen!
+        {
+            return null;
+        }
+
         King king = games.get(currentGameKey).getCurrentPlayer().getKing(); // get the king for the current player.
         if(games.get(currentGameKey).getBoard().kingInCheck(king)) // if the king is in check.
         {
@@ -133,6 +137,8 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
 
     public ArrayList<int[]> getAvailableMoves(int row, int col)
     {
+        System.out.println("The currentGameKey for touching the tile is " + currentGameKey);
+
         Tile from = games.get(currentGameKey).getBoard().getTile(row, col);
         if (!from.isOccupied()) return new ArrayList<>();
         Color currentPlayerColor =  games.get(currentGameKey).getCurrentPlayer().getColor();

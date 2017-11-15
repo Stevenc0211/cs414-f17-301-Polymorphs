@@ -116,6 +116,16 @@ class Player {
         return newQueen;
     }
 
+    int getIndexOf(Piece piece) {
+        return pieces.indexOf(piece);
+    }
+
+    void setPieceAt(int idx, Piece piece) {
+        if (idx >= 0 && idx < pieces.size()) {
+            pieces.set(idx, piece);
+        }
+    }
+
     public String toString() {
         String temp = "";
         for (int i = 0; i < pieces.size() - 1; i++) {

@@ -22,9 +22,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 
+import java.util.HashMap;
+
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.R;
+import polymorphs.a301.f17.cs414.thexgame.persistence.UserObserver;
+import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListObserver;
 
 /**
  * Created by Roger Hannagan on 9/13/17.
@@ -33,7 +38,7 @@ import polymorphs.a301.f17.cs414.thexgame.R;
  *** Note: Logging in will be automatic once the database is started. ***
  */
 
-public class StartupScreenActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class StartupScreenActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, UserObserver, UsernameListObserver  {
 
     private View googleSignInButton; // holds the google sign-in button.
 
@@ -41,9 +46,14 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
     private ProgressDialog progressDialog; // TODO: deprecated, change this to something that is more recent!!!
 
     private static final int RC_SIGN_IN = 9001;
+    private final int SET_USERNAME = 9002; // details what we are doing for the username.
+
 
     private String displayName;
+    private String name;
     private String email;
+    private String username;
+    HashMap<String, String> usernames; // holds the list of people to invite keyed by the previous usernames database key
 
 
     // This is the first thing called when this class is called and will create the startup screen UI.
@@ -52,6 +62,7 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account_startup); // sets our startup screen as the main content view.
+        usernames = new HashMap<>();
 
         googleSignInButton = (View) findViewById(R.id.googlebutton); // sign in with the google button here for us to be able to sign_in and register with the game!
         googleSignInButton.setOnClickListener(new View.OnClickListener() {
@@ -76,6 +87,9 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+
+        // register to the lists here to add the new usernames, very important!
+
     }
 
     @Override
@@ -125,6 +139,26 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
 
             handleSignInResult(result);
         }
+        else if(requestCode == SET_USERNAME) // if the request code came from SetUsernameActivity.
+        {
+
+            System.out.println("Setting up username now...");
+            Bundle d = data.getBundleExtra("results");
+            //name = d.getString("name"); // this comes back as null
+            //email = d.getString("email"); // this comes back as null.
+            username = d.getString("username"); // this comes back fine.
+
+            System.out.println("name we got from activity: " + name);
+            System.out.println("email we got from activity: " + email);
+            System.out.println("username we got from activity" + username);
+
+
+            DBIOCore.getInstance().setCurrentUserUsername(username); // set the username grabbed from the activity.
+            delayHandler.post(transferToHomescreen);
+            // note: in the very first run, we have our current user and we can grab their name and email, but when the app is closed we lose our current user.
+            //writeBasicInfoToMemory(currentUser.getName(), currentUser.getEmail(), username); // write the user's basic info to main memory.
+            //displayHomescreen();
+        }
     }
 
     Handler delayHandler = new Handler();
@@ -143,7 +177,7 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
         else // Signed out, show unauthenticated UI.
         {
 
-            System.out.println("Log in was a failure");
+            System.out.println("Log in was a failure!!");
            // Intent mainGameUIIntent = new Intent(StartupScreenActivity.this, HomescreenActivity.class); // main game ui intent that is sent when the app is started.
             //startActivity(mainGameUIIntent);
         }
@@ -162,15 +196,23 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
      */
     private Runnable setupDriver = new Runnable() {
         public void run() {
-            if (DBIOCore.getInstance().getCurrentUserUsername() == null) {
+            if (DBIOCore.getInstance().getCurrentUserUsername() == null)
+            {
+                System.out.println("The currentUserUsername is null, waiting for dbio to start...");
                 delayHandler.postDelayed(setupDriver, 100);
             } else if (DBIOCore.getInstance().getCurrentUserUsername().equals("")) {
                 // TODO: handle opening the set username screen
 
-                // might not be necessary depending on above implementation
-                delayHandler.post(setupDriver);
+                System.out.println("asking to create username now!!");
+                Intent setUsernameIntent = new Intent(StartupScreenActivity.this, SetUsernameActivity.class);
+                startActivityForResult(setUsernameIntent, SET_USERNAME); // start the activity for intent!
             } else {
+                System.out.println("Everything running smoothely, loading homescreen now...");
                 Driver.getInstance();
+
+                DBIOCore.getInstance().registerToUsernameList(StartupScreenActivity.this);
+                DBIOCore.getInstance().registerToCurrentUser(StartupScreenActivity.this);
+
                 delayHandler.post(transferToHomescreen);
             }
 
@@ -183,6 +225,8 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
     private Runnable transferToHomescreen = new Runnable() {
         public void run() {
             if (Driver.getInstance().isSetup()) {
+//                System.out.println("The name of the current user according to the database is: " + Driver.getInstance().getCurrentPlayerNickname());
+                System.out.println("the username of the current user is in StartupScreen: " + username);
                 Intent mainGameUIIntent = new Intent(StartupScreenActivity.this, HomescreenActivity.class); // main game ui intent that is sent when the app is started.
                 startActivity(mainGameUIIntent);
             } else {
@@ -234,6 +278,7 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
         // TODO: should start a log for this to figure out what exactly is going on, also display a user name.
     }
 
+
     // TODO: the progress dialog is not working, I need to change this into something that is not deprecated.
     @Override
     protected void onStop() {
@@ -267,6 +312,40 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
         else // user has not signed it yet.
         {
             googleSignInButton.setVisibility(View.VISIBLE); // make the sign in button visible.
+        }
+    }
+
+    @Override
+    public void userUpdated(User u) {
+
+        System.out.println("User was added to the database, was it null? " + u);
+
+        //currentUser = u;
+        name = u.getName();
+        email = u.getEmail();
+        username = u.getNickname();
+    }
+
+    @Override
+    public void usernameAdded(String addedUsername, String precedingUsernameKey) {
+        usernames.put(precedingUsernameKey, addedUsername);
+    }
+
+    @Override
+    public void usernameChanged(String changedUsername, String precedingUsernameKey) {
+        usernames.put(precedingUsernameKey, changedUsername);
+    }
+
+    @Override
+    public void usernameRemoved(String removedUsername) {
+        String rmKey = "";
+        for (String key : usernames.keySet()) {
+            if (usernames.get(key).equals(removedUsername)) {
+                rmKey = key;
+            }
+        }
+        if (rmKey != "") {
+            usernames.remove(rmKey);
         }
     }
 }

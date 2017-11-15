@@ -4,10 +4,9 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
- * Created by athai on 10/18/17, edited, modified, and implemented by Roger.
+ * Created by athai on 10/18/17, edited, modified, and implemented by Roger, Miles, and Andy.
  *
  * Speaks and works with the driver file class.
- * TODO: needs the code written in the Board class from Steven and Badr so that we the game will work as expected!
  */
 
 class Game {
@@ -103,8 +102,12 @@ class Game {
     private boolean movePiece(int fromRow, int fromCol, int toRow, int toCol) {
         Tile from = board.getTile(fromRow, fromCol);
         Tile to = board.getTile(toRow, toCol);
+        int pieceIndex = currentPlayer.getIndexOf(from.getPiece());
         to.occupyTile(from.getPiece()); // this will also update the coordinates of the piece
         from.occupyTile(null);
+        if (pieceIndex != -1) {
+            currentPlayer.setPieceAt(pieceIndex, to.getPiece());
+        }
         if (to.getPiece() instanceof Rook) {
             if (to.getPiece().getColor() == Color.WHITE) {
                 if (to.getTileStatus() == Status.INSIDE_BLACK) {

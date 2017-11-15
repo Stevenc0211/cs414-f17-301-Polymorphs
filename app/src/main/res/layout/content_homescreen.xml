@@ -10,9 +10,21 @@
     tools:context="polymorphs.a301.f17.cs414.thexgame.ui.activities.HomescreenActivity"
     tools:showIn="@layout/app_bar_homescreen">
 
+
+    <TextView
+        android:id="@+id/noGamesText"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="No current games :("
+        android:textColor="@color/Black"
+        android:textSize="40sp"
+        android:layout_centerInParent="true"
+        />
+
     <!-- This right here allows the users to be able to swipe between games as they please!
      Swiping should also update the information that is shown on the left as well!!!
      -->
+    <!-- set the visibility to be gone for now to allow for the no games list to show up! -->
     <android.support.v4.view.ViewPager
         android:id="@+id/gamesListPager"
         android:layout_width="match_parent"
@@ -20,12 +32,13 @@
         android:layout_centerInParent="true"
         >
 
+
+
+        <!-- set the visibility to be gone for now to allow for the no games list to show up! -->
         <polymorphs.a301.f17.cs414.thexgame.ui.BoardUI
             android:id="@+id/chessboard"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-
 
         </polymorphs.a301.f17.cs414.thexgame.ui.BoardUI>
 
