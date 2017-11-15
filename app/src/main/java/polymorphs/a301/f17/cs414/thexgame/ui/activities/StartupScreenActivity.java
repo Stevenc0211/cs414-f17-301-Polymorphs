@@ -36,6 +36,7 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
     private ProgressDialog progressDialog; // TODO: deprecated, change this to something that is more recent!!!
 
     private static final int RC_SIGN_IN = 9001;
+    private boolean readyToDisplayHomescreen = false; // this turns true once everything in the database is ready to roll.
 
 
     // This is the first thing called when this class is called and will create the startup screen UI.
@@ -159,8 +160,20 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
      */
     private Runnable transferToHomescreen = new Runnable() {
         public void run() {
-            Intent mainGameUIIntent = new Intent(StartupScreenActivity.this, HomescreenActivity.class); // main game ui intent that is sent when the app is started.
-            startActivity(mainGameUIIntent);
+
+            if(readyToDisplayHomescreen == false)
+            {
+                Intent loadingUIIntent = new Intent(StartupScreenActivity.this, LoadingActivity.class);
+                startActivity(loadingUIIntent);
+            }
+            else // call the homescreen to generate some stuffs.
+            {
+                Intent mainGameUIIntent = new Intent(StartupScreenActivity.this, HomescreenActivity.class); // main game ui intent that is sent when the app is started.
+                startActivity(mainGameUIIntent);
+            }
+
+            // todo: @Miles, you may want to have a call that calls a method that starts the homescreen intent instead of checking for this boolean. The boolean just prevents the main screen from being shown.
+
         }
     };
 
