@@ -24,6 +24,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameSnapshot;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
@@ -142,64 +143,8 @@ public class HomescreenActivity extends AppCompatActivity
     }
 
     // this method sets up our game pager.
-    protected void setupGamePager()  {
-
-        /* Case 1 - Running a new game locally
-        1. Create the new game passing your current username and a registered username (both 'white' and 'black' are registered for this purpose
-            String newGameKey = driver.createGame(your_username, other_reg_username);
-        2. Set returned key as the drivers current game key
-            driver.setCurrentGameKey(newGameKey);
-        3. Create the board ui
-            boardUI = (BoardUI) findViewById(R.id.chessboard);
-        4. Register the board UI to the new game
-            boardUI.registerToSnapshot(newGameKey);
-        5. go to MovePieceActionListener::93 and ensure the code is set for LOCAL
-         */
-
-        /* Case 2 - Running a saved game locally
-        1. To do this you must copy the game key value for a previous Case1. Run the Case 1 save the key then exit and setup for Case 2
-        2. Set the driver to the saved game key (it should look something like '-KyrHJc4s6basDQ7qcor')
-            driver.setCurrentGameKey(savedGameKey);
-        3. Create the board ui
-            boardUI = (BoardUI) findViewById(R.id.chessboard);
-        4. Register the board UI to the saved game
-            boardUI.registerToSnapshot(savedGameKey);
-        5. go to MovePieceActionListener::93 and ensure the code is set for LOCAL
-         */
-
-        /* Case 3 - Running a shared game between users
-         1. Run a Case 1 passing your username as normal and the other users username as the second arg. Save the game key and exit
-         2. Set the driver to the saved game key (it should look something like '-KyrHJc4s6basDQ7qcor')
-            driver.setCurrentGameKey(savedGameKey);
-         3. Create the board ui
-            boardUI = (BoardUI) findViewById(R.id.chessboard);
-         4. Register the board UI to the saved game
-            boardUI.registerToSnapshot(savedGameKey);
-         5. go to MovePieceActionListener::93 and ensure the code is set for REMOTE
-         */
-
-
-        // NOTE: the following lines WILL NOT WORK you must replace this as per instructions above
-        /* Removed because we need to get the game to show a UI for when the games are created for the first time.
-        String newGameKey = driver.createGame("razor", "thenotoriousrog"); // BreadCrumb: turn order hack
-        driver.setCurrentGameKey(newGameKey);
-        boardUI = (BoardUI) findViewById(R.id.chessboard);
-        boardUI.registerToSnapshot(newGameKey);
-        */
-
-
-
-
-        // Create a new game with corey in it so that we are able to see the games and when Corey starts the app it should allow me to see the new game which is pretty important.
-        /* removed for now not important at all this was a gmae with my friend that I made.
-        String coreyGameKey = driver.createGame("thenotoriousrog", "ODGBgaming");
-        driver.setCurrentGameKey(coreyGameKey);
-        BoardUI newBoard = new BoardUI(getBaseContext(), null);
-        newBoard.setHomescreenActivity(this);
-        //newBoard.setGameID("coreyGame");
-        newBoard.registerToSnapshot(coreyGameKey);
-        */
-
+    protected void setupGamePager()
+    {
        // boardUI = (BoardUI) findViewById(R.id.chessboard);
         gamePager = (ViewPager) findViewById(R.id.gamesListPager); // get the game pager that will basically fill out the games!
         boardUI = (BoardUI) findViewById(R.id.chessboard);
@@ -253,15 +198,6 @@ public class HomescreenActivity extends AppCompatActivity
         name = prefs.getString("name", "");
         email = prefs.getString("email", "");
         username = prefs.getString("username", "");
-
-        /*
-            NOTE: If we really wanted to we could reset the current user's info doing so below
-            currentUser.setName(name);
-            currentUser.setEmail(email);
-            currentUser.setUsername(username);
-            But the idea is that is should be read from the database, and if not, we could definitely reset it from the main memory so that we could have it because current user gone after app is killed.
-          */
-
     }
 
 
@@ -318,6 +254,18 @@ public class HomescreenActivity extends AppCompatActivity
 
         TextView textView = (TextView) navHeaderView.findViewById(R.id.textView); // get the text view out of our header.
         textView.setText(email);
+
+        CircleImageView navProfilePic = (CircleImageView) navHeaderView.findViewById(R.id.navProfilePicture); // get the profile picture for the navHeaderView this is very important!
+        navProfilePic.setOnClickListener(new View.OnClickListener() {
+
+            // When clicked, simply open the current user's profile fragment.
+            @Override
+            public void onClick(View view)
+            {
+                openCurrentUserProfileFragment();
+            }
+        });
+
     }
 
     // this reads the number of notifications from main memory for this user and updats the text for the notifications.
@@ -331,9 +279,6 @@ public class HomescreenActivity extends AppCompatActivity
 
         MenuItem notificationsText = navMenu.findItem(R.id.notifications);
 
-        // TODO: the noficiations counter is not perfect but it works in every case except for on app startup and notifications already exist. The reason is because we need the notificationFragment to be
-        // todo (cont): started and we can't start it until we touch the notifications, however, removal of a notification does work.
-        // TODO: @Miles, is there a way we can read invites for the currentUser from the database (assuming that we get that null currentuser situation handled)?
         if(notsCount == 0) {
             notificationsText.setTitle("Notifications"); // don't have a count if notifications show nothing.
         }
@@ -367,7 +312,6 @@ public class HomescreenActivity extends AppCompatActivity
 
         FloatingActionButton createNewGameButton = (FloatingActionButton) findViewById(R.id.createNewGameButton);
 
-        // TODO: @Miles for some weird reason, we are getting a null reference for the current user. This likely means the same for usernames. This is why sendInvites Don't work, try to get that fixed and we are golden.
         CreateNewGameButtonListener newGameButtonListener = new CreateNewGameButtonListener(HomescreenActivity.this);
         createNewGameButton.setOnClickListener(newGameButtonListener);
 
@@ -383,31 +327,9 @@ public class HomescreenActivity extends AppCompatActivity
         updateNotificationsCount(); // update the count of notifications.
 
         usernames = new HashMap<>();
-
         setupGamePager(); // setup the game pager here, this is what allows our game to be completed.
     }
 
-    /* removed because we added it inside of StartupScreenActivity
-        This method is called when the user set's up their username. The information is passed back from the SetUsernameActivity which is sent here.
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intentResult)
-    {
-        super.onActivityResult(requestCode, resultCode, intentResult);
-
-        if(requestCode == SET_USERNAME) // if the request code came from SetUsernameActivity.
-        {
-            Bundle data = intentResult.getBundleExtra("results");
-            name = data.getString("name"); // this comes back as null
-            email = data.getString("email"); // this comes back as null.
-            username = data.getString("username"); // this comes back fine.
-            // note: in the very first run, we have our current user and we can grab their name and email, but when the app is closed we lose our current user.
-            writeBasicInfoToMemory(currentUser.getName(), currentUser.getEmail(), username); // write the user's basic info to main memory.
-            displayHomescreen();
-        }
-
-    }
-    */
 
     // -------------------------------------------------- Observer and Listener code START ----------------------------------------------------------------------------------------
 
@@ -560,6 +482,20 @@ public class HomescreenActivity extends AppCompatActivity
         transaction.replace(R.id.mainContentScreen, settingsUI); // replace the current fragment with our games
         transaction.commit(); // commit the fragment to be loaded.
         updateNotificationsCount(); // update the notifications as soon as something is pressed.
+    }
+
+    // opens the current user's profile fragment which should also show the user's current information which is very important.
+    protected void openCurrentUserProfileFragment()
+    {
+        RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
+        homescreenLayout.removeAllViews();
+        homescreenLayout.setBackground(null); // this should remove all views from the main view to allow us to show the fragment properly.
+
+        // todo: create the profile Class and also open up the profile class which is very very very important!
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction(); // get the Fragment transaction to allow us to display the fragment properly
+        transaction.replace(R.id.mainContentScreen, settingsUI); // todo: replace the current fragment with the profile fragment which requires a copy of the profile class to be implemented.
+        transaction.commit(); // commit the fragment to be loaded.
     }
 
     @Override
