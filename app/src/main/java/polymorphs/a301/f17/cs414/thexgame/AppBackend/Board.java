@@ -295,6 +295,7 @@ class Board {
         result = kingInCheck(king);
         from.occupyTile(savedFromPiece);
         to.occupyTile(savedToPiece);
+        savedFromPiece.setAvailable(true);
         if (savedToPiece != null) {
             savedToPiece.setAvailable(true);
         }
