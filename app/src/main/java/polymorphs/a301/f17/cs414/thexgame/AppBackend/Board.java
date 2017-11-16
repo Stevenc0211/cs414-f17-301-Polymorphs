@@ -295,6 +295,7 @@ class Board {
         result = kingInCheck(king);
         from.occupyTile(savedFromPiece);
         to.occupyTile(savedToPiece);
+        savedFromPiece.setAvailable(true);
         if (savedToPiece != null) {
             savedToPiece.setAvailable(true);
         }
@@ -312,7 +313,7 @@ class Board {
         Tile lastTile;
         ArrayList<ArrayList<Tile>> allMovePaths;
         for (Piece piece : player.getPieces()) {
-            if (!piece.isAvailable()) continue;;
+            if (!piece.isAvailable()) continue;
             allMovePaths = piece.getAllMovePaths(this);
             for (ArrayList<Tile> movePath : allMovePaths) {
                 if (!validateMovePath(movePath, player)) continue;
@@ -347,7 +348,7 @@ class Board {
                 if (to.getTileStatus() != Status.INSIDE_BLACK) return false;
             }
             if (!king.isValidMove(toRow,toCol)) return false;
-            return moveResultsInCheck(king,fromRow,fromCol,toRow,toCol);
+            return !moveResultsInCheck(king,fromRow,fromCol,toRow,toCol);
         }
         return false;
     }

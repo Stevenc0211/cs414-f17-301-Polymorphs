@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
@@ -38,6 +39,7 @@ import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListObserver;
 import polymorphs.a301.f17.cs414.thexgame.ui.adapters.ActivityListAdapter;
 import polymorphs.a301.f17.cs414.thexgame.ui.adapters.GamePagerAdapter;
 import polymorphs.a301.f17.cs414.thexgame.ui.adapters.SquareAdapter;
+import polymorphs.a301.f17.cs414.thexgame.ui.fragments.HelpFragment;
 import polymorphs.a301.f17.cs414.thexgame.ui.fragments.NotificationsFragment;
 import polymorphs.a301.f17.cs414.thexgame.ui.fragments.SettingsFragment;
 import polymorphs.a301.f17.cs414.thexgame.ui.listeners.CreateNewGameButtonListener;
@@ -456,6 +458,9 @@ public class HomescreenActivity extends AppCompatActivity
         FragmentTransaction transaction = getFragmentManager().beginTransaction(); // get the Fragment transaction to allow us to display the fragment properly
         transaction.replace(R.id.mainContentScreen, notificationsFragment); // replace the current fragment with our games
         transaction.commit(); // commit the fragment to be loaded.
+
+        Snackbar.make(homescreenLayout, "Help on the way!", Snackbar.LENGTH_SHORT).show(); // display a help message!
+
     }
 
     // opens up the history menu
@@ -474,6 +479,20 @@ public class HomescreenActivity extends AppCompatActivity
     {
         Bundle fragmentArgs = new Bundle(); // the Bundle here allows us to send arguments to our fragment!
 
+        RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
+        homescreenLayout.removeAllViews();
+        homescreenLayout.setBackground(null); // this should remove all views from the main view to allow us to show the fragment properly.
+
+        HelpFragment helpUI = new HelpFragment(); // create a new help fragment.
+        FragmentTransaction transaction = getFragmentManager().beginTransaction(); // get the Fragment transaction to allow us to display the fragment properly
+        transaction.replace(R.id.mainContentScreen, helpUI); // replace the current fragment with our games
+        transaction.commit(); // commit the fragment to be loaded.
+        updateNotificationsCount(); // update the notifications as soon as something is pressed.
+    }
+
+    // opens the help fragment.
+    protected void openHelpFragment()
+    {
         RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
         homescreenLayout.removeAllViews();
         homescreenLayout.setBackground(null); // this should remove all views from the main view to allow us to show the fragment properly.
@@ -510,18 +529,24 @@ public class HomescreenActivity extends AppCompatActivity
         {
             openNotificationsFragment();
         }
-        else if (id == R.id.History)
+        else if (id == R.id.History) // todo: call the history fragment once we have history to be displayed.
         {
             Snackbar.make(homescreenLayout, "This feature isn't available yet ¯\\_(ツ)_/¯ ", Snackbar.LENGTH_LONG).show();
         }
-        else if (id == R.id.messages)
+        else if (id == R.id.messages) // todo: call the messages fragment if we decide to do a chat feature.
         {
             Snackbar.make(homescreenLayout, "This feature isn't available yet ¯\\_(ツ)_/¯ ", Snackbar.LENGTH_LONG).show();
 
-        } else if (id == R.id.settings)
+        }
+        else if (id == R.id.settings)
         {
             openSettingsFragment();
         }
+        else if(id == R.id.help)
+        {
+            openHelpFragment();
+        }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
