@@ -176,6 +176,14 @@ class Game {
             String [] piece = player2Pieces[i].split(",");
             p2.addPieces(piece[0],Integer.parseInt(piece[1]),Integer.parseInt(piece[2]),Boolean.valueOf(piece[3]));
         }
+
+        for (int row = 0; row < board.getRows(); row++) {
+            for (int col = 0; col < board.getColumns(); col++) {
+                board.getTile(row, col).occupyTile(null);
+            }
+        }
+        board.addPlayerPieces(p1);
+        board.addPlayerPieces(p2);
         if(currPlayer.equals(p1.getNickname())){
             currentPlayer = p1;
         }
