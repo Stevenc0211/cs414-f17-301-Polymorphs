@@ -3,6 +3,7 @@ package polymorphs.a301.f17.cs414.thexgame.ui.activities;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.BaseTransientBottomBar;
@@ -39,6 +40,7 @@ import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListObserver;
 import polymorphs.a301.f17.cs414.thexgame.ui.adapters.ActivityListAdapter;
 import polymorphs.a301.f17.cs414.thexgame.ui.adapters.GamePagerAdapter;
 import polymorphs.a301.f17.cs414.thexgame.ui.adapters.SquareAdapter;
+import polymorphs.a301.f17.cs414.thexgame.ui.fragments.CurrentUserProfileFragment;
 import polymorphs.a301.f17.cs414.thexgame.ui.fragments.HelpFragment;
 import polymorphs.a301.f17.cs414.thexgame.ui.fragments.NotificationsFragment;
 import polymorphs.a301.f17.cs414.thexgame.ui.fragments.SettingsFragment;
@@ -72,11 +74,21 @@ public class HomescreenActivity extends AppCompatActivity
     private String email; // email of the user.
     private String name; // name of the user.
     private String username; // username of the user
+    private Bitmap userProfilePic; // holds a copy of a user's profile picture.
 
     HashMap<String, String> usernames; // holds the list of people to invite keyed by the previous usernames database key
     polymorphs.a301.f17.cs414.thexgame.AppBackend.User currentUser;
 
     private NavigationView navigationView; // a copy of the navigation view to populate our board layout.
+
+    // TODO: this needs to save the profile picture to the database so that when a user changes their profile picture it is not lost!
+    public void saveAndChangeProfilePic(Bitmap newProfilePic)
+    {
+        userProfilePic = newProfilePic; // set the new profile picture for the user.
+        setupHeader(); // have the header refresh with the new profile picture now set.
+
+        // TODO: @Miles, @Andy, @Anyone, in here is where we need to save that profile picture to the database. I will take care of saving the picture to header view, but we need the DB for it to save permanently
+    }
 
     // adds a game to the game pager and also shows the person we are playing the game with.
     public void addGameToPager(BoardUI boardToAdd, String whitePlayer)
@@ -107,17 +119,12 @@ public class HomescreenActivity extends AppCompatActivity
     // creates a new game for us to be able to work with.
     public BoardUI createNewGame(String whitePlayerNickname, String blackPlayerNickname)
     {
-        System.out.println("new game created with white player: " + whitePlayerNickname + " and black player: " + blackPlayerNickname);
         String newGameKey = driver.createGame(whitePlayerNickname, blackPlayerNickname);
-
-        System.out.println("The new game key created for the game is: " + newGameKey);
 
         driver.setCurrentGameKey(newGameKey); // this may be causing the problems with not moving pieces since we are setting the current game key but no game shows up.
         BoardUI newGame = new BoardUI(getBaseContext(), null);
         newGame.setHomescreenActivity(this);
         newGame.registerToSnapshot(newGameKey); // TODO: @Miles for whatever reason the board ui is not adding games to the UI like it should, only after we swipe the game pager for some reason, then it works.
-
-       // Driver.getInstance().setCurrentGameKey( games.get(gamePager.getCurrentItem()).getGameID()); // sets the game snapshot of whatever board the pager is on.
 
         return newGame; // send back the board UI to work with something.
     }
@@ -257,8 +264,17 @@ public class HomescreenActivity extends AppCompatActivity
         TextView textView = (TextView) navHeaderView.findViewById(R.id.textView); // get the text view out of our header.
         textView.setText(email);
 
+
         CircleImageView navProfilePic = (CircleImageView) navHeaderView.findViewById(R.id.navProfilePicture); // get the profile picture for the navHeaderView this is very important!
-        navProfilePic.setOnClickListener(new View.OnClickListener() {
+
+        if(userProfilePic != null) // if not null, set the user's profile picture on the navbar layout!
+        {
+            navProfilePic.setImageBitmap(userProfilePic);
+        }
+        else {} // if the userProfilePic is null, don't do anything
+
+        navProfilePic.setOnClickListener(null); // set the click listener to null to remove any old listeners that were previously here.
+        navProfilePic.setOnClickListener(new View.OnClickListener() { // set the new click listener we want for the imageview.
 
             // When clicked, simply open the current user's profile fragment.
             @Override
@@ -288,18 +304,6 @@ public class HomescreenActivity extends AppCompatActivity
             notificationsText.setTitle("Notifications (" + notsCount + ")"); // have a counter if there are notifications.
         }
 
-    }
-
-    /*
-       This writes the user's information to main memory. It's a bit of a hack, but for some reason when the app is killed, we can no longer get the current user, it's not updated from the database.
-       This will work for now because each person who has a phone will be logged in with one account and this will show the name of that person in local memory and what we are saving is small so it works.
-    */
-    private void writeBasicInfoToMemory(String name, String email, String username)
-    {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        preferences.edit().putString("name", name).commit();
-        preferences.edit().putString("email", email).commit();
-        preferences.edit().putString("username", username).commit();
     }
 
     /*
@@ -402,6 +406,15 @@ public class HomescreenActivity extends AppCompatActivity
 
     // -------------------------------------------------- Observer and Listener code END ----------------------------------------------------------------------------------------
 
+    // simply automatically closes the drawer.
+    private void closeDrawer()
+    {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
+    }
+
     // Controls the actions when the back button is pressed, in this case, we make it so that the sliding drawer closes
     @Override
     public void onBackPressed()
@@ -458,8 +471,7 @@ public class HomescreenActivity extends AppCompatActivity
         FragmentTransaction transaction = getFragmentManager().beginTransaction(); // get the Fragment transaction to allow us to display the fragment properly
         transaction.replace(R.id.mainContentScreen, notificationsFragment); // replace the current fragment with our games
         transaction.commit(); // commit the fragment to be loaded.
-
-        Snackbar.make(homescreenLayout, "Help on the way!", Snackbar.LENGTH_SHORT).show(); // display a help message!
+        closeDrawer(); // close the drawer automatically.
 
     }
 
@@ -467,11 +479,13 @@ public class HomescreenActivity extends AppCompatActivity
     protected void openHistoryFragment()
     {
         // todo: needs to be implemented.
+        closeDrawer(); // close the drawer automatically.
     }
 
     protected void openMessagesFragment()
     {
         // todo: needs to be implemented.
+        closeDrawer(); // close the drawer automatically.
     }
 
     // opens up the settings fragment
@@ -483,11 +497,11 @@ public class HomescreenActivity extends AppCompatActivity
         homescreenLayout.removeAllViews();
         homescreenLayout.setBackground(null); // this should remove all views from the main view to allow us to show the fragment properly.
 
-        HelpFragment helpUI = new HelpFragment(); // create a new help fragment.
         FragmentTransaction transaction = getFragmentManager().beginTransaction(); // get the Fragment transaction to allow us to display the fragment properly
-        transaction.replace(R.id.mainContentScreen, helpUI); // replace the current fragment with our games
+        transaction.replace(R.id.mainContentScreen, settingsUI); // replace the current fragment with our games
         transaction.commit(); // commit the fragment to be loaded.
         updateNotificationsCount(); // update the notifications as soon as something is pressed.
+        closeDrawer(); // close the drawer automatically.
     }
 
     // opens the help fragment.
@@ -497,10 +511,13 @@ public class HomescreenActivity extends AppCompatActivity
         homescreenLayout.removeAllViews();
         homescreenLayout.setBackground(null); // this should remove all views from the main view to allow us to show the fragment properly.
 
+        HelpFragment helpUI = new HelpFragment();
+
         FragmentTransaction transaction = getFragmentManager().beginTransaction(); // get the Fragment transaction to allow us to display the fragment properly
-        transaction.replace(R.id.mainContentScreen, settingsUI); // replace the current fragment with our games
+        transaction.replace(R.id.mainContentScreen, helpUI); // replace the current fragment with our games
         transaction.commit(); // commit the fragment to be loaded.
         updateNotificationsCount(); // update the notifications as soon as something is pressed.
+        closeDrawer(); // close the drawer automatically.
     }
 
     // opens the current user's profile fragment which should also show the user's current information which is very important.
@@ -510,11 +527,13 @@ public class HomescreenActivity extends AppCompatActivity
         homescreenLayout.removeAllViews();
         homescreenLayout.setBackground(null); // this should remove all views from the main view to allow us to show the fragment properly.
 
-        // todo: create the profile Class and also open up the profile class which is very very very important!
+        CurrentUserProfileFragment currUserProfile = new CurrentUserProfileFragment(); // a copy of the CurrentUserProfileFragment
+        currUserProfile.setHomescreenActivity(this); // set the homescreen activity for the fragment to use.
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction(); // get the Fragment transaction to allow us to display the fragment properly
-        transaction.replace(R.id.mainContentScreen, settingsUI); // todo: replace the current fragment with the profile fragment which requires a copy of the profile class to be implemented.
+        transaction.replace(R.id.mainContentScreen, currUserProfile); // replace the homescreenActivity with the CurrentUserProfile
         transaction.commit(); // commit the fragment to be loaded.
+        closeDrawer(); // close the drawer automatically.
     }
 
     @Override
@@ -536,7 +555,6 @@ public class HomescreenActivity extends AppCompatActivity
         else if (id == R.id.messages) // todo: call the messages fragment if we decide to do a chat feature.
         {
             Snackbar.make(homescreenLayout, "This feature isn't available yet ¯\\_(ツ)_/¯ ", Snackbar.LENGTH_LONG).show();
-
         }
         else if (id == R.id.settings)
         {
