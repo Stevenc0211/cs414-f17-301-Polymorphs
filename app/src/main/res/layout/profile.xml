@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:textSize="15sp"
-        android:text="Win Percentage: 86% "
+        android:text="Win Percentage: ##% "
         android:layout_below="@id/profilePicture"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"

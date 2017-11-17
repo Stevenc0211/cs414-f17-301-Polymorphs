@@ -1,12 +1,13 @@
 package polymorphs.a301.f17.cs414.thexgame.ui.activities;
 
+import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
@@ -25,13 +26,13 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Handler;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameSnapshot;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
 import polymorphs.a301.f17.cs414.thexgame.persistence.GameSnapshotListObserver;
-import polymorphs.a301.f17.cs414.thexgame.persistence.GameSnapshotObserver;
 import polymorphs.a301.f17.cs414.thexgame.ui.BoardUI;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
@@ -64,11 +65,14 @@ public class HomescreenActivity extends AppCompatActivity
     private boolean startNewGame = false; // tells the inGameUI that we want to start a new game, which involves sending a list of invite(s) to other player(s).
     private boolean openCurrentGames = false; // tells inGameUI to just open the current list of games.
     private SubmitButtonClickListener submitClickListener;
-    private SettingsFragment settingsUI = new SettingsFragment(); // holds a copy of our settingsUI.
+
     private final int SET_USERNAME = 9001; // details what we are doing for the username.
     private String gameID = ""; // the game id used for each game.
 
     private Driver driver; // the driver that we will be working with within homescreen activity.
+    private boolean fragmentOpen = false; // tells the app if a fragment is open, if it is, then we need to ensure that we are fixing things
+    private Fragment currentFragment; // holds the current fragment thats open.
+    private FloatingActionButton createNewGameButton; // a copy of the create new game button that will allow us to
 
     // These will be populated by the shared preferences.
     private String email; // email of the user.
@@ -124,7 +128,7 @@ public class HomescreenActivity extends AppCompatActivity
         driver.setCurrentGameKey(newGameKey); // this may be causing the problems with not moving pieces since we are setting the current game key but no game shows up.
         BoardUI newGame = new BoardUI(getBaseContext(), null);
         newGame.setHomescreenActivity(this);
-        newGame.registerToSnapshot(newGameKey); // TODO: @Miles for whatever reason the board ui is not adding games to the UI like it should, only after we swipe the game pager for some reason, then it works.
+        newGame.registerToSnapshot(newGameKey);
 
         return newGame; // send back the board UI to work with something.
     }
@@ -151,6 +155,12 @@ public class HomescreenActivity extends AppCompatActivity
         gamePager.setVisibility(View.VISIBLE); // have the game(s) appear.
     }
 
+    // returns the number of games.
+    public int getNumOfGames()
+    {
+        return games.size();
+    }
+
     // this method sets up our game pager.
     protected void setupGamePager()
     {
@@ -173,12 +183,7 @@ public class HomescreenActivity extends AppCompatActivity
         {
             System.out.println("SETTING THE DRIVER FOR BOARDUI");
 
-            // todo: we should have a list of our boards pulled from our database with the information about the piece places. This is pretty important!
-            // games.add(boardUI); // add razor game (with Miles).
-            //games.add(newBoard); // add corey game
-
             gamePagerAdapter = new GamePagerAdapter(games, inGameUI, getBaseContext()); // send in the games that we want to work with that will allow us to send our games to the adapter to update the ViewPager (to swipe horizontally)
-            // TODO: create the Gamepage listener that will be in charge of getting this thing working correctly.
             GamePageChangeListener gpcl = new GamePageChangeListener(this); // holds the game as well as a copy of the InGameUI that will allow us to see a snack bar for the users to be able to see their game number.
 
             gamePager.setAdapter(gamePagerAdapter);
@@ -197,18 +202,13 @@ public class HomescreenActivity extends AppCompatActivity
         return false;
     }
 
-
-    /*
-        This reads what was written from SharedPreferences and restores it into our global variables.
-     */
-    private void resetBasicInfoFromMainMemory()
+    // set's the title of the player who's turn we are trying to alert.
+    public void changeTurnText(String playerTurn)
     {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        name = prefs.getString("name", "");
-        email = prefs.getString("email", "");
-        username = prefs.getString("username", "");
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(playerTurn);
+        setSupportActionBar(toolbar);
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -224,34 +224,55 @@ public class HomescreenActivity extends AppCompatActivity
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
-        if(isUsernameSet())
-        {
-            System.out.println("username was not set!");
+        displayHomescreen(); // setup the familiar homescreen layout that we are used to seeing.
 
-            preferences.edit().putBoolean("usernameCreated", true).apply(); // sets this in main memory in a background thread.
-            preferences.edit().putBoolean("userCreated", true).apply(); // sets this in main memory in a background thread.
 
-            // Start the activity for setting a username.
-            // todo: removed because we want this to be asking to create username in startupscreen.
-            //Intent setUsernameIntent = new Intent(this, SetUsernameActivity.class);
-            //startActivityForResult(setUsernameIntent, SET_USERNAME); // start the activity for intent!
-        }
-        else
-        {
-            displayHomescreen(); // setup the familiar homescreen layout that we are used to seeing.
-            System.out.println("Home screen is being displayed!!");
-        }
-
-        System.out.println("The number of games that we have == " + 0);
-        if(games.size() != 0)
-        {
-            System.out.println("we have more than 0 games!! Adding database items now");
-
-        }
         DBIOCore.getInstance().registerToGameSnapshotList(this);
         DBIOCore.getInstance().registerToUsernameList(this);
         DBIOCore.getInstance().registerToCurrentUser(this);
 
+
+    }
+
+    // calculates the size of the optimum image
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight)
+    {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+    // decodes the bitmap with the correct size so that it's not too large.
+    public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId, int reqWidth, int reqHeight)
+    {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(res, resId, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(res, resId, options);
     }
 
     // This method sets up the header for the navigation view which will show the user's nickname and email so they know that they are logged in.
@@ -264,14 +285,17 @@ public class HomescreenActivity extends AppCompatActivity
         TextView textView = (TextView) navHeaderView.findViewById(R.id.textView); // get the text view out of our header.
         textView.setText(email);
 
-
         CircleImageView navProfilePic = (CircleImageView) navHeaderView.findViewById(R.id.navProfilePicture); // get the profile picture for the navHeaderView this is very important!
 
         if(userProfilePic != null) // if not null, set the user's profile picture on the navbar layout!
         {
             navProfilePic.setImageBitmap(userProfilePic);
         }
-        else {} // if the userProfilePic is null, don't do anything
+        else // if there is no profile picture, then resize the default image to ensure that it is not too large.
+        {
+            Bitmap resizedDefaultPic = decodeSampledBitmapFromResource(getResources(), R.drawable.blank_profile_image, 100,100); // resize the image to a 100 by 100 image.
+            navProfilePic.setImageBitmap(resizedDefaultPic); // set the newly resized bitmap.
+        }
 
         navProfilePic.setOnClickListener(null); // set the click listener to null to remove any old listeners that were previously here.
         navProfilePic.setOnClickListener(new View.OnClickListener() { // set the new click listener we want for the imageview.
@@ -312,11 +336,10 @@ public class HomescreenActivity extends AppCompatActivity
     protected void displayHomescreen()
     {
         setContentView(R.layout.homescreen);
-        resetBasicInfoFromMainMemory(); // resets all of the basic info from main memory.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton createNewGameButton = (FloatingActionButton) findViewById(R.id.createNewGameButton);
+        createNewGameButton = (FloatingActionButton) findViewById(R.id.createNewGameButton);
 
         CreateNewGameButtonListener newGameButtonListener = new CreateNewGameButtonListener(HomescreenActivity.this);
         createNewGameButton.setOnClickListener(newGameButtonListener);
@@ -389,6 +412,8 @@ public class HomescreenActivity extends AppCompatActivity
         games.add(newGame);
         gamePagerAdapter.notifyDataSetChanged();
         //updateViewPager(); this was causing problems
+
+
     }
 
     @Override
@@ -422,7 +447,19 @@ public class HomescreenActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        }
+        else if(fragmentOpen == true && currentFragment != null) // close the fragment, set fragment open to false.
+        {
+            System.out.println("trying to end the fragment that is currently open");
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.setCustomAnimations(R.animator.slide_up_out, R.animator.slide_up_out); // set the slide down animation for when a user hits the back button.
+            transaction.remove(currentFragment); // remove the current fragment
+            transaction.commit(); // make the changes to remove the fragment
+            createNewGameButton.setVisibility(View.VISIBLE); // make the createNewGameButton reappear.
+
+
+        }
+        else {
             updateNotificationsCount();
             super.onBackPressed();
         }
@@ -445,8 +482,18 @@ public class HomescreenActivity extends AppCompatActivity
         int id = item.getItemId();
         item.setIcon(R.drawable.quit);
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+
+        if (id == R.id.quit)
+        {
+            // todo: when this button is pushed the current user should quit this game generating a win for the other player.
+
+            RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
+            Snackbar.make(homescreenLayout, "This feature isn't available yet ¯\\_(ツ)_/¯ ", Snackbar.LENGTH_LONG).show();
+            return true;
+        }
+        else if(id == R.id.sendMessage)
+        {
+            // todo: this should open up the send message fragment!
 
             RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
             Snackbar.make(homescreenLayout, "This feature isn't available yet ¯\\_(ツ)_/¯ ", Snackbar.LENGTH_LONG).show();
@@ -460,19 +507,17 @@ public class HomescreenActivity extends AppCompatActivity
     // opens up the settings menu
     protected void openNotificationsFragment()
     {
-        Bundle fragmentArgs = new Bundle(); // the Bundle here allows us to send arguments to our fragment!
-
-        // TODO: we should pull data from the database to get the users notifications. We also need to update the notifications counter as well!!
-
         RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
-        homescreenLayout.removeAllViews();
         homescreenLayout.setBackground(null); // this should remove all views from the main view to allow us to show the fragment properly.
 
-        FragmentTransaction transaction = getFragmentManager().beginTransaction(); // get the Fragment transaction to allow us to display the fragment properly
-        transaction.replace(R.id.mainContentScreen, notificationsFragment); // replace the current fragment with our games
-        transaction.commit(); // commit the fragment to be loaded.
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.animator.slide_up_in, R.animator.slide_up_out); // set custom animations for this fragment
+        fragmentTransaction.replace(R.id.mainContentScreen, notificationsFragment); // replace the current fragment with our games
+        fragmentTransaction.commit(); // commit the fragment to be loaded.
         closeDrawer(); // close the drawer automatically.
-
+        fragmentOpen = true; // set the boolean to be true that a fragment is indeed open.
+        currentFragment = notificationsFragment; // set the current fragment.
+        createNewGameButton.setVisibility(View.GONE);
     }
 
     // opens up the history menu
@@ -480,61 +525,73 @@ public class HomescreenActivity extends AppCompatActivity
     {
         // todo: needs to be implemented.
         closeDrawer(); // close the drawer automatically.
+        fragmentOpen = true; // set the boolean to be true that a fragment is indeed open.
+        // todo: set current fragment.
     }
 
     protected void openMessagesFragment()
     {
         // todo: needs to be implemented.
         closeDrawer(); // close the drawer automatically.
+        fragmentOpen = true; // set the boolean to be true that a fragment is indeed open.
+        // todo: set current fragment.
     }
 
     // opens up the settings fragment
     protected void openSettingsFragment()
     {
-        Bundle fragmentArgs = new Bundle(); // the Bundle here allows us to send arguments to our fragment!
-
         RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
-        homescreenLayout.removeAllViews();
         homescreenLayout.setBackground(null); // this should remove all views from the main view to allow us to show the fragment properly.
 
-        FragmentTransaction transaction = getFragmentManager().beginTransaction(); // get the Fragment transaction to allow us to display the fragment properly
-        transaction.replace(R.id.mainContentScreen, settingsUI); // replace the current fragment with our games
-        transaction.commit(); // commit the fragment to be loaded.
+        SettingsFragment settingsUI = new SettingsFragment(); // holds a copy of our settingsUI.
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.animator.slide_up_in, R.animator.slide_up_out); // set custom animations for this fragment
+        fragmentTransaction.replace(R.id.mainContentScreen, settingsUI); // replace the current fragment with our games
+        fragmentTransaction.commit(); // commit the fragment to be loaded.
         updateNotificationsCount(); // update the notifications as soon as something is pressed.
         closeDrawer(); // close the drawer automatically.
+        fragmentOpen = true; // set the boolean to be true that a fragment is indeed open.
+        currentFragment = settingsUI; // set the current fragment.
+        createNewGameButton.setVisibility(View.GONE);
     }
 
     // opens the help fragment.
     protected void openHelpFragment()
     {
         RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
-        homescreenLayout.removeAllViews();
         homescreenLayout.setBackground(null); // this should remove all views from the main view to allow us to show the fragment properly.
 
         HelpFragment helpUI = new HelpFragment();
 
-        FragmentTransaction transaction = getFragmentManager().beginTransaction(); // get the Fragment transaction to allow us to display the fragment properly
-        transaction.replace(R.id.mainContentScreen, helpUI); // replace the current fragment with our games
-        transaction.commit(); // commit the fragment to be loaded.
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.animator.slide_up_in, R.animator.slide_up_out); // set custom animations for this fragment
+        fragmentTransaction.replace(R.id.mainContentScreen, helpUI); // replace the current fragment with our games
+        fragmentTransaction.commit(); // commit the fragment to be loaded.
         updateNotificationsCount(); // update the notifications as soon as something is pressed.
         closeDrawer(); // close the drawer automatically.
+        fragmentOpen = true; // set the boolean to be true that a fragment is indeed open.
+        currentFragment = helpUI;
+        createNewGameButton.setVisibility(View.GONE);
     }
 
     // opens the current user's profile fragment which should also show the user's current information which is very important.
     protected void openCurrentUserProfileFragment()
     {
         RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
-        homescreenLayout.removeAllViews();
         homescreenLayout.setBackground(null); // this should remove all views from the main view to allow us to show the fragment properly.
 
         CurrentUserProfileFragment currUserProfile = new CurrentUserProfileFragment(); // a copy of the CurrentUserProfileFragment
         currUserProfile.setHomescreenActivity(this); // set the homescreen activity for the fragment to use.
-
-        FragmentTransaction transaction = getFragmentManager().beginTransaction(); // get the Fragment transaction to allow us to display the fragment properly
-        transaction.replace(R.id.mainContentScreen, currUserProfile); // replace the homescreenActivity with the CurrentUserProfile
-        transaction.commit(); // commit the fragment to be loaded.
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.animator.slide_up_in, R.animator.slide_up_out); // set custom animations for this fragment
+        fragmentTransaction.replace(R.id.mainContentScreen, currUserProfile); // replace the homescreenActivity with the CurrentUserProfile
+        fragmentTransaction.commit(); // commit the fragment to be loaded.
         closeDrawer(); // close the drawer automatically.
+        fragmentOpen = true; // set the boolean to be true that a fragment is indeed open.
+        currentFragment = currUserProfile;
+        createNewGameButton.setVisibility(View.GONE);
     }
+
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -544,7 +601,22 @@ public class HomescreenActivity extends AppCompatActivity
 
         int id = item.getItemId();
 
-        if (id == R.id.notifications)
+        if(id == R.id.homescreenGames)
+        {
+            onBackPressed(); // simulate a back button press
+            // BreadCrumb: this is a hack that just closes the current fragment showing the mainscreen. A little slight of hand if you will.
+            if(fragmentOpen == true && currentFragment != null) // close the fragment, set fragment open to false.
+            {
+                System.out.println("trying to end the fragment that is currently open");
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.animator.slide_up_out, R.animator.slide_up_out); // set the slide down animation for when a user hits the back button.
+                transaction.remove(currentFragment); // remove the current fragment
+                transaction.commit(); // make the changes to remove the fragment
+                createNewGameButton.setVisibility(View.VISIBLE);
+            }
+
+        }
+        else if (id == R.id.notifications)
         {
             openNotificationsFragment();
         }

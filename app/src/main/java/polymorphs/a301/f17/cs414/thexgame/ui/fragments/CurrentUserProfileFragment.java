@@ -3,6 +3,7 @@ package polymorphs.a301.f17.cs414.thexgame.ui.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -38,6 +39,7 @@ public class CurrentUserProfileFragment extends Fragment {
     private CircleImageView profilePic; // holds our user's profile picture, which can be changed however we want it to be changed to.
     private HomescreenActivity homescreenActivity; // holds the homescreenActivity that we want to use when a user wants to do so.
 
+    private Bitmap currUserProfilePic; // holds the bitmap of the current user's profile picture which should be retrieved or sent in by the homescreen activity.
     private String username = ""; // username of the current user.
     private String currGamesCount = ""; // holds the number of current games this user has.
     private String winPercentage = ""; // holds the win percentage that this user has.
@@ -50,6 +52,13 @@ public class CurrentUserProfileFragment extends Fragment {
     {
         this.homescreenActivity = homescreenActivity;
     }
+
+    // sets the user's current profile picture.
+    public void setCurrUserProfilePic(Bitmap pic)
+    {
+        this.currUserProfilePic = pic;
+    }
+
 
     // this method will change the user's profile picture after they have chosen a picture they want their profile picture to be.
     private void changeProfilePic(Bitmap newProfilePic)
@@ -75,16 +84,59 @@ public class CurrentUserProfileFragment extends Fragment {
             // this will likely be done by sending in that profile picture from the HomescreenActivity after homescreen activity pulls it from the database...
     }
 
+    // calculates the size of the optimum image
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight)
+    {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+    // decodes the bitmap with the correct size so that it's not too large.
+    public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId, int reqWidth, int reqHeight)
+    {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(res, resId, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(res, resId, options);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View profileUI = inflater.inflate(R.layout.profile, container, false);
 
         TextView profileUsername = (TextView) profileUI.findViewById(R.id.profileUsername); // gets the user's current number of games.
-        // todo: set the user's profile name here.
+        String profUsername = homescreenActivity.getCurrentUser().getNickname(); // get the nickname of the current user.
+        profileUsername.setText(profUsername); // set the username of the user.
 
         TextView currNumOfGames = (TextView) profileUI.findViewById(R.id.currentNumOfGames); // gets the text view showing the current number of games.
-        // todo: set the user's number of games here.
+        String numOfGames = Integer.toString(homescreenActivity.getNumOfGames()); // grabs the number of games and converts it to a string.
+        currNumOfGames.setText("Current games: " + numOfGames); // set the number of games for this user.
 
         TextView winLossPercentage = (TextView) profileUI.findViewById(R.id.winLossPercentage); // gets the user's win loss percentage.
         // todo: set the user's win loss percentage.
@@ -108,8 +160,15 @@ public class CurrentUserProfileFragment extends Fragment {
         }
 
 
+        if(currUserProfilePic == null) // if user doesn't have a current profile picture then we need to resize the default image.
+        {
+            profilePic = (CircleImageView) profileUI.findViewById(R.id.profilePicture); // gets the user's profile picture.
+            Bitmap resizedImg = decodeSampledBitmapFromResource(getResources(), R.drawable.blank_profile_image, 200,200); // resize the default image to be 200 by 200
+            profilePic.setImageBitmap(resizedImg); // set the default image to be resized.
+        }
 
-        profilePic = (CircleImageView) profileUI.findViewById(R.id.profilePicture); // gets the user's profile picture.
+
+
         profilePic.setOnClickListener(new View.OnClickListener() {
 
             // when clicked allow user's to be able to select their image to change to change as their profile picture.
@@ -122,7 +181,7 @@ public class CurrentUserProfileFragment extends Fragment {
                 startActivityForResult(Intent.createChooser(getPicIntent, "Select Profile Pic"), PICK_IMAGE); // this starts our activity and also generates a document finder to let user's select the photo they want to use.
             }
         });
-        // TODO: create a click listener on this profile that will allow the user to search their phone to set their profile picture! Set it immediately here and have the homescreen activity save to DB
+
 
         return profileUI; // return the profile UI to populate the fragment.
     }
@@ -156,9 +215,15 @@ public class CurrentUserProfileFragment extends Fragment {
 
         if(requestCode == PICK_IMAGE) // user has selected an image to use a profile picture. Really cool.
         {
+            if(resultIntent == null)
+            {
+                return; // force a return out of this method.
+            }
+
             Uri selectedImageUri = resultIntent.getData(); // gets the Uri that the Intent returns after a picture is selected.
 
             // TODO: the app breaks when user's try to select a photo that is outside the domain of the first file picker.
+            // TODO: add some additional checks to allow for photos to be selected and be sure to reject those that are not approved image files.
 
             try // attempt to get the user's picture from the stream and decode it.
             {

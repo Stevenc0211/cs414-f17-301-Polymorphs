@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    >
 
     <!-- NOTE: this layout file is deprecated (finally get to use that word), this will be removed upon my (Roger) new invitation
     UI layout, but for now this is added strictly for Miles' to be able to get the invites working
