@@ -2,15 +2,18 @@ package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+
+import polymorphs.a301.f17.cs414.thexgame.persistence.GameRecordListObserver;
 
 /**
  * Created by athai on 10/18/17. edited and modified by Steven.
  */
 
-public class Profile {
+public class Profile implements GameRecordListObserver {
 
     // arraylist holding all games a player has played, will be returned to be viewed in a profile
-    ArrayList<String> gamesHistory = new ArrayList<String>();
+    private HashMap<String,GameRecord> gamesHistory;
     private String nickname;
     double winRatio =0.0;
 
@@ -31,21 +34,14 @@ public class Profile {
         return " "+winRatio+" ";
     }
 
-    public ArrayList<String> getGamesHistory()
+    public HashMap<String, GameRecord> getGamesHistory()
     {
         return gamesHistory;
     }
 
-    public String getGamesHistoryUI()
+    public HashMap<String,GameRecord> getGamesHistoryUI()
     {
-        String gameHistoryList="";
-
-        for(String h : gamesHistory)
-        {
-            gameHistoryList+=h;
-            gameHistoryList+="\n";
-        }
-        return gameHistoryList;
+       return gamesHistory;
     }
 
     public void setWinRatio(List<Integer>wins, List<Integer>losses )
@@ -68,12 +64,33 @@ public class Profile {
 
     }
 
-    public void setGamesHistory(List<String> history)
-    {
-        for (String h : history) {
-            gamesHistory.add(h);
-        }
+    @Override
+    public void recordAdded(GameRecord addedRecord, String precedingRecordKey) {
+        gamesHistory.put(precedingRecordKey,addedRecord);
+    }
 
+    @Override
+    public void recordChanged(GameRecord changedRecord, String precedingRecordKey) {
+        gamesHistory.put(precedingRecordKey,changedRecord);
+    }
+
+    @Override
+    public void recordRemoved(GameRecord removedRecord) {
+        String rmKey = "";
+        for (String key : gamesHistory.keySet()) {
+            if (gamesHistory.get(key).equals(gamesHistory)) {
+                rmKey = key;
+                break;
+            }
+        }
+        if (rmKey != "") {
+            gamesHistory.remove(rmKey);
+        }
+    }
+
+    public void setGamesHistory(HashMap<String,GameRecord> history)
+    {
+        gamesHistory.putAll(history);
     }
 
 
