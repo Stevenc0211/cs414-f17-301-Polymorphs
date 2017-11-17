@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by athai on 11/3/17.
  */
 
-public class GameRecord implements Serializable {
+public class GameRecord {
     private String player;
     private String opponent;
     private String startDate;
