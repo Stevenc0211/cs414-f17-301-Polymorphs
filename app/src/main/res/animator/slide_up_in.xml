@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillAfter="true" >
+
+    <!-- This animates the fragment to take up the whole screen -->
+    <objectAnimator
+        android:duration="200"
+        android:propertyName="y"
+        android:valueFrom="2000"
+        android:valueTo="0"
+        android:valueType="floatType" />
+</set>

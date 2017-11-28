@@ -13,12 +13,16 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <ImageView
-        android:id="@+id/chessImg"
+    <!-- The profile picture of within the nav bar layout, it is clickable which opens up the user's profile -->
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/navProfilePicture"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:src="@drawable/chessicon" />
+        android:src="@drawable/blank_profile_image"
+        android:clickable="true"
+        />
+
 
     <TextView
         android:id="@+id/nameText"

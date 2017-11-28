@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/profileLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    >
+
+    <!-- This holds the user's profile picture. -->
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profilePicture"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/blank_profile_image"
+        android:layout_centerInParent="true"
+        android:clickable="true"
+        />
+
+    <!-- Holds the name of the user's profile. -->
+    <TextView
+        android:id="@+id/profileUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:text="Username Goes Here"
+        android:textSize="15sp"
+        android:layout_above="@+id/profilePicture"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        />
+
+
+    <!-- Displays the user's win percentage -->
+    <TextView
+        android:id="@+id/winLossPercentage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:text="Win Percentage: ##% "
+        android:layout_below="@id/profilePicture"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        />
+
+    <!-- displays the number of games that this user has -->
+    <TextView
+        android:id="@+id/currentNumOfGames"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:text="Current games: 4 "
+        android:layout_below="@id/winLossPercentage"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        />
+
+
+
+
+</RelativeLayout>

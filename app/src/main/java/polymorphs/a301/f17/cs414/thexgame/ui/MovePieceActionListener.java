@@ -103,6 +103,10 @@ public class MovePieceActionListener {
                 } else {                            // BreadCrumb: turn order hack
                     currentUser = user1;            // BreadCrumb: turn order hack
                 }                                   // BreadCrumb: turn order hack
+
+                // TODO: Roger this has a few things that needs to be worked out for this to work properly.
+               // boardUI.getHomescreenActivity().changeTurnText(currentUser.getNickname()); // change the text of the player whos turn is going.
+
                 unhighlightSquares(availableMoves);
                 // do the code below
                 // move the piece and unhighlight the board.

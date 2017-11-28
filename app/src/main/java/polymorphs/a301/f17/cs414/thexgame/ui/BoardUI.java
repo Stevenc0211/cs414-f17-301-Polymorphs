@@ -52,10 +52,6 @@ public final class BoardUI extends View implements GameSnapshotObserver {
     private String whitePlayer = ""; // holds the name of the white player
     private String blackPlayer = ""; // holds the name of the black player.
 
-    /** 'true' if black is facing player. */
-    private boolean flipped = false;
-
-    // todo: have the board UI take in a Driver object so that we can correctly be able to communicate with the board and update tiles as needed. Very important
     public BoardUI(final Context context, final AttributeSet attrs ) {
         super(context, attrs);
 
@@ -66,7 +62,6 @@ public final class BoardUI extends View implements GameSnapshotObserver {
         driver = Driver.getInstance();
     }
 
-    // TODO: @Miles this is not working for whatever reason.
     public void registerToSnapshot(String snapshotKey) {
 
         System.out.println("The game is being registered with this snapshotkey ->" + snapshotKey);
@@ -118,18 +113,9 @@ public final class BoardUI extends View implements GameSnapshotObserver {
     {
         // TODO: @Roger get this to work by setting the text view within the view pager. It has to be a game by game basis that the win will show that is happening!
 
-
         String display = driver.getCurrentPlayerNickname().toUpperCase() + " WINS!";
 
         Snackbar.make(this, display, Snackbar.LENGTH_INDEFINITE).show(); // show the snackbar of the player!
-
-        /* removed for now for not behaving the way that I wanted it do.
-        RelativeLayout winnerLoserScreen = (RelativeLayout) activity.findViewById(R.id.winnerLoserText); // get the layout that we are working with.
-        TextView winnerLoserCaption = (TextView) winnerLoserScreen.findViewById(R.id.winnerLoserCaption); // grabs the caption telling us who wins.
-        //winnerLoserCaption.setText(currentUser.getNickname());
-        winnerLoserCaption.setText("Someone Wins!");
-        winnerLoserScreen.setVisibility(View.VISIBLE); // make this view visible.
-        */
     }
 
     // gets the driver for the MovePieceActionListener.
@@ -389,7 +375,7 @@ public final class BoardUI extends View implements GameSnapshotObserver {
         System.out.println("Is the gamesnapshot null? " + gs);
 
         newlyStarted = false;
-        String tempGame = gs.getGameString(); // todo: game snapshot is null for reason.
+        String tempGame = gs.getGameString();
         String [] playerPieces = tempGame.split("-")[1].split("\\|");
         String [] pieces;
         String [] pieceParts;

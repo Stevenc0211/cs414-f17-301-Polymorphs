@@ -33,7 +33,7 @@
             </intent-filter>
         </activity>
 
-        <!-- Details the startup screen activity for users to see the login screen every time that they start the app again -->
+        <!-- All of our activities are listed below in this line -->
         <activity
             android:name=".ui.activities.StartupScreenActivity"
             android:screenOrientation="portrait" />
@@ -43,7 +43,9 @@
         <activity
             android:name=".ui.activities.HomescreenActivity"
             android:label="@string/title_activity_homescreen"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
+        </activity>
         <activity android:name=".ui.activities.SetUsernameActivity"
             android:screenOrientation="portrait">
         </activity>
