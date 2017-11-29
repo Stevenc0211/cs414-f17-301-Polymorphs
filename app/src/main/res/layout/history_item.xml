@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <!-- this is the title of the game essentially shows the players of the game -->
+    <TextView
+        android:id="@+id/gameID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="1. thenotoriousrog VS Andy"
+        android:textColor="@color/Black"
+        android:textSize="25dp"
+        />
+
+    <!-- this shows the date of the game -->
+    <TextView
+        android:id="@+id/gameDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gameID"
+        android:layout_marginTop="10dp"
+        android:text="11/28/2017"
+        android:textColor="@color/Black"
+        android:textSize="20dp"
+        android:layout_marginLeft="35dp"
+        />
+
+    <!-- This shows the winner of the game. -->
+    <TextView
+        android:id="@+id/gameWinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gameDate"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="35dp"
+        android:textColor="@color/Green"
+        android:textSize="20dp"
+        android:text="Winner: Andy"
+        />
+
+    <!-- This shows the loser of the game. -->
+    <TextView
+        android:id="@+id/gameLoser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gameWinner"
+        android:layout_marginLeft="35dp"
+        android:textColor="@color/Red"
+        android:textSize="20dp"
+        android:text="Loser: thenotoriousrog"
+        />
+
+</RelativeLayout>

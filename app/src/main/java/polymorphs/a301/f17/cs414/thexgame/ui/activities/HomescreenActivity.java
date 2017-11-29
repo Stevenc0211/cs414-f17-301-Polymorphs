@@ -43,6 +43,7 @@ import polymorphs.a301.f17.cs414.thexgame.ui.adapters.GamePagerAdapter;
 import polymorphs.a301.f17.cs414.thexgame.ui.adapters.SquareAdapter;
 import polymorphs.a301.f17.cs414.thexgame.ui.fragments.CurrentUserProfileFragment;
 import polymorphs.a301.f17.cs414.thexgame.ui.fragments.HelpFragment;
+import polymorphs.a301.f17.cs414.thexgame.ui.fragments.HistoryFragment;
 import polymorphs.a301.f17.cs414.thexgame.ui.fragments.NotificationsFragment;
 import polymorphs.a301.f17.cs414.thexgame.ui.fragments.SettingsFragment;
 import polymorphs.a301.f17.cs414.thexgame.ui.listeners.CreateNewGameButtonListener;
@@ -53,6 +54,7 @@ public class HomescreenActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, UsernameListObserver, UserObserver, GameSnapshotListObserver {
 
     private NotificationsFragment notificationsFragment = new NotificationsFragment(); // a copy of the notifications UI that should be built for the user.
+    private HistoryFragment historyFragment = new HistoryFragment(); // a copy of the history fragment here.
     private ArrayList<String> currentGames; // the list of current games.
     private ViewPager gamePager; // this holds the game view pager which essentially is a list of horizontal list items of the game, which is pretty awesome!
     private GamePagerAdapter gamePagerAdapter; // holds the gamePagerAdapter that we need to be working on here.
@@ -523,10 +525,17 @@ public class HomescreenActivity extends AppCompatActivity
     // opens up the history menu
     protected void openHistoryFragment()
     {
-        // todo: needs to be implemented.
+        RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
+        homescreenLayout.setBackground(null); // this should remove all views from the main view to allow us to show the fragment properly.
+
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.animator.slide_up_in, R.animator.slide_up_out); // set custom animations for this fragment
+        fragmentTransaction.replace(R.id.mainContentScreen, historyFragment); // replace the current fragment with our games
+        fragmentTransaction.commit(); // commit the fragment to be loaded.
         closeDrawer(); // close the drawer automatically.
         fragmentOpen = true; // set the boolean to be true that a fragment is indeed open.
-        // todo: set current fragment.
+        currentFragment = historyFragment; // set the current fragment
+        createNewGameButton.setVisibility(View.GONE); // make the new game button go away.
     }
 
     protected void openMessagesFragment()
@@ -622,7 +631,7 @@ public class HomescreenActivity extends AppCompatActivity
         }
         else if (id == R.id.History) // todo: call the history fragment once we have history to be displayed.
         {
-            Snackbar.make(homescreenLayout, "This feature isn't available yet ¯\\_(ツ)_/¯ ", Snackbar.LENGTH_LONG).show();
+            openHistoryFragment(); // opens the history fragment.
         }
         else if (id == R.id.messages) // todo: call the messages fragment if we decide to do a chat feature.
         {
