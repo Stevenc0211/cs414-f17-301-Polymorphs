@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameRecord;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
@@ -19,6 +22,7 @@ import polymorphs.a301.f17.cs414.thexgame.ui.adapters.HistoryListAdapter;
  */
 public class HistoryFragment extends Fragment implements GameRecordListObserver {
 
+    private HashMap<String, GameRecord> historyData = new HashMap<>();
 
     private ListView historyList; // holds the history list view that we want to be working with.
     private HistoryListAdapter historyAdapter; // holds the history adapter.
@@ -38,9 +42,8 @@ public class HistoryFragment extends Fragment implements GameRecordListObserver 
     {
         historyList = (ListView) historyView.findViewById(R.id.historyListView);
 
-        // tODO: @Andy look at notificationsfragment you need to create a new arraylist and send in the gamerecord list just like invitations list needs to and it should work.
         // also andy, you may want to send in a copy of the history fragment in here, so yeah haha. May want to do that.
-        historyAdapter = new HistoryListAdapter(historyView.getContext(), R.layout.history_item, insertHere)
+        historyAdapter = new HistoryListAdapter(historyView.getContext(), R.layout.history_item, new ArrayList<>(historyData.values()));
     }
 
     // This is what populates the actual fragment layout.

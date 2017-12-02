@@ -1,6 +1,8 @@
 package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by athai on 11/3/17.
@@ -14,11 +16,10 @@ public class GameRecord {
     private boolean won;
     private String dbKey;
 
-    public GameRecord(String player,String opponent,String startDate,String endDate,boolean won){
+    public GameRecord(String player,String opponent,boolean won){
         this.player = player;
         this.opponent = opponent;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        endDate = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
         this.won = won;
     }
 
@@ -36,14 +37,6 @@ public class GameRecord {
 
     public String getOpponent(){
         return opponent;
-    }
-
-    public void setStartDate(String startDate){
-        this.startDate = startDate;
-    }
-
-    public String getStartDate(){
-        return startDate;
     }
 
     public void setEndDate(String endDate){
