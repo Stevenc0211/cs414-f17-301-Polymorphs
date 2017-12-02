@@ -1,5 +1,6 @@
 package polymorphs.a301.f17.cs414.thexgame.ui.activities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,11 +17,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Transaction;
 
 import java.util.HashMap;
 
@@ -30,6 +26,7 @@ import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.UserObserver;
 import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListObserver;
+import polymorphs.a301.f17.cs414.thexgame.ui.StartScreenWrapper;
 
 /**
  * Created by Roger Hannagan on 9/13/17.
@@ -55,6 +52,7 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
     private String username;
     HashMap<String, String> usernames; // holds the list of people to invite keyed by the previous usernames database key
 
+    private Activity activityTriggeringSignout;
 
     // This is the first thing called when this class is called and will create the startup screen UI.
     @Override
@@ -87,9 +85,8 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-
         // register to the lists here to add the new usernames, very important!
-
+        StartScreenWrapper.setStartScreenActivity(this);
     }
 
     @Override
@@ -166,6 +163,7 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
     private void handleSignInResult(GoogleSignInResult result) {
         //Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
+
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount(); // grabs this users account which can be used to assign the name to accounts in our game!!
             displayName = acct.getDisplayName(); // get this user's display name, pretty awesome!
@@ -243,17 +241,29 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
     }
 
     // [START signOut] // TODO: implement this somewhere in our code to be used for users to be able to sign out if they wish.
-    private void signOut() {
-        Auth.GoogleSignInApi.signOut(googleClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        // [START_EXCLUDE]
-                        updateUI(false);
-                        // [END_EXCLUDE]
-                    }
-                });
+    public void signOut(Activity currentActivity) {
+        activityTriggeringSignout = currentActivity;
+        googleClient.connect();
+        delayHandler.post(waitForConnection);
+        // Build a GoogleApiClient with access to the Google Sign-In API and the
+        // options specified by gso.
+
     }
+
+    private Runnable waitForConnection = new Runnable() {
+        public void run() {
+            if (googleClient.isConnected()) {
+                Auth.GoogleSignInApi.signOut(googleClient);
+                Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+                activityTriggeringSignout.finish();
+            } else {
+                delayHandler.postDelayed(waitForConnection, 1000);
+            }
+        }
+    };
 
      // TODO: this came with the design, there are cases for needing to revoke access, but probably not for the scope of our application.
     private void revokeAccess() {
