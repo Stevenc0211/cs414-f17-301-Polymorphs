@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.Switch;
 
 import polymorphs.a301.f17.cs414.thexgame.R;
+import polymorphs.a301.f17.cs414.thexgame.ui.StartScreenWrapper;
 
 /**
  * Created by steve-0 on 10/15/17.
@@ -31,11 +32,9 @@ public class SettingsFragment extends Fragment {
         signout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //TODO: signout button Roger
+                StartScreenWrapper.getWrapperInstance().getStartScreenActivityClient().signOut(getActivity());
             }
         });
-
 
         Button deleteUnregister = (Button) settingUI.findViewById(R.id.delUnreg);
         deleteUnregister.setOnClickListener(new View.OnClickListener() {
