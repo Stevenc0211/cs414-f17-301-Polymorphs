@@ -11,6 +11,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameRecord;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameSnapshot;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.ProfileSnapshot;
 import polymorphs.a301.f17.cs414.thexgame.Invitation;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
 
@@ -159,6 +160,10 @@ public class DBIOCore {
         baseReference.child("gamesnapshotList").child(userNickname).child(snapshotKey).addValueEventListener(new GameSnapshotListener(observer));
     }
 
+    public void registerToProfileSnapshot(ProfileSnapshotObserver observer, String snapshotKey){
+        baseReference.child("profilesnapshotList").child(userNickname).child(snapshotKey).addValueEventListener(new ProfileSnapshotListener(observer));
+    }
+
     /**
      * This takes the passed invitation and adds it to the passed users invitation list.
      * NOTE: the passed user is not ensured to exist, i.e. a random username may be passed without
@@ -176,8 +181,8 @@ public class DBIOCore {
     }
 
     public void addGameRecord(GameRecord record){
-        String key = baseReference.child("gamerecordList").child(userNickname).push().getKey();
-        baseReference.child("gamerecordList").child(key).setValue(record);
+        String key = baseReference.child("gamerecordList").child(record.getPlayer()).push().getKey();
+        baseReference.child("gamerecordList").child(record.getPlayer()).child(key).setValue(record);
     }
 
     public String addGameSnapshot(GameSnapshot snapshot){
@@ -189,9 +194,19 @@ public class DBIOCore {
         return key;
     }
 
+    public String addProfileSnapshot(ProfileSnapshot snapshot){
+        String key = baseReference.child("profilesnapshotList").child(userNickname).push().getKey();
+        baseReference.child("profilesnapshotList").child(userNickname).child(key).setValue(snapshot);
+        return key;
+    }
+
     public void updateGameSnapshot(GameSnapshot snapshot) {
         baseReference.child("gamesnapshotList").child(snapshot.getNicknameWhite()).child(snapshot.getDbKey()).setValue(snapshot);
         baseReference.child("gamesnapshotList").child(snapshot.getNicknameBlack()).child(snapshot.getDbKey()).setValue(snapshot);
+    }
+
+    public void updateProfileSnapshot(ProfileSnapshot snapshot){
+        baseReference.child("profilesnapshotList").child(userNickname).child(snapshot.getDbKey()).setValue(snapshot);
     }
 
     /**

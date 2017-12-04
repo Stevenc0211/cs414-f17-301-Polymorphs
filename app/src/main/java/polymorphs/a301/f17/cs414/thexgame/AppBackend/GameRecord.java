@@ -1,6 +1,8 @@
 package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by athai on 11/3/17.
@@ -9,17 +11,14 @@ import java.io.Serializable;
 public class GameRecord {
     private String player;
     private String opponent;
-    private String startDate;
     private String endDate;
-    private boolean won;
-    private String dbKey;
+    private int won; // 1 if won, -1 if lost, 0 if tied
 
-    public GameRecord(String player,String opponent,String startDate,String endDate,boolean won){
+    public GameRecord(String player,String opponent,int won){
         this.player = player;
         this.opponent = opponent;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.won = won;
+        endDate = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+        setWon(won);
     }
 
     public void setPlayer(String player){
@@ -38,14 +37,6 @@ public class GameRecord {
         return opponent;
     }
 
-    public void setStartDate(String startDate){
-        this.startDate = startDate;
-    }
-
-    public String getStartDate(){
-        return startDate;
-    }
-
     public void setEndDate(String endDate){
         this.endDate = endDate;
     }
@@ -54,25 +45,27 @@ public class GameRecord {
         return endDate;
     }
 
-    public void setWon(boolean won){
-        this.won = won;
+    public void setWon(int won){
+        if (won > 0) {
+            this.won = 1;
+        } else if (won < 0) {
+            this.won = -1;
+        } else {
+            this.won = 0;
+        }
     }
 
-    public boolean getWon(){
+    public int getWon(){
         return won;
-    }
-
-    public void setDbKeyKey(String key) {
-        dbKey = key;
-    }
-
-    public String getDbKey() {
-        return dbKey;
     }
 
     public boolean equals(Object o) {
         if (!(o instanceof GameRecord)) return false;
         GameRecord otherRecord = (GameRecord) o;
-        return (player.equals(otherRecord.player) && opponent.equals(otherRecord.opponent) && startDate.equals(otherRecord.startDate) && endDate.equals(otherRecord.endDate));
+        return (player.equals(otherRecord.player) && opponent.equals(otherRecord.opponent) && endDate.equals(otherRecord.endDate));
+    }
+
+    public String toString(){
+        return player + "-" + opponent + "-" + endDate + "-" + won;
     }
 }

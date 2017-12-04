@@ -96,10 +96,24 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
      * @return -1 if the move was invalid, 1 if the move was successful, 0 if the move ended the game
      */
     public int makeMove(String nickname, int fromRow, int fromCol, int toRow,int toCol) {
-        int result = games.get(currentGameKey).makeMove(nickname,fromRow,fromCol,toRow,toCol);
-        GameSnapshot snapshot = new GameSnapshot(games.get(currentGameKey));
+        Game currentGame = games.get(currentGameKey);
+        int result = currentGame.makeMove(nickname,fromRow,fromCol,toRow,toCol);
+        GameSnapshot snapshot = new GameSnapshot(currentGame);
         snapshot.setDbKey(currentGameKey);
         DBIOCore.getInstance().updateGameSnapshot(snapshot);
+        if (currentGame.getGameState() > 0) {
+            if (currentGame.getGameState() == 1) { // game won
+                GameRecord record1 = new GameRecord(currentGame.getWinnerNickname(),currentGame.getLoserNickname(),1);
+                GameRecord record2 = new GameRecord(currentGame.getLoserNickname(),currentGame.getWinnerNickname(),-1);
+                DBIOCore.getInstance().addGameRecord(record1);
+                DBIOCore.getInstance().addGameRecord(record2);
+            } else { // game tied
+                GameRecord record1 = new GameRecord(currentGame.getWinnerNickname(),currentGame.getLoserNickname(),0);
+                GameRecord record2 = new GameRecord(currentGame.getLoserNickname(),currentGame.getWinnerNickname(),0);
+                DBIOCore.getInstance().addGameRecord(record1);
+                DBIOCore.getInstance().addGameRecord(record2);
+            }
+        }
         return result;
     }
 
