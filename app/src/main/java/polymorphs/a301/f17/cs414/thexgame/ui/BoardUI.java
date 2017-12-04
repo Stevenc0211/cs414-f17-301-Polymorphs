@@ -45,6 +45,7 @@ public final class BoardUI extends View implements GameSnapshotObserver {
     private int y0 = 0;
     private int squareSize = 0;
 
+    private int gameState = 0; // 0 = in progress, 1 = game won, 2 = game tied
 
     private String gameID = ""; // holds the gameID for this game, needed in order to keep track of the game and what it can do.
     private Driver driver; // the driver object that we are going to be using to communicate with the UI (this)
@@ -96,6 +97,10 @@ public final class BoardUI extends View implements GameSnapshotObserver {
         return gameID;
     }
 
+    public int getGameState() {
+        return gameState;
+    }
+
     // important for displaying the winner of the game.
     public void setHomescreenActivity(HomescreenActivity activity)
     {
@@ -111,12 +116,23 @@ public final class BoardUI extends View implements GameSnapshotObserver {
     // display the winner text if someone wins a game.
     public void displayWinnerCaption()
     {
-        // TODO: @Roger get this to work by setting the text view within the view pager. It has to be a game by game basis that the win will show that is happening!
-
-        String display = driver.getCurrentPlayerNickname().toUpperCase() + " WINS!";
-
+        String display = driver.getCurrentPlayerNickname() + " Wins!";
         Snackbar.make(this, display, Snackbar.LENGTH_INDEFINITE).show(); // show the snackbar of the player!
     }
+
+    // display the winner text if someone wins a game.
+    public void displayTieCaption()
+    {
+        String display = "This Game is a Tie!";
+        Snackbar.make(this, display, Snackbar.LENGTH_INDEFINITE).show(); // show the snackbar of the player!
+    }
+
+    public void displayInProgressCaption()
+    {
+        String vsTitle = getWhiteplayer() +  " vs " + getBlackPlayer(); // the title of the snackbar itself.
+        Snackbar.make(this, vsTitle, Snackbar.LENGTH_LONG).show(); // show the snackbar plus the game for the users to see, this is actually pretty cool!!! You'll see
+    }
+
 
     // gets the driver for the MovePieceActionListener.
     public Driver getDriver()
@@ -198,7 +214,7 @@ public final class BoardUI extends View implements GameSnapshotObserver {
         }
     }
 
-    // Makes calls to tileUIs and tells it to graw the pieces and will eventually tell it what to do in terms of what to build and what not.
+    // Makes calls to tileUIs and tells it to draw the pieces and will eventually tell it what to do in terms of what to build and what not.
     @Override
     protected void onDraw(final Canvas canvas) {
         final int width = getWidth();
@@ -402,6 +418,14 @@ public final class BoardUI extends View implements GameSnapshotObserver {
                 } else {
                     tileUIs[row][col].setPieceName(" ");
                 }
+            }
+        }
+        gameState = gs.getGameState();
+        if (canvas != null) {
+            if (gameState == 1) {
+                displayWinnerCaption();
+            } else if (gameState == 2) {
+                displayTieCaption();
             }
         }
         invalidate();
