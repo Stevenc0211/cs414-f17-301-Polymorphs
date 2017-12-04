@@ -14,7 +14,7 @@ public class Profile implements GameRecordListObserver {
     private HashMap<String,GameRecord> gamesHistory;
     private String nickname;
     double winRatio =0.0;
-    private String picString;
+    private String picString = "";
 
 
     public Profile() {} // empty constructor needed by database.
@@ -28,7 +28,7 @@ public class Profile implements GameRecordListObserver {
         picString = pic;
     }
 
-    String getPicString() {
+    public String getPicString() {
         return picString;
     }
 
@@ -115,6 +115,8 @@ public class Profile implements GameRecordListObserver {
         //Set the win ratio
         winRatio = snapshot.getWinRatio();
 
+        picString = snapshot.getPicString();
+
         //Split profile string
         String temp = snapshot.getHistString();
         //remove brackets from first and last index
@@ -122,19 +124,19 @@ public class Profile implements GameRecordListObserver {
         //remove white spaces
         record = record.replaceAll("\\s","");
         String [] part = record.split(",");
-
-        for(int i = 0; i < part.length; i++){
-            String [] keyValue = part[i].split("=");
-            String key = keyValue[0];
-            String [] rec = keyValue[1].split("!");
-            //Create Game Record
-            GameRecord game = new GameRecord(rec[0],rec[1],Integer.parseInt(rec[3]));
-            //Update the with correct timestamp
-            game.setEndDate(rec[2]);
-            //Store game record in gamesHistory
-            gamesHistory.put(key,game);
+        if (!record.equals("")) {
+            for(int i = 0; i < part.length; i++){
+                String [] keyValue = part[i].split("=");
+                String key = keyValue[0];
+                String [] rec = keyValue[1].split("!");
+                //Create Game Record
+                GameRecord game = new GameRecord(rec[0],rec[1],Integer.parseInt(rec[3]));
+                //Update the with correct timestamp
+                game.setEndDate(rec[2]);
+                //Store game record in gamesHistory
+                gamesHistory.put(key,game);
+            }
         }
-
     }
 
     public boolean equals(Object o) {

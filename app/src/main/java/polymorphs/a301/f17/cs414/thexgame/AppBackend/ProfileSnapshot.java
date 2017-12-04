@@ -12,6 +12,11 @@ public class ProfileSnapshot {
     private String dbKey;
     private String picString;
 
+    /**
+     * For Firebase Load ONLY
+     */
+    public ProfileSnapshot() {}
+
     public ProfileSnapshot(Profile profile){
         histString = profile.getGamesHistory().toString();
         nickname = profile.getNickname();

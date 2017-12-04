@@ -79,6 +79,9 @@ public class DBIOCore {
             }
         });
 
+    }
+
+    public void setupProfile() {
         DatabaseReference profile = baseReference.child("profilesnapshotList").child(userNickname);
         profile.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -86,7 +89,7 @@ public class DBIOCore {
                 ProfileSnapshot testSnap = dataSnapshot.getValue(ProfileSnapshot.class);
                 if (testSnap == null) {
                     System.out.println("We are adding the user now!");
-                    ProfileSnapshot snapshot = new ProfileSnapshot(new Profile());
+                    ProfileSnapshot snapshot = new ProfileSnapshot(new Profile(userNickname));
                     baseReference.child("profilesnapshotList").child(userNickname).setValue(snapshot);
                 }
             }
@@ -96,7 +99,6 @@ public class DBIOCore {
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
             }
         });
-
     }
 
     /**
@@ -225,7 +227,7 @@ public class DBIOCore {
     }
 
     public void updateProfileSnapshot(ProfileSnapshot snapshot){
-        baseReference.child("profilesnapshotList").child(userNickname).child(snapshot.getDbKey()).setValue(snapshot);
+        baseReference.child("profilesnapshotList").child(userNickname).setValue(snapshot);
     }
 
     /**

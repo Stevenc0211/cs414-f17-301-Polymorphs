@@ -445,7 +445,15 @@ public class HomescreenActivity extends AppCompatActivity
     // for profile snapshot
     @Override
     public void snapshotUpdated(ProfileSnapshot u) {
+        if (userProfile == null) {
+            this.userProfile = new Profile(DBIOCore.getInstance().getCurrentUserUsername());
+        }
         this.userProfile.updateFromSnapshot(u);
+        if (!userProfile.getPicString().equals("")) {
+            byte[] picDecod = Base64.decode(userProfile.getPicString(), Base64.DEFAULT);
+            userProfilePic = BitmapFactory.decodeByteArray(picDecod,0,picDecod.length);
+            setupHeader();
+        }
     }
 
     // -------------------------------------------------- Observer and Listener code END ----------------------------------------------------------------------------------------

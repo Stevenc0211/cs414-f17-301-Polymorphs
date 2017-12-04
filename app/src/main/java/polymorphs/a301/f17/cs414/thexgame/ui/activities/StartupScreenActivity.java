@@ -192,7 +192,7 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
 
                 DBIOCore.getInstance().registerToUsernameList(StartupScreenActivity.this);
                 DBIOCore.getInstance().registerToCurrentUser(StartupScreenActivity.this);
-
+                DBIOCore.getInstance().setupProfile();
                 delayHandler.post(transferToHomescreen);
             }
 
