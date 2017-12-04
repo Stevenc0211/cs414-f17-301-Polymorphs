@@ -12,13 +12,13 @@ public class GameRecord {
     private String player;
     private String opponent;
     private String endDate;
-    private boolean won;
+    private int won; // 1 if won, -1 if lost, 0 if tied
 
-    public GameRecord(String player,String opponent,boolean won){
+    public GameRecord(String player,String opponent,int won){
         this.player = player;
         this.opponent = opponent;
         endDate = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-        this.won = won;
+        setWon(won);
     }
 
     public void setPlayer(String player){
@@ -45,11 +45,17 @@ public class GameRecord {
         return endDate;
     }
 
-    public void setWon(boolean won){
-        this.won = won;
+    public void setWon(int won){
+        if (won > 0) {
+            this.won = 1;
+        } else if (won < 0) {
+            this.won = -1;
+        } else {
+            this.won = 0;
+        }
     }
 
-    public boolean getWon(){
+    public int getWon(){
         return won;
     }
 

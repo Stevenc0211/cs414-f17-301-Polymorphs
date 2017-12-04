@@ -91,11 +91,11 @@ public class MovePieceActionListener {
         {
             // For LOCAL running use the line below
             // NOTE: to run game you MUST replace user1 nickname with your nickname
-//             int moveResult = boardUI.getDriver().makeMove(currentUser.getNickname(), fromRow, fromCol, row, col);
+             int moveResult = boardUI.getDriver().makeMove(currentUser.getNickname(), fromRow, fromCol, row, col);
 
             // For REMOTE running use the line below (this will be our standard once everything is working)
             // NOTE: to run game you MUST replace user1 nickname with your nickname
-            int moveResult = boardUI.getDriver().makeMove(DBIOCore.getInstance().getCurrentUserUsername(), fromRow, fromCol, row, col);
+//            int moveResult = boardUI.getDriver().makeMove(DBIOCore.getInstance().getCurrentUserUsername(), fromRow, fromCol, row, col);
             if (moveResult != -1) {
                 if (currentUser.equals(user1)) {    // BreadCrumb: turn order hack
                     currentUser = user2;            // BreadCrumb: turn order hack

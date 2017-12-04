@@ -49,21 +49,18 @@ public class Profile implements GameRecordListObserver {
        return gamesHistory;
     }
 
-    public void setWinRatio(List<Integer>wins, List<Integer>losses )
+    public void setWinRatio()
     {
-        //todo @Miles need to return the wins and losses for a player from the database
+
         int totalWins=0;
-        int totalLosses=0;
-        int totalGames=0;
-
-        for (int w : wins) {
-            totalWins+=w;
+        int totalGames= gamesHistory.size();
+        for (GameRecord record : gamesHistory.values()) {
+            if (record.getWon() == 1) {
+                totalWins++;
+            } else if (record.getWon() == 0) {
+                totalGames--; // discount ties
+            }
         }
-
-        for (int l : losses) {
-            totalLosses+=l;
-        }
-        totalGames = totalWins+totalLosses;
         winRatio = totalWins/totalGames;
 
 
@@ -134,7 +131,7 @@ public class Profile implements GameRecordListObserver {
             String key = keyValue[0];
             String [] rec = keyValue[1].split("-");
             //Create Game Record
-            GameRecord game = new GameRecord(rec[0],rec[1],Boolean.parseBoolean(rec[3]));
+            GameRecord game = new GameRecord(rec[0],rec[1],Integer.parseInt(rec[3]));
             //Update the with correct timestamp
             game.setEndDate(rec[2]);
             //Store game record in gamesHistory
