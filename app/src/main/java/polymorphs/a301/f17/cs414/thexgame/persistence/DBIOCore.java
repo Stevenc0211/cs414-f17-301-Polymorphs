@@ -11,6 +11,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameRecord;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameSnapshot;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Profile;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.ProfileSnapshot;
 import polymorphs.a301.f17.cs414.thexgame.Invitation;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
@@ -73,6 +74,24 @@ public class DBIOCore {
 
             }
 
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+            }
+        });
+
+        DatabaseReference profile = baseReference.child("profilesnapshotList").child(userNickname);
+        profile.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ProfileSnapshot testSnap = dataSnapshot.getValue(ProfileSnapshot.class);
+                if (testSnap == null) {
+                    System.out.println("We are adding the user now!");
+                    ProfileSnapshot snapshot = new ProfileSnapshot(new Profile());
+                    baseReference.child("profilesnapshotList").child(userNickname).setValue(snapshot);
+                }
+            }
+
+            @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
             }
@@ -160,8 +179,8 @@ public class DBIOCore {
         baseReference.child("gamesnapshotList").child(userNickname).child(snapshotKey).addValueEventListener(new GameSnapshotListener(observer));
     }
 
-    public void registerToProfileSnapshot(ProfileSnapshotObserver observer, String snapshotKey){
-        baseReference.child("profilesnapshotList").child(userNickname).child(snapshotKey).addValueEventListener(new ProfileSnapshotListener(observer));
+    public void registerToProfileSnapshot(ProfileSnapshotObserver observer){
+        baseReference.child("profilesnapshotList").child(userNickname).addValueEventListener(new ProfileSnapshotListener(observer));
     }
 
     /**

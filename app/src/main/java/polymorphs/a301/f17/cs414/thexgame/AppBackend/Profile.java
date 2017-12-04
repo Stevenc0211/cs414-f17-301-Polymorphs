@@ -1,8 +1,5 @@
 package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.HashMap;
 
 import polymorphs.a301.f17.cs414.thexgame.persistence.GameRecordListObserver;
@@ -17,6 +14,7 @@ public class Profile implements GameRecordListObserver {
     private HashMap<String,GameRecord> gamesHistory;
     private String nickname;
     double winRatio =0.0;
+    private String picString;
 
 
     public Profile() {} // empty constructor needed by database.
@@ -24,6 +22,14 @@ public class Profile implements GameRecordListObserver {
     public Profile(String nickname){
         this.nickname = nickname;
         gamesHistory = new HashMap<>();
+    }
+
+    public void setPicString(String pic) {
+        picString = pic;
+    }
+
+    String getPicString() {
+        return picString;
     }
 
     public String getNickname(){
@@ -102,7 +108,7 @@ public class Profile implements GameRecordListObserver {
     }
 
     //update Profile from Snapshot--------------need to do profile picture
-    void updateFromSnapshot(ProfileSnapshot snapshot){
+    public void updateFromSnapshot(ProfileSnapshot snapshot){
 
         //Set the nickname
         nickname = snapshot.getNickname();
@@ -110,7 +116,7 @@ public class Profile implements GameRecordListObserver {
         winRatio = snapshot.getWinRatio();
 
         //Split profile string
-        String temp = snapshot.getProfileString();
+        String temp = snapshot.getHistString();
         //remove brackets from first and last index
         String record = temp.substring(1,temp.length()-1);
         //remove white spaces

@@ -33,6 +33,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameRecord;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameSnapshot;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Profile;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.ProfileSnapshot;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
 import polymorphs.a301.f17.cs414.thexgame.persistence.GameRecordListObserver;
@@ -76,6 +77,7 @@ public class HomescreenActivity extends AppCompatActivity
     private String name; // name of the user.
     private String username; // username of the user
     private Bitmap userProfilePic; // holds a copy of a user's profile picture.
+    private Profile userProfile;
 
     HashMap<String, String> usernames; // holds the list of people to invite keyed by the previous usernames database key
     polymorphs.a301.f17.cs414.thexgame.AppBackend.User currentUser;
@@ -94,9 +96,8 @@ public class HomescreenActivity extends AppCompatActivity
         byte[] bArray = byteArray.toByteArray();
 
         String profPicEncoded = Base64.encodeToString(bArray, Base64.DEFAULT); // convert the profile to a Base64 string. This is what needs to be saved into database.
-
-        // TODO: @Miles, we have to send in the profPicEncoded val to the DB. Also, there is a problem where a user's profile is not actually being sent up, not sure why. So a user's profile needs to be created so we can create a snapshot.
-
+        userProfile.setPicString(profPicEncoded);
+        DBIOCore.getInstance().updateProfileSnapshot(new ProfileSnapshot(userProfile));
     }
 
     // adds a game to the game pager and also shows the person we are playing the game with.
@@ -232,7 +233,7 @@ public class HomescreenActivity extends AppCompatActivity
         DBIOCore.getInstance().registerToUsernameList(this);
         DBIOCore.getInstance().registerToCurrentUser(this);
         DBIOCore.getInstance().registerToGameRecordList(this);
-        DBIOCore.getInstance().registerToProfileSnapshot(this, "profile"); // this doesn't work I cannot get it to work like I wanted it to.
+        DBIOCore.getInstance().registerToProfileSnapshot(this); // this doesn't work I cannot get it to work like I wanted it to.
 
 
     }
@@ -444,7 +445,7 @@ public class HomescreenActivity extends AppCompatActivity
     // for profile snapshot
     @Override
     public void snapshotUpdated(ProfileSnapshot u) {
-
+        this.userProfile.updateFromSnapshot(u);
     }
 
     // -------------------------------------------------- Observer and Listener code END ----------------------------------------------------------------------------------------
