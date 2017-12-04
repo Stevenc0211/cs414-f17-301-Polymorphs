@@ -1,6 +1,7 @@
 package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.HashMap;
 
@@ -21,8 +22,12 @@ public class Profile implements GameRecordListObserver {
 
     public Profile(String nickname){
         this.nickname = nickname;
+        gamesHistory = new HashMap<>();
     }
 
+    public String getNickname(){
+        return nickname;
+    }
 
     public double getWinRatio()
     {
@@ -44,21 +49,18 @@ public class Profile implements GameRecordListObserver {
        return gamesHistory;
     }
 
-    public void setWinRatio(List<Integer>wins, List<Integer>losses )
+    public void setWinRatio()
     {
-        //todo @Miles need to return the wins and losses for a player from the database
+
         int totalWins=0;
-        int totalLosses=0;
-        int totalGames=0;
-
-        for (int w : wins) {
-            totalWins+=w;
+        int totalGames= gamesHistory.size();
+        for (GameRecord record : gamesHistory.values()) {
+            if (record.getWon() == 1) {
+                totalWins++;
+            } else if (record.getWon() == 0) {
+                totalGames--; // discount ties
+            }
         }
-
-        for (int l : losses) {
-            totalLosses+=l;
-        }
-        totalGames = totalWins+totalLosses;
         winRatio = totalWins/totalGames;
 
 
@@ -93,9 +95,54 @@ public class Profile implements GameRecordListObserver {
         gamesHistory.putAll(history);
     }
 
+    /*public String historyToString(){
+        String temp = "";
+        Iterator it = gamesHistory.entrySet().iterator();
+        while(it.hasNext()){
+            HashMap.Entry pair = (HashMap.Entry)it.next();
+            temp += pair.getValue().toString() + "*";
+            it.remove();
+        }
+        return temp;
+    }*/
 
+    public String toString(){
+        return nickname + "-" + winRatio + "-" + gamesHistory.toString();
+    }
 
+    //update Profile from Snapshot--------------need to do profile picture
+    void updateFromSnapshot(ProfileSnapshot snapshot){
 
+        //Set the nickname
+        nickname = snapshot.getNickname();
+        //Set the win ratio
+        winRatio = snapshot.getWinRatio();
 
+        //Split profile string
+        String temp = snapshot.getProfileString();
+        //remove brackets from first and last index
+        String record = temp.substring(1,temp.length()-1);
+        //remove white spaces
+        record = record.replaceAll("\\s","");
+        String [] part = record.split(",");
 
+        for(int i = 0; i < part.length; i++){
+            String [] keyValue = part[i].split("=");
+            String key = keyValue[0];
+            String [] rec = keyValue[1].split("-");
+            //Create Game Record
+            GameRecord game = new GameRecord(rec[0],rec[1],Integer.parseInt(rec[3]));
+            //Update the with correct timestamp
+            game.setEndDate(rec[2]);
+            //Store game record in gamesHistory
+            gamesHistory.put(key,game);
+        }
+
+    }
+
+    public boolean equals(Object o) {
+        if (!(o instanceof Profile)) return false;
+        Profile otherProfile = (Profile) o;
+        return (nickname == otherProfile.getNickname() && winRatio == otherProfile.getWinRatio() && gamesHistory.size() == otherProfile.getGamesHistory().size());
+    }
 }

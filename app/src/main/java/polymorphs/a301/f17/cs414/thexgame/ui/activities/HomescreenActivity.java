@@ -166,6 +166,7 @@ public class HomescreenActivity extends AppCompatActivity
     // this method sets up our game pager.
     protected void setupGamePager()
     {
+//        createNewGame("razor", "black");
        // boardUI = (BoardUI) findViewById(R.id.chessboard);
         gamePager = (ViewPager) findViewById(R.id.gamesListPager); // get the game pager that will basically fill out the games!
         boardUI = (BoardUI) findViewById(R.id.chessboard);

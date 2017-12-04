@@ -20,7 +20,7 @@ public class TestPlayer {
             Player p = new Player(u.getNickname(), Color.WHITE);
         }
         catch (Exception e){
-            fail("ERROR: Board failed to instantiate");
+            fail("ERROR: Player failed to instantiate");
         }
     }
 
