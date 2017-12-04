@@ -302,15 +302,6 @@ class Board {
         return result;
     }
 
-//    /**
-//     * Given a player determines if that player is in checkmate, in a tie or is still in standard play.
-//     * @return 0 if game is in progress, 1 if player is in checkmate, 2 if player is in a tie
-//     */
-//    int getPlayerStatus(Player currentPlayer, Player opponent) {
-//        if (inCheckmate(currentPlayer)) return 1;
-//        if (gameIsTie(currentPlayer,opponent)) return 2;
-//        return 0;
-//    }
 
     /**
      * Given a player determines if that player is in checkmate, in a tie or is still in standard play.
@@ -351,41 +342,6 @@ class Board {
             return 0;
         }
     }
-
-//    /**
-//     * Given a player determines if that player is in checkmate
-//     * @param player - the player to check
-//     * @return true if the player is in checkmate, false if otherwise
-//     */
-//    boolean inCheckmate(Player player) {
-//        King king = player.getKing();
-//        if (!kingInCheck(king)) return false;
-//        Tile lastTile;
-//        ArrayList<ArrayList<Tile>> allMovePaths;
-//        for (Piece piece : player.getPieces()) {
-//            if (!piece.isAvailable()) continue;
-//            allMovePaths = piece.getAllMovePaths(this);
-//            for (ArrayList<Tile> movePath : allMovePaths) {
-//                if (!validateMovePath(movePath, player)) continue;
-//                lastTile = movePath.get(movePath.size()-1);
-//                if (piece instanceof King) {
-//                    if(!isValidKingMove(piece.getRow(),piece.getCol(),lastTile.getRow(),lastTile.getCol())) continue;
-//                }
-//                if (!moveResultsInCheck(king,piece.getRow(),piece.getCol(),lastTile.getRow(),lastTile.getCol())) {
-//                    return false;
-//                }
-//            }
-//        }
-//        return true;
-//    }
-
-//    boolean gameIsTie(Player currentPlayer, Player opponent) {
-//        if (currentPlayer.getActivePieceCount() < 3 && opponent.getActivePieceCount() < 3) return true;
-//        if (kingInCheck(currentPlayer.getKing())) return false;
-//
-//        return false;
-//    }
-
 
 
     /**
