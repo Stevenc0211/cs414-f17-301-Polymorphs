@@ -181,8 +181,8 @@ public class DBIOCore {
     }
 
     public void addGameRecord(GameRecord record){
-        String key = baseReference.child("gamerecordList").child(userNickname).push().getKey();
-        baseReference.child("gamerecordList").child(key).setValue(record);
+        String key = baseReference.child("gamerecordList").child(record.getPlayer()).push().getKey();
+        baseReference.child("gamerecordList").child(record.getPlayer()).child(key).setValue(record);
     }
 
     public String addGameSnapshot(GameSnapshot snapshot){
@@ -196,7 +196,7 @@ public class DBIOCore {
 
     public String addProfileSnapshot(ProfileSnapshot snapshot){
         String key = baseReference.child("profilesnapshotList").child(userNickname).push().getKey();
-        baseReference.child("profilesnapshotList").child(key).setValue(snapshot);
+        baseReference.child("profilesnapshotList").child(userNickname).child(key).setValue(snapshot);
         return key;
     }
 
