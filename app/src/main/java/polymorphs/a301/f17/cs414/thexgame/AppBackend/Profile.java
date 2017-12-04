@@ -120,7 +120,7 @@ public class Profile implements GameRecordListObserver {
         for(int i = 0; i < part.length; i++){
             String [] keyValue = part[i].split("=");
             String key = keyValue[0];
-            String [] rec = keyValue[1].split("-");
+            String [] rec = keyValue[1].split("!");
             //Create Game Record
             GameRecord game = new GameRecord(rec[0],rec[1],Integer.parseInt(rec[3]));
             //Update the with correct timestamp
