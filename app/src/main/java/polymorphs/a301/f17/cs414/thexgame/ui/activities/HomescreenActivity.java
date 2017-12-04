@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
+import android.util.Base64;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -87,10 +89,14 @@ public class HomescreenActivity extends AppCompatActivity
         userProfilePic = newProfilePic; // set the new profile picture for the user.
         setupHeader(); // have the header refresh with the new profile picture now set.
 
-        // TODO: I need a little bit of help in here team I can't figure this out.
+        ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+        newProfilePic.compress(Bitmap.CompressFormat.PNG, 100, byteArray); // compress the bitmap to a png form.
+        byte[] bArray = byteArray.toByteArray();
 
-        System.out.println("Testing profile is it null?" + currentUser.getProfile());
-        //DBIOCore.getInstance().
+        String profPicEncoded = Base64.encodeToString(bArray, Base64.DEFAULT); // convert the profile to a Base64 string. This is what needs to be saved into database.
+
+        // TODO: @Miles, we have to send in the profPicEncoded val to the DB. Also, there is a problem where a user's profile is not actually being sent up, not sure why. So a user's profile needs to be created so we can create a snapshot.
+
     }
 
     // adds a game to the game pager and also shows the person we are playing the game with.
