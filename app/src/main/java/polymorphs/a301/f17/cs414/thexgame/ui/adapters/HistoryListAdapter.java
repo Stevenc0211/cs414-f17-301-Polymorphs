@@ -36,23 +36,41 @@ public class HistoryListAdapter extends ArrayAdapter<GameRecord> {
         {
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
-            v = vi.inflate(R.layout.game_item, null);
+            v = vi.inflate(R.layout.history_item, null);
         }
 
         GameRecord gameItem = getItem(position); // grab the game record that we want to work with right here.
 
         TextView gameTitle = (TextView) v.findViewById(R.id.gameID); // the game title we want to work with
-        // todo: @Andy set the title, if you can reliably, set the game number as well to match exactly as I have it in history_item.xml
-        // andy, you will do gameTitle.setText to change the text.
+        gameTitle.setText(gameItem.getPlayer() + " vs " + gameItem.getOpponent());
 
         TextView gameDate = (TextView) v.findViewById(R.id.gameDate); // the game title we want to work with
-        // TODO: @Andy you will want to set the game date here, you may configure the date any way that you wish.
+        gameDate.setText(gameItem.getEndDate());
+
+        String winner = "";
+        String loser = "";
+
+        if(gameItem.getWon() == 1) // player won
+        {
+            winner = "Winner: " + gameItem.getPlayer();
+            loser = "Loser: " + gameItem.getOpponent();
+        }
+        else if(gameItem.getWon() == -1) // player lost.
+        {
+            winner = "Winner: " + gameItem.getOpponent();
+            loser = "Loser: " + gameItem.getPlayer();
+        }
+        else // game was a tie.
+        {
+            winner = "TIE";
+            loser = "";
+        }
 
         TextView gameWinner = (TextView) v.findViewById(R.id.gameWinner); // the game title we want to work with
-        // TODO: @Andy, here is where you will set the winner of the game.
+        gameWinner.setText(winner);
 
         TextView gameLoser = (TextView) v.findViewById(R.id.gameLoser); // the game title we want to work with
-        // TODO: @Andy, here is where you will set the game loser.
+        gameLoser.setText(loser);
 
         return v; // return the view to the ListView.
     }

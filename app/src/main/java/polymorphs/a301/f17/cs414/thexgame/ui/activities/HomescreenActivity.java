@@ -26,21 +26,22 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Handler;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameRecord;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameSnapshot;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.ProfileSnapshot;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
+import polymorphs.a301.f17.cs414.thexgame.persistence.GameRecordListObserver;
 import polymorphs.a301.f17.cs414.thexgame.persistence.GameSnapshotListObserver;
+import polymorphs.a301.f17.cs414.thexgame.persistence.ProfileSnapshotObserver;
 import polymorphs.a301.f17.cs414.thexgame.ui.BoardUI;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.persistence.UserObserver;
 import polymorphs.a301.f17.cs414.thexgame.persistence.UsernameListObserver;
-import polymorphs.a301.f17.cs414.thexgame.ui.adapters.ActivityListAdapter;
 import polymorphs.a301.f17.cs414.thexgame.ui.adapters.GamePagerAdapter;
-import polymorphs.a301.f17.cs414.thexgame.ui.adapters.SquareAdapter;
 import polymorphs.a301.f17.cs414.thexgame.ui.fragments.CurrentUserProfileFragment;
 import polymorphs.a301.f17.cs414.thexgame.ui.fragments.HelpFragment;
 import polymorphs.a301.f17.cs414.thexgame.ui.fragments.HistoryFragment;
@@ -48,27 +49,19 @@ import polymorphs.a301.f17.cs414.thexgame.ui.fragments.NotificationsFragment;
 import polymorphs.a301.f17.cs414.thexgame.ui.fragments.SettingsFragment;
 import polymorphs.a301.f17.cs414.thexgame.ui.listeners.CreateNewGameButtonListener;
 import polymorphs.a301.f17.cs414.thexgame.ui.listeners.GamePageChangeListener;
-import polymorphs.a301.f17.cs414.thexgame.ui.listeners.SubmitButtonClickListener;
 
 public class HomescreenActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, UsernameListObserver, UserObserver, GameSnapshotListObserver {
+        implements NavigationView.OnNavigationItemSelectedListener, UsernameListObserver, UserObserver, GameSnapshotListObserver, GameRecordListObserver, ProfileSnapshotObserver {
 
     private NotificationsFragment notificationsFragment = new NotificationsFragment(); // a copy of the notifications UI that should be built for the user.
     private HistoryFragment historyFragment = new HistoryFragment(); // a copy of the history fragment here.
-    private ArrayList<String> currentGames; // the list of current games.
     private ViewPager gamePager; // this holds the game view pager which essentially is a list of horizontal list items of the game, which is pretty awesome!
     private GamePagerAdapter gamePagerAdapter; // holds the gamePagerAdapter that we need to be working on here.
     private BoardUI boardUI; // holds the chess board that we are going to be working on.
     private ArrayList<BoardUI> games = new ArrayList<>(); // holds all of our games, mainly there boards, hence why we are containing GridViews
-    private ArrayList<String> events = new ArrayList<>(); // todo: this should filled out after a call to our database. This will allow us to be able to get events about the game for the user to look at.
-    private ActivityListAdapter eventsListAdapter; // the events adapter here for us to update, very important!
-    private SquareAdapter squareAdapter; // holds our square adapter which will allow us to be able to work on our lists and update the information for the players to be able to play a game!
     private View inGameUI; // holds the in game ui view which is needed to create another board for users to be able to play games on.
-    private boolean startNewGame = false; // tells the inGameUI that we want to start a new game, which involves sending a list of invite(s) to other player(s).
-    private boolean openCurrentGames = false; // tells inGameUI to just open the current list of games.
-    private SubmitButtonClickListener submitClickListener;
 
-    private final int SET_USERNAME = 9001; // details what we are doing for the username.
+    ArrayList<GameRecord> gameRecords = new ArrayList<>(); // holds all of the game records to be populated from the database.
     private String gameID = ""; // the game id used for each game.
 
     private Driver driver; // the driver that we will be working with within homescreen activity.
@@ -87,13 +80,17 @@ public class HomescreenActivity extends AppCompatActivity
 
     private NavigationView navigationView; // a copy of the navigation view to populate our board layout.
 
-    // TODO: this needs to save the profile picture to the database so that when a user changes their profile picture it is not lost!
     public void saveAndChangeProfilePic(Bitmap newProfilePic)
     {
+       // DBIOCore.getInstance().registerToProfileSnapshot(this, currentUser.getNickname());
+
         userProfilePic = newProfilePic; // set the new profile picture for the user.
         setupHeader(); // have the header refresh with the new profile picture now set.
 
-        // TODO: @Miles, @Andy, @Anyone, in here is where we need to save that profile picture to the database. I will take care of saving the picture to header view, but we need the DB for it to save permanently
+        // TODO: I need a little bit of help in here team I can't figure this out.
+
+        System.out.println("Testing profile is it null?" + currentUser.getProfile());
+        //DBIOCore.getInstance().
     }
 
     // adds a game to the game pager and also shows the person we are playing the game with.
@@ -147,15 +144,6 @@ public class HomescreenActivity extends AppCompatActivity
         return games.get(position);
     }
 
-    // should show games if the app is up and running.
-    public void showGames()
-    {
-        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.mainContentScreen);
-        TextView noGame = (TextView) relativeLayout.findViewById(R.id.noGamesText);
-        noGame.setVisibility(View.GONE); // make the text field do away
-
-        gamePager.setVisibility(View.VISIBLE); // have the game(s) appear.
-    }
 
     // returns the number of games.
     public int getNumOfGames()
@@ -163,11 +151,14 @@ public class HomescreenActivity extends AppCompatActivity
         return games.size();
     }
 
+    public void addGameRecord(GameRecord record)
+    {
+        DBIOCore.getInstance().addGameRecord(record); // add this to the game record.
+    }
+
     // this method sets up our game pager.
     protected void setupGamePager()
     {
-//        createNewGame("razor", "black");
-       // boardUI = (BoardUI) findViewById(R.id.chessboard);
         gamePager = (ViewPager) findViewById(R.id.gamesListPager); // get the game pager that will basically fill out the games!
         boardUI = (BoardUI) findViewById(R.id.chessboard);
         boardUI.setHomescreenActivity(this); // send a copy of the homescreen activity to allow for certain displaying of certain UI elements.
@@ -230,9 +221,12 @@ public class HomescreenActivity extends AppCompatActivity
         displayHomescreen(); // setup the familiar homescreen layout that we are used to seeing.
 
 
+        // add items into the database.
         DBIOCore.getInstance().registerToGameSnapshotList(this);
         DBIOCore.getInstance().registerToUsernameList(this);
         DBIOCore.getInstance().registerToCurrentUser(this);
+        DBIOCore.getInstance().registerToGameRecordList(this);
+        DBIOCore.getInstance().registerToProfileSnapshot(this, "profile"); // this doesn't work I cannot get it to work like I wanted it to.
 
 
     }
@@ -427,9 +421,24 @@ public class HomescreenActivity extends AppCompatActivity
     }
 
     @Override
-    public void snapshotRemoved(GameSnapshot removedSnapshot)
-    {
-        // todo: remove from the view pager.
+    public void snapshotRemoved(GameSnapshot removedSnapshot) {}
+
+    @Override
+    public void recordAdded(GameRecord addedRecord, String precedingRecordKey) {
+        System.out.println("This game record was added to the list! -> " + addedRecord);
+        gameRecords.add(addedRecord); // add the game to the game record.
+    }
+
+    @Override
+    public void recordChanged(GameRecord changedRecord, String precedingRecordKey) {}
+
+    @Override
+    public void recordRemoved(GameRecord removedRecord) {}
+
+    // for profile snapshot
+    @Override
+    public void snapshotUpdated(ProfileSnapshot u) {
+
     }
 
     // -------------------------------------------------- Observer and Listener code END ----------------------------------------------------------------------------------------
@@ -494,18 +503,14 @@ public class HomescreenActivity extends AppCompatActivity
             Snackbar.make(homescreenLayout, "This feature isn't available yet ¯\\_(ツ)_/¯ ", Snackbar.LENGTH_LONG).show();
             return true;
         }
-        else if(id == R.id.sendMessage)
-        {
-            // todo: this should open up the send message fragment!
-
-            RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
-            Snackbar.make(homescreenLayout, "This feature isn't available yet ¯\\_(ツ)_/¯ ", Snackbar.LENGTH_LONG).show();
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
 
+    public ArrayList<GameRecord> getGameRecords()
+    {
+        return gameRecords;
+    }
 
     // opens up the settings menu
     protected void openNotificationsFragment()
@@ -529,6 +534,8 @@ public class HomescreenActivity extends AppCompatActivity
         RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
         homescreenLayout.setBackground(null); // this should remove all views from the main view to allow us to show the fragment properly.
 
+        Bundle args = new Bundle(); // holds the arguments that we want to send to the fragment.
+        args.putSerializable("gameRecords", gameRecords); // sends all of the game records to the history fragment.
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.animator.slide_up_in, R.animator.slide_up_out); // set custom animations for this fragment
         fragmentTransaction.replace(R.id.mainContentScreen, historyFragment); // replace the current fragment with our games
@@ -537,14 +544,6 @@ public class HomescreenActivity extends AppCompatActivity
         fragmentOpen = true; // set the boolean to be true that a fragment is indeed open.
         currentFragment = historyFragment; // set the current fragment
         createNewGameButton.setVisibility(View.GONE); // make the new game button go away.
-    }
-
-    protected void openMessagesFragment()
-    {
-        // todo: needs to be implemented.
-        closeDrawer(); // close the drawer automatically.
-        fragmentOpen = true; // set the boolean to be true that a fragment is indeed open.
-        // todo: set current fragment.
     }
 
     // opens up the settings fragment
@@ -630,13 +629,9 @@ public class HomescreenActivity extends AppCompatActivity
         {
             openNotificationsFragment();
         }
-        else if (id == R.id.History) // todo: call the history fragment once we have history to be displayed.
+        else if (id == R.id.History)
         {
             openHistoryFragment(); // opens the history fragment.
-        }
-        else if (id == R.id.messages) // todo: call the messages fragment if we decide to do a chat feature.
-        {
-            Snackbar.make(homescreenLayout, "This feature isn't available yet ¯\\_(ツ)_/¯ ", Snackbar.LENGTH_LONG).show();
         }
         else if (id == R.id.settings)
         {
@@ -652,4 +647,5 @@ public class HomescreenActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }

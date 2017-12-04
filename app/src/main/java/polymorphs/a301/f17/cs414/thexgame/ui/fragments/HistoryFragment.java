@@ -7,22 +7,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameRecord;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.persistence.GameRecordListObserver;
+import polymorphs.a301.f17.cs414.thexgame.ui.activities.HomescreenActivity;
 import polymorphs.a301.f17.cs414.thexgame.ui.adapters.HistoryListAdapter;
 
 /**
  * Created by thenotoriousrog on 11/28/17.
  * Displays the history items in the fragment.
  */
-public class HistoryFragment extends Fragment implements GameRecordListObserver {
+public class HistoryFragment extends Fragment {
 
 
     private ListView historyList; // holds the history list view that we want to be working with.
     private HistoryListAdapter historyAdapter; // holds the history adapter.
 
+    private ArrayList<GameRecord> gameRecords; // holds the list of gamerecords for the list. Will be automatically populated by Firebase database.
 
     // This is the first method that is called when the fragment is initialized.
     @Override
@@ -30,17 +34,18 @@ public class HistoryFragment extends Fragment implements GameRecordListObserver 
     {
         super.onCreate(savedInstanceState);
 
-        DBIOCore.getInstance().registerToGameRecordList(this); // register this to the game record list. chea.
+        HomescreenActivity h = (HomescreenActivity) getActivity();
+        gameRecords = h.getGameRecords();
     }
 
     // sets up the history view.
     private void setupHistoryListView(View historyView)
     {
         historyList = (ListView) historyView.findViewById(R.id.historyListView);
-
-        // tODO: @Andy look at notificationsfragment you need to create a new arraylist and send in the gamerecord list just like invitations list needs to and it should work.
-        // also andy, you may want to send in a copy of the history fragment in here, so yeah haha. May want to do that.
-        historyAdapter = new HistoryListAdapter(historyView.getContext(), R.layout.history_item, insertHere)
+        historyAdapter = new HistoryListAdapter(historyView.getContext(), R.layout.history_item, gameRecords);
+        historyList.setAdapter(historyAdapter);
+        historyAdapter.notifyDataSetChanged();
+        historyList.setDividerHeight(10);
     }
 
     // This is what populates the actual fragment layout.
@@ -51,21 +56,5 @@ public class HistoryFragment extends Fragment implements GameRecordListObserver 
         setupHistoryListView(historyView); // sets up the history view of the fragment.
 
         return historyView; // return the view to be used.
-    }
-
-
-    @Override
-    public void recordAdded(GameRecord addedRecord, String precedingRecordKey) {
-        // todo: @Andy, implement this per favore.
-    }
-
-    @Override
-    public void recordChanged(GameRecord changedRecord, String precedingRecordKey) {
-        // todo: @Andy, implement this per favore.
-    }
-
-    @Override
-    public void recordRemoved(GameRecord removedRecord) {
-        // todo: @Andy, implement this per favore.
     }
 }

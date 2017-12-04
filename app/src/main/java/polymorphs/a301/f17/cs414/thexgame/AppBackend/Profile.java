@@ -19,6 +19,7 @@ public class Profile implements GameRecordListObserver {
     double winRatio =0.0;
 
 
+    public Profile() {} // empty constructor needed by database.
 
     public Profile(String nickname){
         this.nickname = nickname;
@@ -95,16 +96,6 @@ public class Profile implements GameRecordListObserver {
         gamesHistory.putAll(history);
     }
 
-    /*public String historyToString(){
-        String temp = "";
-        Iterator it = gamesHistory.entrySet().iterator();
-        while(it.hasNext()){
-            HashMap.Entry pair = (HashMap.Entry)it.next();
-            temp += pair.getValue().toString() + "*";
-            it.remove();
-        }
-        return temp;
-    }*/
 
     public String toString(){
         return nickname + "-" + winRatio + "-" + gamesHistory.toString();

@@ -55,13 +55,6 @@ public class InvitationsListAdapter extends ArrayAdapter {
             public void onClick(View view) {
 
                 DBIOCore.getInstance().removeInvite((Invitation)getItem(position));
-                //primaryActivity.openCurrentGamesFragment();
-                // TODO: after clicking accept, a game will be added to the ViewPager in HomescreenActivity.
-
-                // TODO: if it fails, try to hardcode a game between thenotoriousrog and razor.
-                System.out.println("is the current user null in HomescreenActivity? " + primaryActivity.getCurrentUser());
-                System.out.println("Inviting user name is = " + invitingUser);
-                System.out.println("current user name = " + primaryActivity.getCurrentUser().getNickname());
                 BoardUI newGame = primaryActivity.createNewGame(invitingUser, primaryActivity.getCurrentUser().getNickname()); // create a new game
                 newGame.setHomescreenActivity(primaryActivity); // set the homescreen activity for this new game.
                 primaryActivity.addGameToPager(newGame, invitingUser); // add the game to the pager.

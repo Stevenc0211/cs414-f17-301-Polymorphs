@@ -7,7 +7,7 @@
         android:id="@+id/gameID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="1. thenotoriousrog VS Andy"
+        android:text="thenotoriousrog VS Andy"
         android:textColor="@color/Black"
         android:textSize="25dp"
         />

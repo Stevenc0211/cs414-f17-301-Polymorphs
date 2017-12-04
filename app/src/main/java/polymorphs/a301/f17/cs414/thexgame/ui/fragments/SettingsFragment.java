@@ -40,8 +40,6 @@ public class SettingsFragment extends Fragment {
         deleteUnregister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //TODO: unregister the user from the database, Roger you need to do this from oAuth, Team, we need to decide what to do with the history.
             }
         });
 
@@ -49,7 +47,6 @@ public class SettingsFragment extends Fragment {
         deleteUnregister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 //TODO: Invert the colors
             }
         });

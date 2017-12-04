@@ -28,8 +28,8 @@ import polymorphs.a301.f17.cs414.thexgame.ui.adapters.InvitationsListAdapter;
 
 public class NotificationsFragment extends Fragment implements InviteListObserver{
 
-    private HashMap<String, Invitation> invitationsData = new HashMap<>(); // todo: we will likely want to change this to an invitations class. For now I am going to use strings just for us to have a UI up and running!
-    private ArrayList<String> eventsData = new ArrayList<>(); // TODO: This needs to be pulled from the database so that users can be able to get information which is pretty important for us to get this working!
+    private HashMap<String, Invitation> invitationsData = new HashMap<>();
+    private ArrayList<String> eventsData = new ArrayList<>();
 
     private ListView invitationsList;  // holds the invitations list.
     private ListView eventsList; // holds the events list.
@@ -48,7 +48,6 @@ public class NotificationsFragment extends Fragment implements InviteListObserve
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getBaseContext());
         Bundle args = getArguments(); // get the arguments for the fragment activity.
-        // TODO: we should grab any arguments that we have sent to the Notifications UI pretty important!!
         DBIOCore.getInstance().registerToCurrentUserInviteList(this);
     }
 
@@ -77,7 +76,7 @@ public class NotificationsFragment extends Fragment implements InviteListObserve
 
     /*
         This will write the notifications to main memory and the idea is when the app starts up that person should see a count of there notifications if any exist.
-        TODO: @Miles, this is something I'd like to be able to grab out of the database if possible, but I'm doing it this way for us to be able to have something that counts notifications for us.
+
      */
     private void writeNotificationsCountToMainMemory(int count)
     {

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameRecord;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameSnapshot;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
@@ -120,11 +121,15 @@ public final class BoardUI extends View implements GameSnapshotObserver {
         Snackbar.make(this, display, Snackbar.LENGTH_INDEFINITE).show(); // show the snackbar of the player!
     }
 
-    // display the winner text if someone wins a game.
+    // display the tie text if the game is a tie.
     public void displayTieCaption()
     {
+        String p1 = getBlackPlayer();
+        String p2 = getWhiteplayer();
+        GameRecord record = new GameRecord(p1, p2, driver.getGameState());
+
         String display = "This Game is a Tie!";
-        Snackbar.make(this, display, Snackbar.LENGTH_INDEFINITE).show(); // show the snackbar of the player!
+        Snackbar.make(this, display, Snackbar.LENGTH_INDEFINITE).show(); // show the snackbar to alert the user.
     }
 
     public void displayInProgressCaption()

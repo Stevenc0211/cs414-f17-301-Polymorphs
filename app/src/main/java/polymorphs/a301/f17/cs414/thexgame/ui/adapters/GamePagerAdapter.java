@@ -18,11 +18,6 @@ import polymorphs.a301.f17.cs414.thexgame.ui.BoardUI;
 public class GamePagerAdapter extends PagerAdapter {
 
     private ArrayList<BoardUI> games; // this arraylist holds the GridView of the games that we are working with here.
-    private BoardUI currentGame; // holds the current game that the user has swiped to.
-    private BoardUI boardUI; // holds the chess board that we are going to be working on.
-    private ArrayList<String> events = new ArrayList<>(); // todo: this should filled out after a call to our database. This will allow us to be able to get events about the game for the user to look at.
-    private ActivityListAdapter eventsListAdapter; // the events adapter here for us to update, very important!
-    private SquareAdapter squareAdapter; // holds our square adapter which will allow us to be able to work on our lists and update the information for the players to be able to play a game!
     private View inGameUI;
 
     private ArrayList<View> views = new ArrayList<View>(); // views to be added to the GamePager

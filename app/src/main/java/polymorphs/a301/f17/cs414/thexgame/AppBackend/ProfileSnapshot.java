@@ -6,7 +6,7 @@ package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 
 public class ProfileSnapshot {
 
-    private String profileString;
+    private String profileString; // this is the image of the snapshot to be converted into a base64 object again.
     private String nickname;
     private double winRatio;
     private String dbKey;

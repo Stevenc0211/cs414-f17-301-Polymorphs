@@ -26,7 +26,6 @@ public class MovePieceActionListener {
     private int fromCol = 0; // the col that was selected when teh moveActions has started.
     private TileUI fromTile; // the tile that was selected when the moveAction has started.
     private String pieceName = " "; // holds the name of the piece and what it contains and what not.
-    private Driver driver; // holds a copy of the driver object that we are using.
 
     private ArrayList<int[]> availableMoves = new ArrayList<>(); // this is the moves that we are trying to grab right here.
 
@@ -89,12 +88,6 @@ public class MovePieceActionListener {
         }
         else if(moveActionStarted == true && !clickedTile.hasPiece()) // check to make sure that the clicked tile does not have a piece and a click action has already started.
         {
-            // For LOCAL running use the line below
-            // NOTE: to run game you MUST replace user1 nickname with your nickname
-//             int moveResult = boardUI.getDriver().makeMove(currentUser.getNickname(), fromRow, fromCol, row, col);
-
-            // For REMOTE running use the line below (this will be our standard once everything is working)
-            // NOTE: to run game you MUST replace user1 nickname with your nickname
             int moveResult = boardUI.getDriver().makeMove(DBIOCore.getInstance().getCurrentUserUsername(), fromRow, fromCol, row, col);
             if (moveResult != -1) {
                 if (currentUser.equals(user1)) {    // BreadCrumb: turn order hack
@@ -126,8 +119,6 @@ public class MovePieceActionListener {
             unhighlightSquares(availableMoves);
             boardUI.invalidate();
             reset(); // reset the click action listener to allow for the rest of the board to behave in the way that it should
-
-
         }
     }
 }
