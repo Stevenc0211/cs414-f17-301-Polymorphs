@@ -38,8 +38,13 @@ public class GamePageChangeListener implements ViewPager.OnPageChangeListener {
     {
         // removed this as it is causing issues on the phone for Andy, need to find a new way to inform users that are being used by Roger, pretty important!
         BoardUI currentBoard = homescreenActivity.getGameAt(position);
-        String vsTitle = currentBoard.getWhiteplayer() +  " vs " + currentBoard.getBlackPlayer(); // the title of the snackbar itself.
-        Snackbar.make(homescreenActivity.findViewById(R.id.mainContentScreen), vsTitle, Snackbar.LENGTH_SHORT).show(); // show the snackbar plus the game for the users to see, this is actually pretty cool!!! You'll see
+        if (currentBoard.getGameState() == 0) {
+           currentBoard.displayInProgressCaption();
+        } else if (currentBoard.getGameState() == 1) {
+            currentBoard.displayWinnerCaption();
+        } else if (currentBoard.getGameState() == 2) {
+            currentBoard.displayTieCaption();
+        }
         homescreenActivity.switchToGameAt(position);
     }
 

@@ -59,7 +59,7 @@ public class MovePieceActionListener {
         boardUI.setHighlightedSquares(availableMoves); // set the available moves that will tell the board which ui elements should be used to generate the highlighted squares.
     }
 
-    User user1 = new User("tmp", "tmp", "thenotoriusrog"); // BreadCrumb: turn order hack
+    User user1 = new User("tmp", "tmp", "razor"); // BreadCrumb: turn order hack
     User user2 = new User("tmp", "tmp", "black"); // BreadCrumb: turn order hack
     User currentUser = user1; // BreadCrumb: turn order hack
 
@@ -96,79 +96,37 @@ public class MovePieceActionListener {
             // For REMOTE running use the line below (this will be our standard once everything is working)
             // NOTE: to run game you MUST replace user1 nickname with your nickname
             int moveResult = boardUI.getDriver().makeMove(DBIOCore.getInstance().getCurrentUserUsername(), fromRow, fromCol, row, col);
-            if(moveResult == 1)
-            {
-                if (currentUser.equals(user1)) {    // BreadCrumb: turn order hack
-                    currentUser = user2;            // BreadCrumb: turn order hack
-                } else {                            // BreadCrumb: turn order hack
-                    currentUser = user1;            // BreadCrumb: turn order hack
-                }                                   // BreadCrumb: turn order hack
-
-                // TODO: Roger this has a few things that needs to be worked out for this to work properly.
-               // boardUI.getHomescreenActivity().changeTurnText(currentUser.getNickname()); // change the text of the player whos turn is going.
-
-                unhighlightSquares(availableMoves);
-                // do the code below
-                // move the piece and unhighlight the board.
-                // create the updated tiles.
-                TileUI updatedFromTile = new TileUI(fromRow, fromCol, boardUI.getContext()); // update the fromTile using the coordinates.
-                TileUI updatedToTile = new TileUI(row, col, boardUI.getContext()); // create a new tile that will place the new tile into the board moving the pieces.
-
-                // replace the tiles in the correct array.
-                boardUI.replaceAndUpdateTile(updatedFromTile, fromRow, fromCol, " "); // update the fromTile to show no pieces.
-                boardUI.replaceAndUpdateTile(updatedToTile, row, col, this.pieceName); // update the toTile which will then place the pieces where they need to be.
-
-                boardUI.invalidate(); // refresh the layout.
-                reset(); // reset the move action listener.
-            }
-            else if (moveResult == 0) {
-
-                // needed to ensure that we can in fact set the queen's in the correct way.
-
-                unhighlightSquares(availableMoves); // have the board unhighlight everyone
-                boardUI.invalidate(); // refresh the layout.
-                boardUI.displayWinnerCaption(); // tell the board to display the winner of the game!!
-                reset(); // reset the click listener.
-            }
-            else if( moveResult == -1) // move was invalid
-            {
-                // remove the highlights but don't do anything else.
-                unhighlightSquares(availableMoves);
-                boardUI.invalidate();
-                reset(); // reset the click action listener to allow for the rest of the board to behave in the way that it should
-            }
-            else if( moveResult == 2) // promote black rook to a queen.
-            {
-                // needed to ensure that we can in fact set the queen's in the correct way.
+            if (moveResult != -1) {
                 if (currentUser.equals(user1)) {    // BreadCrumb: turn order hack
                     currentUser = user2;            // BreadCrumb: turn order hack
                 } else {                            // BreadCrumb: turn order hack
                     currentUser = user1;            // BreadCrumb: turn order hack
                 }
-
                 TileUI updatedFromTile = new TileUI(fromRow, fromCol, boardUI.getContext()); // update the fromTile using the coordinates.
                 TileUI updatedToTile = new TileUI(row, col, boardUI.getContext()); // create a new tile that will place the new tile into the board moving the pieces.
-
-                if(this.pieceName.equals("wrook")) // check if a white queen had entered into a castle
-                {
+                if (moveResult == 1) {
+                    if(this.pieceName.equals("wrook")) // check if a white queen had entered into a castle
+                    {
+                        boardUI.replaceAndUpdateTile(updatedFromTile, fromRow, fromCol, " "); // update the fromTile to show no pieces.
+                        boardUI.replaceAndUpdateTile(updatedToTile, row, col, "wqueen"); // update the toTile which will then place the pieces where they need to be.
+                    }
+                    else if(this.pieceName.equals("brook")) // check if a black queen has entered into a castle.
+                    {
+                        boardUI.replaceAndUpdateTile(updatedFromTile, fromRow, fromCol, " "); // update the fromTile to show no pieces.
+                        boardUI.replaceAndUpdateTile(updatedToTile, row, col, "bqueen"); // update the toTile which will then place the pieces where they need to be.
+                    }
+                } else {
+                    // replace the tiles in the correct array.
                     boardUI.replaceAndUpdateTile(updatedFromTile, fromRow, fromCol, " "); // update the fromTile to show no pieces.
-                    boardUI.replaceAndUpdateTile(updatedToTile, row, col, "wqueen"); // update the toTile which will then place the pieces where they need to be.
+                    boardUI.replaceAndUpdateTile(updatedToTile, row, col, this.pieceName); // update the toTile which will then place the pieces where they need to be.
                 }
-                else if(this.pieceName.equals("brook")) // check if a black queen has entered into a castle.
-                {
-                    boardUI.replaceAndUpdateTile(updatedFromTile, fromRow, fromCol, " "); // update the fromTile to show no pieces.
-                    boardUI.replaceAndUpdateTile(updatedToTile, row, col, "bqueen"); // update the toTile which will then place the pieces where they need to be.
-                }
+            }
 
-                unhighlightSquares(availableMoves); // remove the highlights.
-                boardUI.invalidate(); // refresh the board layout.
-                reset(); // reset the move action listener so that we are able to get things working.
-            }
-            else {
-                unhighlightSquares(availableMoves); // takes the moves that were created and removes the blue highlights.
-                boardUI.invalidate(); // refresh the layout.
-                reset(); // reset the move action listener.
-            }
+            // remove the highlights
+            unhighlightSquares(availableMoves);
+            boardUI.invalidate();
+            reset(); // reset the click action listener to allow for the rest of the board to behave in the way that it should
+
 
         }
     }

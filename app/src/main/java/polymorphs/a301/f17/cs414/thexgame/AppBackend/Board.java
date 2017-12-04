@@ -302,33 +302,47 @@ class Board {
         return result;
     }
 
+
     /**
-     * Given a player determines if that player is in checkmate
-     * @param player - the player to check
-     * @return true if the player is in checkmate, false if otherwise
+     * Given a player determines if that player is in checkmate, in a tie or is still in standard play.
+     * @return 0 if game is in progress, 1 if player is in checkmate, 2 if player is in a tie
      */
-    boolean inCheckmate(Player player) {
-        King king = player.getKing();
-        if (!kingInCheck(king)) return false;
+    int getPlayerStatus(Player currentPlayer, Player opponent) {
+        boolean checkmate = true;
+        boolean stalemate = true;
+        King king = currentPlayer.getKing();
         Tile lastTile;
         ArrayList<ArrayList<Tile>> allMovePaths;
-        for (Piece piece : player.getPieces()) {
+        for (Piece piece : currentPlayer.getPieces()) {
             if (!piece.isAvailable()) continue;
             allMovePaths = piece.getAllMovePaths(this);
             for (ArrayList<Tile> movePath : allMovePaths) {
-                if (!validateMovePath(movePath, player)) continue;
+                if (!validateMovePath(movePath, currentPlayer)) continue;
                 lastTile = movePath.get(movePath.size()-1);
                 if (piece instanceof King) {
                     if(!isValidKingMove(piece.getRow(),piece.getCol(),lastTile.getRow(),lastTile.getCol())) continue;
                 }
                 if (!moveResultsInCheck(king,piece.getRow(),piece.getCol(),lastTile.getRow(),lastTile.getCol())) {
-                    return false;
+                    checkmate = false;
+                    stalemate = false;
                 }
             }
-
         }
-        return true;
+        if (kingInCheck(currentPlayer.getKing())) {
+            stalemate = false;
+        } else {
+            checkmate = false;
+        }
+        if (currentPlayer.getActivePieceCount() < 3 && opponent.getActivePieceCount() < 3) stalemate = true;
+        if (checkmate) {
+            return 1;
+        } else if (stalemate) {
+            return 2;
+        } else {
+            return 0;
+        }
     }
+
 
     /**
      * This is used to check for additional restraints for kings. This will handle moving into check,
