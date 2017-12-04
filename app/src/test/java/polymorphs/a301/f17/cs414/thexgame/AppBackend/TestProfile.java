@@ -26,8 +26,8 @@ public class TestProfile {
     public void testGameHistoryToString(){
         Profile p = new Profile("Andy");
         //HashMap<String,GameRecord> history = new HashMap<>();
-        GameRecord record = new GameRecord("Andy","Jack",true);
-        GameRecord record2 = new GameRecord("Andy","John",false);
+        GameRecord record = new GameRecord("Andy","Jack",1);
+        GameRecord record2 = new GameRecord("Andy","John",-1);
         p.getGamesHistory().put("1",record);
         p.getGamesHistory().put("2",record2);
         //assertEquals("{1=Andy,Jack,2017.12.03.12.51.27,true,null, 2=Andy,John,2017.12.03.12.51.27,false,null}",p.getGamesHistory().toString());
@@ -36,8 +36,8 @@ public class TestProfile {
     @Test
     public void testProfileToString(){
         Profile p = new Profile("Andy");
-        GameRecord record = new GameRecord("Andy","Jack",true);
-        GameRecord record2 = new GameRecord("Andy","John",false);
+        GameRecord record = new GameRecord("Andy","Jack",1);
+        GameRecord record2 = new GameRecord("Andy","John",-1);
         p.getGamesHistory().put("1",record);
         p.getGamesHistory().put("2",record2);
         //System.out.println(p.toString());
@@ -46,8 +46,8 @@ public class TestProfile {
     @Test
     public void testUpdateFromSnapshot(){
         Profile p = new Profile("Andy");
-        GameRecord record = new GameRecord("Andy","Jack",true);
-        GameRecord record1 = new GameRecord("Andy","John",false);
+        GameRecord record = new GameRecord("Andy","Jack",1);
+        GameRecord record1 = new GameRecord("Andy","John",-1);
         p.getGamesHistory().put("1",record);
         p.getGamesHistory().put("2",record1);
         ProfileSnapshot snapshot = new ProfileSnapshot(p);

@@ -69,6 +69,6 @@ public class GameRecord implements Serializable {
     }
 
     public String toString(){
-        return player + "-" + opponent + "-" + endDate + "-" + won;
+        return player + "!" + opponent + "!" + endDate + "!" + won;
     }
 }

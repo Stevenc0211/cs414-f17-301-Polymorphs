@@ -12,7 +12,7 @@ public class TestGameRecord {
     @Test
     public void testInstanceCreation(){
         try{
-            GameRecord record = new GameRecord("Andy","Jack",true);
+            GameRecord record = new GameRecord("Andy","Jack",1);
         }
         catch (Exception e){
             fail("ERROR: Game record failed to instantiate");
@@ -20,7 +20,7 @@ public class TestGameRecord {
     }
     @Test
     public void testToString(){
-        GameRecord record = new GameRecord("Andy","Jack",true);
+        GameRecord record = new GameRecord("Andy","Jack",1);
         System.out.println(record.toString());
     }
 }
