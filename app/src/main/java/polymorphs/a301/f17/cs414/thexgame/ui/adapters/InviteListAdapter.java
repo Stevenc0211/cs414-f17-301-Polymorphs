@@ -38,7 +38,6 @@ public class InviteListAdapter extends ArrayAdapter<Invitation> {
 
         Invitation invite = getItem(position); // grab the game string that we are working with.
 
-        // todo: Team, watch what is happening here, this is how we get the populated list to show the name of the people we want to invite to show up in the list view.
         TextView userToInvite = (TextView) v.findViewById(R.id.item); // notice that the name of the TextView in the .xml file is also called item. Bad practice, but this file is going to be removed anyways.
         userToInvite.setText(invite.getInvitedUser()); // set the text to match that of the users that we want to invite, <-- this is the real important part, we are setting the text to show a list of users.
         View.OnClickListener selectedToggler = new View.OnClickListener() {

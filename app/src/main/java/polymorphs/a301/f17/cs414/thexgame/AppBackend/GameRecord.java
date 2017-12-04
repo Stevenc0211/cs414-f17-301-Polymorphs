@@ -6,13 +6,16 @@ import java.util.Date;
 
 /**
  * Created by athai on 11/3/17.
+ * Made serializable to for easier passing into the history fragment. It does not change anything of the code at all. ~ Roger
  */
 
-public class GameRecord {
+public class GameRecord implements Serializable {
     private String player;
     private String opponent;
     private String endDate;
     private int won; // 1 if won, -1 if lost, 0 if tied
+
+    public GameRecord() {} // needed or causes crashes with the database apprently.
 
     public GameRecord(String player,String opponent,int won){
         this.player = player;
@@ -66,6 +69,6 @@ public class GameRecord {
     }
 
     public String toString(){
-        return player + "-" + opponent + "-" + endDate + "-" + won;
+        return player + "!" + opponent + "!" + endDate + "!" + won;
     }
 }

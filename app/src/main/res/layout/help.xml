@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:textSize="14sp"
         android:textColor="@color/Black"
+        android:scrollbars="vertical"
         />
 
 </RelativeLayout>

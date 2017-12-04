@@ -45,25 +45,4 @@
     </android.support.v4.view.ViewPager>
 
 
-
-    <!-- the view with the colors with a transparent black background!
-    removed for now because it does not work correctly! Need to get that working from within the UI itself!
-    <RelativeLayout
-        android:id="@+id/winnerLoserText"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:background="#CCFF0000"
-        >
-        <TextView
-            android:id="@+id/winnerLoserCaption"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:text="White wins!"
-            android:textSize="40sp"
-            />
-    </RelativeLayout>
-    -->
-
 </RelativeLayout>

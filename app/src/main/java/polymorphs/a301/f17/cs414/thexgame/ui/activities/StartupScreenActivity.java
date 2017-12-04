@@ -40,7 +40,7 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
     private View googleSignInButton; // holds the google sign-in button.
 
     private GoogleApiClient googleClient; // a GoogleApiClient used to allow users to sign in with their credentials.
-    private ProgressDialog progressDialog; // TODO: deprecated, change this to something that is more recent!!!
+    private ProgressDialog progressDialog;
 
     private static final int RC_SIGN_IN = 9001;
     private final int SET_USERNAME = 9002; // details what we are doing for the username.
@@ -138,30 +138,17 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
         }
         else if(requestCode == SET_USERNAME) // if the request code came from SetUsernameActivity.
         {
-
-            System.out.println("Setting up username now...");
             Bundle d = data.getBundleExtra("results");
-            //name = d.getString("name"); // this comes back as null
-            //email = d.getString("email"); // this comes back as null.
             username = d.getString("username"); // this comes back fine.
-
-            System.out.println("name we got from activity: " + name);
-            System.out.println("email we got from activity: " + email);
-            System.out.println("username we got from activity" + username);
-
 
             DBIOCore.getInstance().setCurrentUserUsername(username); // set the username grabbed from the activity.
             delayHandler.post(transferToHomescreen);
-            // note: in the very first run, we have our current user and we can grab their name and email, but when the app is closed we lose our current user.
-            //writeBasicInfoToMemory(currentUser.getName(), currentUser.getEmail(), username); // write the user's basic info to main memory.
-            //displayHomescreen();
         }
     }
 
     Handler delayHandler = new Handler();
 
     private void handleSignInResult(GoogleSignInResult result) {
-        //Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
 
             // Signed in successfully, show authenticated UI.
@@ -173,12 +160,7 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
             delayHandler.post(setupDriver);
         }
         else // Signed out, show unauthenticated UI.
-        {
-
-            System.out.println("Log in was a failure!!");
-           // Intent mainGameUIIntent = new Intent(StartupScreenActivity.this, HomescreenActivity.class); // main game ui intent that is sent when the app is started.
-            //startActivity(mainGameUIIntent);
-        }
+        {}
     }
 
     private Runnable setupCore = new Runnable() {
@@ -210,7 +192,7 @@ public class StartupScreenActivity extends AppCompatActivity implements GoogleAp
 
                 DBIOCore.getInstance().registerToUsernameList(StartupScreenActivity.this);
                 DBIOCore.getInstance().registerToCurrentUser(StartupScreenActivity.this);
-
+                DBIOCore.getInstance().setupProfile();
                 delayHandler.post(transferToHomescreen);
             }
 
