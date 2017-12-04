@@ -12,7 +12,7 @@ class Player {
     private Color color;
     private ArrayList<Piece> pieces = new ArrayList<Piece>();
 
-    public Player(String nickname,Color color){
+    Player(String nickname,Color color){
         this.color = color;
         this.nickname = nickname;
         initializePieces();
@@ -43,7 +43,7 @@ class Player {
     /**
      * This is used to add piece to list of pieces for database usage
      */
-    public void addPieces(String type,int row,int col,boolean available){
+    void addPieces(String type,int row,int col,boolean available){
         //add the appropriate piece
         if(type.equals("King")){
             King king = new King(row,col,available,color);
@@ -63,7 +63,7 @@ class Player {
         return pieces;
     }
 
-    public void initializePieces(){
+    private void initializePieces(){
         if(color.equals(Color.WHITE)){
             pieces.add(new King(8,3,true,Color.WHITE));
             pieces.add(new Rook(7,2,true,Color.WHITE));
@@ -108,12 +108,24 @@ class Player {
      * @param rook - the rook to premote
      * @return  the new Queen if the passed rook existed in the players pieces, null if otherwise
      */
-    public Queen promoteRook(Rook rook) {
+    Queen promoteRook(Rook rook) {
         int idx = pieces.indexOf(rook);
         if (idx == -1) return null;
         Queen newQueen = new Queen(rook.getRow(), rook.getCol(), rook.isAvailable(), rook.getColor());
         pieces.set(idx, newQueen);
         return newQueen;
+    }
+
+    /**
+     * Returns the number of active (non-captured) pieces the player has remaining
+     * @return the number of player pieces still on the board
+     */
+    int getActivePieceCount() {
+        int count = 0;
+        for (Piece piece : pieces) {
+            if (piece.isAvailable()) count++;
+        }
+        return count;
     }
 
     int getIndexOf(Piece piece) {

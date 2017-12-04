@@ -22,11 +22,13 @@ public class TestBoard {
 
     private Board b;
     private Player white;
+    private Player black;
 
     @Before
     public void setup() {
         b = new Board();
         white = new Player("name", Color.WHITE);
+        black = new Player("name", Color.BLACK);
     }
 
 
@@ -69,8 +71,8 @@ public class TestBoard {
 
     @Test
     public void testIsValidMoveWrongColor() {
-        b.getTile(7,3).occupyTile(new Rook(7,3,true, Color.BLACK));
-        assertFalse("Should not be able to move piece of a different color", b.isValidMove(white,7,3,5,3));
+        b.getTile(9,9).occupyTile(new Rook(9,9,true, Color.BLACK));
+        assertFalse("Should not be able to move piece of a different color", b.isValidMove(white,9,9,9,10));
     }
 
     @Test
@@ -132,11 +134,11 @@ public class TestBoard {
 
     // ---------- All capture tests ---------- //
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testIsValidMoveFriendlyCapture() {
-        b.getTile(7,7).occupyTile(new Rook(7,7,true,Color.WHITE));
-        b.getTile(7,5).occupyTile(new Rook(7,5,true,Color.WHITE));
-        b.isValidMove(white,7,5,7,7);
+        b.getTile(9,9).occupyTile(new Rook(9,9,true,Color.WHITE));
+        b.getTile(9,10).occupyTile(new Rook(9,10,true,Color.WHITE));
+        assertFalse("ERROR: white should not be able to capture a white piece", b.isValidMove(white,9,9,9,10));
     }
 
     @Test
@@ -232,40 +234,63 @@ public class TestBoard {
     }
 
     // ---------- Checkmate tests ---------- //
-    @Test
-    public void testKingInCheckmateTrue() {
-        for (Piece piece : white.getPieces()) if (!(piece instanceof King)) piece.setAvailable(false);
-        b.getTile(9,3).occupyTile(white.getKing());
-        b.getTile(0,2).occupyTile(new Rook(0,2,true,Color.BLACK));
-        b.getTile(0,3).occupyTile(new Rook(0,3,true,Color.BLACK));
-        b.getTile(0,4).occupyTile(new Rook(0,4,true,Color.BLACK));
-        assertTrue("King should be in checkmate", b.inCheckmate(white));
+    private Rook[] getBlackRooks(int number) {
+        int idx = 0;
+        Rook[] blackRooks = new Rook[number];
+        for (Piece piece : black.getPieces()) {
+            if (piece instanceof Rook) {
+                if (idx < number && blackRooks[idx] == null) {
+                    blackRooks[idx] = (Rook)piece;
+                    idx++;
+                    continue;
+                }
+            }
+            piece.setAvailable(false);
+        }
+        return blackRooks;
     }
 
     @Test
-    public void testKingInCheckmateFalse1() { // no in check
+    public void testKingInCheckmateTrue() {
         for (Piece piece : white.getPieces()) if (!(piece instanceof King)) piece.setAvailable(false);
+        Rook[] blackRooks = getBlackRooks(3);
         b.getTile(9,3).occupyTile(white.getKing());
-        b.getTile(0,2).occupyTile(new Rook(0,2,true,Color.BLACK));
-        b.getTile(0,4).occupyTile(new Rook(0,4,true,Color.BLACK));
-        assertFalse("King should not be in checkmate", b.inCheckmate(white));
+        b.getTile(0,2).occupyTile(blackRooks[0]);
+        b.getTile(0,3).occupyTile(blackRooks[1]);
+        b.getTile(0,4).occupyTile(blackRooks[2]);
+        assertTrue("King should be in checkmate", b.getPlayerStatus(white, black) == 1);
+    }
+
+    @Test
+    public void testKingInCheckmateFalse1() { // not in check
+        for (Piece piece : white.getPieces()) if (!(piece instanceof King)) piece.setAvailable(false);
+        Rook[] blackRooks = getBlackRooks(3);
+        b.getTile(9,3).occupyTile(white.getKing());
+        b.getTile(0,2).occupyTile(blackRooks[0]);
+        b.getTile(0,4).occupyTile(blackRooks[1]);
+        b.getTile(11,11).occupyTile(blackRooks[2]); // will return stalemate without extra rook
+        assertTrue("King should not be in checkmate", b.getPlayerStatus(white, black) == 0);
     }
 
     @Test
     public void testKingInCheckmateFalse2() { // can move out of check
         for (Piece piece : white.getPieces()) if (!(piece instanceof King)) piece.setAvailable(false);
+        Rook[] blackRooks = getBlackRooks(3);
         b.getTile(9,3).occupyTile(white.getKing());
-        b.getTile(0,3).occupyTile(new Rook(0,3,true,Color.BLACK));
-        assertFalse("King should not be in checkmate", b.inCheckmate(white));
+        b.getTile(0,3).occupyTile(blackRooks[0]);
+        b.getTile(10,11).occupyTile(blackRooks[1]); // will return stalemate without extra rooks
+        b.getTile(11,11).occupyTile(blackRooks[2]); // will return stalemate without extra rooks
+        assertTrue("King should not be in checkmate", b.getPlayerStatus(white, black) == 0);
     }
 
     @Test
     public void testKingInCheckmateFalse3() { // another piece can block check
         for (Piece piece : white.getPieces()) if (!(piece instanceof King)) piece.setAvailable(false);
+        Rook[] blackRooks = getBlackRooks(3);
         b.getTile(9,3).occupyTile(white.getKing());
-        b.getTile(0,2).occupyTile(new Rook(0,2,true,Color.BLACK));
-        b.getTile(0,3).occupyTile(new Rook(0,3,true,Color.BLACK));
-        b.getTile(0,4).occupyTile(new Rook(0,4,true,Color.BLACK));
+        b.getTile(0,2).occupyTile(blackRooks[0]);
+        b.getTile(0,3).occupyTile(blackRooks[1]);
+        b.getTile(0,4).occupyTile(blackRooks[2]);
         Piece tmp = white.getPieces().get(0);
         if (!(tmp instanceof Rook)) {
             tmp = white.getPieces().get(1);
@@ -273,16 +298,17 @@ public class TestBoard {
         Rook whiteRook = (Rook) tmp;
         whiteRook.setAvailable(true);
         b.getTile(1,5).occupyTile(whiteRook);
-        assertFalse("King should not be in checkmate", b.inCheckmate(white));
+        assertTrue("King should not be in checkmate", b.getPlayerStatus(white, black) == 0);
     }
 
     @Test
     public void testKingInCheckmateFalse4() { // another piece can capture checking piece
         for (Piece piece : white.getPieces()) if (!(piece instanceof King)) piece.setAvailable(false);
+        Rook[] blackRooks = getBlackRooks(3);
         b.getTile(7,3).occupyTile(white.getKing());
-        b.getTile(6,2).occupyTile(new Rook(0,2,true,Color.BLACK));
-        b.getTile(6,3).occupyTile(new Rook(0,3,true,Color.BLACK));
-        b.getTile(6,4).occupyTile(new Rook(0,4,true,Color.BLACK));
+        b.getTile(6,2).occupyTile(blackRooks[0]);
+        b.getTile(6,3).occupyTile(blackRooks[1]);
+        b.getTile(6,4).occupyTile(blackRooks[2]);
         Piece tmp = white.getPieces().get(0);
         if (!(tmp instanceof Rook)) {
             tmp = white.getPieces().get(1);
@@ -290,9 +316,68 @@ public class TestBoard {
         Rook whiteRook = (Rook) tmp;
         whiteRook.setAvailable(true);
         b.getTile(7,2).occupyTile(white.promoteRook(whiteRook));
-        assertFalse("King should not be in checkmate", b.inCheckmate(white));
+        assertTrue("King should not be in checkmate", b.getPlayerStatus(white, black) == 0);
     }
 
+    // ---------- Stalemate tests ---------- //
+
+    @Test
+    public void testStalemateFalse1() {
+        b.addPlayerPieces(white);
+        b.addPlayerPieces(black);
+        assertFalse("ERROR: starting board must not be stalemate", b.getPlayerStatus(white, black) == 2);
+    }
+
+    @Test
+    public void testStalemateFalse2() {
+        for (Piece piece : white.getPieces()) if (!(piece instanceof King)) piece.setAvailable(false);
+        b.getTile(7,3).occupyTile(white.getKing());
+        Rook[] blackRooks = getBlackRooks(3);
+        b.getTile(6,11).occupyTile(blackRooks[0]);
+        b.getTile(6,3).occupyTile(blackRooks[1]); // will return stalemate without extra rooks
+        b.getTile(6,10).occupyTile(blackRooks[2]); // will return stalemate without extra rooks
+        assertFalse("ERROR: king can move, should not be stalemate", b.getPlayerStatus(white, black) == 2);
+    }
+
+    @Test
+    public void testStalemateFalse3() {
+        for (Piece piece : white.getPieces()) if (!(piece instanceof King)) piece.setAvailable(false);
+        b.getTile(8,3).occupyTile(white.getKing());
+        Rook[] blackRooks = getBlackRooks(4);
+        b.getTile(6,2).occupyTile(blackRooks[0]);
+        b.getTile(6,4).occupyTile(blackRooks[1]);
+        b.getTile(7,7).occupyTile(blackRooks[2]);
+        b.getTile(9,9).occupyTile(blackRooks[3]);
+        Piece tmp = white.getPieces().get(0);
+        if (!(tmp instanceof Rook)) {
+            tmp = white.getPieces().get(1);
+        }
+        Rook whiteRook = (Rook) tmp;
+        whiteRook.setAvailable(true);
+        b.getTile(0,0).occupyTile(white.promoteRook(whiteRook));
+        assertFalse("ERROR: the rook can move, should not be stalemate", b.getPlayerStatus(white, black) == 2);
+    }
+
+    @Test
+    public void testStalemateTrue1() {
+        for (Piece piece : white.getPieces()) if (!(piece instanceof King)) piece.setAvailable(false);
+        b.getTile(8,3).occupyTile(white.getKing());
+        getBlackRooks(1);
+        b.addPlayerPieces(black);
+        assertTrue("ERROR: neither player has enough piece to preform checkmate", b.getPlayerStatus(white, black) == 2);
+    }
+
+    @Test
+    public void testStalemateTrue2() {
+        for (Piece piece : white.getPieces()) if (!(piece instanceof King)) piece.setAvailable(false);
+        b.getTile(8,3).occupyTile(white.getKing());
+        Rook[] blackRooks = getBlackRooks(4);
+        b.getTile(6,2).occupyTile(blackRooks[0]);
+        b.getTile(6,4).occupyTile(blackRooks[1]);
+        b.getTile(7,7).occupyTile(blackRooks[2]);
+        b.getTile(9,9).occupyTile(blackRooks[3]);
+        assertTrue("ERROR: white has no moves but is not in check, should be stalemate", b.getPlayerStatus(white, black) == 2);
+    }
     // ---------- Board init w/Player pieces tests ---------- //
     @Test
     public void testAddPlayerPieces() {
@@ -329,7 +414,6 @@ public class TestBoard {
 
     @Test
     public void testInitWhiteKingPlacement() {
-        Player black = new Player("name", Color.BLACK);
         b = new Board(white,black);
         boolean test = b.getTile(8,3).isOccupied();
         test = test & b.getTile(8,3).getPiece().getColor() == Color.WHITE;
