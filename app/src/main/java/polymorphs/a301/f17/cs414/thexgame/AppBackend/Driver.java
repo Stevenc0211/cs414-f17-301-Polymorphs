@@ -97,14 +97,18 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
      */
     public int makeMove(String nickname, int fromRow, int fromCol, int toRow,int toCol) {
         int result = games.get(currentGameKey).makeMove(nickname,fromRow,fromCol,toRow,toCol);
-        if (result == 0) {
-            // book keeping for a finished game should go here. Will need to wait until the DB is set up to handle games and game results
-        } else if (result > 0) {
-            GameSnapshot snapshot = new GameSnapshot(games.get(currentGameKey));
-            snapshot.setDbKey(currentGameKey);
-            DBIOCore.getInstance().updateGameSnapshot(snapshot);
-        }
+        GameSnapshot snapshot = new GameSnapshot(games.get(currentGameKey));
+        snapshot.setDbKey(currentGameKey);
+        DBIOCore.getInstance().updateGameSnapshot(snapshot);
         return result;
+    }
+
+    /**
+     * Returns the game state of the current game.
+     * @return 0 if the game is in progress, 1 if the game was won, 2 if the game was a tie
+     */
+    public int getGameState() {
+        return games.get(currentGameKey).getGameState();
     }
 
     // returns the name of the player who won the game!

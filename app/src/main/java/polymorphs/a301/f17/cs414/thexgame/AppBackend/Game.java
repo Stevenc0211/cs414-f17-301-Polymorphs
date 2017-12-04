@@ -14,10 +14,11 @@ class Game {
     private Player p2;
     private Player currentPlayer;
     private Board board;
-    private Player winner;
-    private Player loser;
-
+    private int gameState; // 0 = in progress, 1 = won, 2 = tie
+    private String winner;
+    private String loser;
     public Game(String nickname1,String nickname2){
+        gameState = 0;
         p1 = new Player(nickname1,Color.WHITE);
         currentPlayer = p1;
         p2 = new Player(nickname2,Color.BLACK);
@@ -32,17 +33,25 @@ class Game {
         return currentPlayer;
     }
 
-    public Player getP1(){
-        return p1;
-    }
-
-    public Player getP2(){
-        return p2;
-    }
-
     String getP1Nickname() { return p1.getNickname();}
 
     String getP2Nickname() { return p2.getNickname();}
+
+    String getWinnerNickname() {
+        return winner;
+    }
+
+    String getLoserNickname() {
+        return loser;
+    }
+
+    /**
+     * Returns the games state.
+     * @return 0 if game is in progress, 1 if the game has been won, 2 if the game resulted in a tie
+     */
+    int getGameState() {
+        return gameState;
+    }
 
     public Board getBoard(){
         return board;
@@ -56,10 +65,11 @@ class Game {
      * @param fromCol- the y coordinate of the moves starting tile
      * @param toRow- the x coordinate of the moves ending tile
      * @param toCol- the y coordinate of the moves ending tile
-     * @return -1 if the move was invalid, 1 if the move was successful, 0 if the move ended the game
+     * @return -1 if the move was invalid, 0 if the move was successful, 1 if the move resulted in promotion
      */
     int makeMove(String nickname, int fromRow, int fromCol, int toRow,int toCol)
     {
+        if (gameState != 0) return -1;
         Player activePlayer = getPlayerForNickname(nickname);
         if (activePlayer == null) return -1;
 
@@ -67,29 +77,44 @@ class Game {
 
         if (board.isValidMove(activePlayer , fromRow, fromCol, toRow, toCol))
         {
-
-            boolean promotionOccurred = movePiece(fromRow, fromCol, toRow, toCol);
-            if (currentPlayer == p1) {
-                currentPlayer = p2;
-            } else {
-                currentPlayer = p1;
-            }
-            if (board.inCheckmate(currentPlayer)) {
-                if (currentPlayer == p1) {
-                    currentPlayer = p2;
-                } else {
-                    currentPlayer = p1;
-                }
-                return 0;
-            }
-            if(promotionOccurred) // a promotion has occured.
-            {
-                return 2;
-            }
-            return 1;
+            boolean promotion = handleMoveResult(fromRow, fromCol, toRow, toCol);
+            if (promotion) return 1;
+            return 0;
         } else {
             return -1;
         }
+    }
+
+    /** Helper for makeMove
+     * After a move has been validated this method preforms the move then determines the result of making the move.
+     * @return true if the move results in promotion, false if not
+     */
+    private boolean handleMoveResult(int fromRow, int fromCol, int toRow,int toCol) {
+        boolean promotionOccurred = movePiece(fromRow, fromCol, toRow, toCol);
+        Player opponent;
+        if (currentPlayer == p1) {
+            currentPlayer = p2;
+            opponent = p1;
+        } else {
+            currentPlayer = p1;
+            opponent = p2;
+        }
+        int playerStatus = board.getPlayerStatus(currentPlayer, opponent);
+        if (playerStatus == 1) {
+            if (currentPlayer == p1) {
+                loser = p1.getNickname();
+                winner = p2.getNickname();
+                currentPlayer = p2;
+            } else {
+                loser = p2.getNickname();
+                winner = p1.getNickname();
+                currentPlayer = p1;
+            }
+            gameState = 1;
+        } else if (playerStatus == 2) {
+            gameState = 2;
+        }
+        return promotionOccurred;
     }
 
     /** Helper for makeMove
@@ -152,6 +177,10 @@ class Game {
         //set nickname of players
         p1.setNickname(snapshot.getNicknameWhite());
         p2.setNickname(snapshot.getNicknameBlack());
+
+        gameState = snapshot.getGameState();
+        winner = snapshot.getWinner();
+        loser = snapshot.getLoser();
 
         //split game string
         String tempGame = snapshot.getGameString();
