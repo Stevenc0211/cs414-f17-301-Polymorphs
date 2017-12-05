@@ -132,14 +132,7 @@ public class HomescreenActivity extends AppCompatActivity
     // When this is called it will remove the game at whatever position the view pager is on
     public void removeCurrentGame()
     {
-        // NOTE: we need to remove this from the DB first because one the UI refreshes the game is snapped to the first one again which is not good.
-        driver.removeCurrentGame(); // removes the current game from the database.
-
-        int currPos = gamePager.getCurrentItem(); // get the item for the view of teh position
-        games.remove(currPos); // remove the game from the list of games.
-        resetGamePager();  // resets the game game pager with the new information.
-
-
+        driver.removeCurrentGame(); // This triggers snapshotRemoved below
     }
 
     // creates a new game for us to be able to work with.
@@ -184,12 +177,22 @@ public class HomescreenActivity extends AppCompatActivity
         gamePager.addOnPageChangeListener(gpcl);
         gamePager.invalidate();
         // TODO: below is how I fix the positioning of the data in the DB
-        switchToGameAt(0); // the UI switches back to the first game, tell the DBIOcore to do the same.
+        if (games.size() > 0) {
+            switchToGameAt(0); // the UI switches back to the first game, tell the DBIOcore to do the same.
+        } else {
+            RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.mainContentScreen);
+            TextView noGame = relativeLayout.findViewById(R.id.noGamesText);
+            noGame.setVisibility(View.VISIBLE); // make the text field appear
+            gamePager.setVisibility(View.GONE); // have the games disappear.
+            gamePager.invalidate();
+        }
+
     }
 
     // this method sets up our game pager.
     protected void setupGamePager()
     {
+        createNewGame("razor", "black");
         gamePager = (ViewPager) findViewById(R.id.gamesListPager); // get the game pager that will basically fill out the games!
         boardUI = (BoardUI) findViewById(R.id.chessboard);
         boardUI.setHomescreenActivity(this); // send a copy of the homescreen activity to allow for certain displaying of certain UI elements.
@@ -446,7 +449,11 @@ public class HomescreenActivity extends AppCompatActivity
     }
 
     @Override
-    public void snapshotRemoved(GameSnapshot removedSnapshot) {}
+    public void snapshotRemoved(GameSnapshot removedSnapshot) {
+        int currPos = gamePager.getCurrentItem(); // get the item for the view of the position
+        games.remove(currPos); // remove the game from the list of games.
+        resetGamePager();  // resets the game game pager with the new information.
+    }
 
     @Override
     public void recordAdded(GameRecord addedRecord, String precedingRecordKey) {
