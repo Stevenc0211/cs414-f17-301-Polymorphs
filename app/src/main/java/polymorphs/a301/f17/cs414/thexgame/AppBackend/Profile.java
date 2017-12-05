@@ -36,6 +36,10 @@ public class Profile implements GameRecordListObserver {
         return nickname;
     }
 
+    public void setNickname(String nickname){
+        this.nickname = nickname;
+    }
+
     public double getWinRatio()
     {
         return winRatio;
@@ -68,7 +72,7 @@ public class Profile implements GameRecordListObserver {
                 totalGames--; // discount ties
             }
         }
-        winRatio = totalWins/totalGames;
+        winRatio = (double)totalWins/totalGames;
 
 
     }

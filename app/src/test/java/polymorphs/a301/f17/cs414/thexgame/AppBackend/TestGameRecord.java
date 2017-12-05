@@ -20,6 +20,7 @@ public class TestGameRecord {
     }
     @Test
     public void testToString(){
+        //unable to fully test due to changing date/time when game record is created
         GameRecord record = new GameRecord("Andy","Jack",1);
         System.out.println(record.toString());
     }
