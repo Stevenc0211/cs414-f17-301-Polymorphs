@@ -128,15 +128,18 @@ public class HomescreenActivity extends AppCompatActivity
     }
 
 
+    // TODO: right here in the method is how I remove the game from the pager as well as the DB.
     // When this is called it will remove the game at whatever position the view pager is on
     public void removeCurrentGame()
     {
-        int currPos = gamePager.getCurrentItem(); // get the item for the view of teh position
+        // NOTE: we need to remove this from the DB first because one the UI refreshes the game is snapped to the first one again which is not good.
+        driver.removeCurrentGame(); // removes the current game from the database.
 
+        int currPos = gamePager.getCurrentItem(); // get the item for the view of teh position
         games.remove(currPos); // remove the game from the list of games.
         resetGamePager();  // resets the game game pager with the new information.
 
-        // todo: need to remove the game from the DB as well as the game pager. do this here so that the UI is updated first and DB after.
+
     }
 
     // creates a new game for us to be able to work with.
@@ -180,6 +183,7 @@ public class HomescreenActivity extends AppCompatActivity
         gamePagerAdapter.notifyDataSetChanged(); // update the number of games in the list view pretty important!
         gamePager.addOnPageChangeListener(gpcl);
         gamePager.invalidate();
+        // TODO: below is how I fix the positioning of the data in the DB
         switchToGameAt(0); // the UI switches back to the first game, tell the DBIOcore to do the same.
     }
 
@@ -235,9 +239,6 @@ public class HomescreenActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        // Molto Importante: This needs to be displayed at the very beginning before we do any work on the app otherwise our UI elements will not be displayed properly this is very important!
-        // (cont): we need to display this first and then update it the app loads, putting this at the end caused the app to break which is not good!
         setContentView(R.layout.homescreen);
         usernames = new HashMap<>();
 

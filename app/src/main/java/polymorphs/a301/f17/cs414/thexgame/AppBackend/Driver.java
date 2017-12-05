@@ -78,6 +78,7 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
      */
     public void removeCurrentGame() {
         GameSnapshot rmSnap = new GameSnapshot(games.get(currentGameKey));
+        rmSnap.setDbKey(currentGameKey);
         DBIOCore.getInstance().removeGameSnapshot(rmSnap);
         currentGameKey = null;
     }
