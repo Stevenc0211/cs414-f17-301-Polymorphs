@@ -73,6 +73,16 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
     }
 
     /**
+     * Removes the current game from the database. Will set the currentGameKey to null!!! Make sure
+     * to use setCurrentGameKey directly after this call
+     */
+    public void removeCurrentGame() {
+        GameSnapshot rmSnap = new GameSnapshot(games.get(currentGameKey));
+        DBIOCore.getInstance().removeGameSnapshot(rmSnap);
+        currentGameKey = null;
+    }
+
+    /**
      * Checks if the passed user has it's nickname in the system, i.e. has registered to the system
      * @param nickname - the nickname to check
      * @return true if the user is registered to the system, false if not
