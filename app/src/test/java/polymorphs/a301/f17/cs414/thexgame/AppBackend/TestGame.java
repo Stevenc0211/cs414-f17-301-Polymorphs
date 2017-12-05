@@ -41,20 +41,20 @@ public class TestGame {
     public void testMakeMoveTurnOrder() { // both players make a valid move with no chained moves
         setupNewGame();
         game.makeMove(white.getNickname(),7,3,5,3);
-        assertEquals("Bottom center black rook should be able to move down 2",1 ,game.makeMove(black.getNickname(),4,8,6,8));
+        assertEquals("Bottom center black rook should be able to move down 2",0 ,game.makeMove(black.getNickname(),4,8,6,8));
     }
 
     @Test
     public void testMakeMoveChain0() { // white 7,2 -> 2,2
         setupNewGame();
-        assertEquals("Move should be valid, white 7,2 -> 2,2",1 ,game.makeMove(white.getNickname(),7,2,2,2));
+        assertEquals("Move should be valid, white 7,2 -> 2,2",0 ,game.makeMove(white.getNickname(),7,2,2,2));
     }
 
     @Test
     public void testMakeMoveChain1() { // black 4,7 -> 11,7
         setupNewGame();
         game.makeMove(white.getNickname(),7,2,2,2);
-        assertEquals("Move should be valid, black 4,7 -> 11,7",1 ,game.makeMove(black.getNickname(),4,7,11,7));
+        assertEquals("Move should be valid, black 4,7 -> 11,7",0 ,game.makeMove(black.getNickname(),4,7,11,7));
     }
 
     // TODO: 11/10/2017 FIX TO STRING
@@ -69,7 +69,7 @@ public class TestGame {
         setupNewGame();
         game.makeMove(white.getNickname(),7,2,2,2);
         game.makeMove(black.getNickname(),4,7,11,7);
-        assertEquals("Move should be valid, white 7,3 -> 4,3",1 ,game.makeMove(white.getNickname(),7,3,4,3));
+        assertEquals("Move should be valid, white 7,3 -> 4,3",0 ,game.makeMove(white.getNickname(),7,3,4,3));
     }
 
     @Test
@@ -78,7 +78,7 @@ public class TestGame {
         game.makeMove(white.getNickname(),7,2,2,2);
         game.makeMove(black.getNickname(),4,7,11,7);
         game.makeMove(white.getNickname(),7,3,4,3);
-        assertEquals("Move should be valid, white 7,3 -> 4,3",1 ,game.makeMove(black.getNickname(),3,7,10,7));
+        assertEquals("Move should be valid, white 7,3 -> 4,3",0 ,game.makeMove(black.getNickname(),3,7,10,7));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class TestGame {
         game.makeMove(black.getNickname(),4,7,11,7);
         game.makeMove(white.getNickname(),7,3,4,3);
         game.makeMove(black.getNickname(),3,7,10,7);
-        assertEquals("Move should be valid, white 7,4 -> 8,4",1 ,game.makeMove(white.getNickname(),7,4,7,5));
+        assertEquals("Move should be valid, white 7,4 -> 8,4",0 ,game.makeMove(white.getNickname(),7,4,7,5));
     }
 
     @Test
@@ -99,7 +99,7 @@ public class TestGame {
         game.makeMove(white.getNickname(),7,3,4,3);
         game.makeMove(black.getNickname(),3,7,10,7);
         game.makeMove(white.getNickname(),7,4,7,5);
-        assertEquals("Move should be valid, black 2,7 -> 9,7",1 ,game.makeMove(black.getNickname(), 2,7,9,7));
+        assertEquals("Move should be valid, black 2,7 -> 9,7",0 ,game.makeMove(black.getNickname(), 2,7,9,7));
     }
 
     @Test
@@ -111,7 +111,7 @@ public class TestGame {
         game.makeMove(black.getNickname(),3,7,10,7);
         game.makeMove(white.getNickname(),7,4,7,5);
         game.makeMove(black.getNickname(), 2,7,9,7);
-        assertEquals("Move should be valid, white 7,5 -> 7,7",1 ,game.makeMove(white.getNickname(),7,5,7,7));
+        assertEquals("Move should be valid, white 7,5 -> 7,7",0 ,game.makeMove(white.getNickname(),7,5,7,7));
     }
 
     @Test
@@ -124,7 +124,7 @@ public class TestGame {
         game.makeMove(white.getNickname(),7,4,7,5);
         game.makeMove(black.getNickname(), 2,7,9,7);
         game.makeMove(white.getNickname(),7,5,7,7);
-        assertEquals("Move should be valid, black 9,7 -> 9,8",1 ,game.makeMove(black.getNickname(), 9,7, 9,8));
+        assertEquals("Move should be valid, black 9,7 -> 9,8",0 ,game.makeMove(black.getNickname(), 9,7, 9,8));
     }
 
     @Test

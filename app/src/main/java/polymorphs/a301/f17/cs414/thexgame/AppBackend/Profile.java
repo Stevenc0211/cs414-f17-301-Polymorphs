@@ -36,6 +36,10 @@ public class Profile implements GameRecordListObserver {
         return nickname;
     }
 
+    public void setNickname(String nickname){
+        this.nickname = nickname;
+    }
+
     public double getWinRatio()
     {
         return winRatio;
@@ -58,6 +62,7 @@ public class Profile implements GameRecordListObserver {
 
     public void setWinRatio()
     {
+
         int totalWins=0;
         int totalGames= gamesHistory.size();
         for (GameRecord record : gamesHistory.values()) {
@@ -67,13 +72,12 @@ public class Profile implements GameRecordListObserver {
                 totalGames--; // discount ties
             }
         }
-
         if(totalGames == 0) // the player has no wins, therefore has no win percentage.
         {
             winRatio = 0;
         }
         else {
-            winRatio = totalWins/totalGames; // calculate win percentage.
+            winRatio = (double)totalWins/totalGames; // calculate win percentage.
         }
 
 
