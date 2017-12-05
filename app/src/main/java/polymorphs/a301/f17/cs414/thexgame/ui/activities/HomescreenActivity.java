@@ -127,6 +127,7 @@ public class HomescreenActivity extends AppCompatActivity
         gamePager.invalidate();
     }
 
+
     // When this is called it will remove the game at whatever position the view pager is on
     public void removeCurrentGame()
     {
@@ -134,16 +135,8 @@ public class HomescreenActivity extends AppCompatActivity
 
         games.remove(currPos); // remove the game from the list of games.
         resetGamePager();  // resets the game game pager with the new information.
-        //setupGamePager();
 
-
-//        gamePagerAdapter = new GamePagerAdapter(games, inGameUI, getBaseContext()); // send in the games that we want to work with that will allow us to send our games to the adapter to update the ViewPager (to swipe horizontally)
-//        GamePageChangeListener gpcl = new GamePageChangeListener(this); // holds the game as well as a copy of the InGameUI that will allow us to see a snack bar for the users to be able to see their game number.
-//
-//        gamePager.setAdapter(gamePagerAdapter);
-//        gamePagerAdapter.notifyDataSetChanged(); // update the number of games in the list view pretty important!
-//        gamePager.addOnPageChangeListener(gpcl);
-//        gamePager.invalidate();
+        // todo: need to remove the game from the DB as well as the game pager. do this here so that the UI is updated first and DB after.
     }
 
     // creates a new game for us to be able to work with.
@@ -171,17 +164,10 @@ public class HomescreenActivity extends AppCompatActivity
         return games.get(position);
     }
 
-
     // returns the number of games.
     public int getNumOfGames()
     {
         return games.size();
-    }
-
-    public void addGameRecord(GameRecord record)
-    {
-        DBIOCore.getInstance().addGameRecord(record); // add this to the game record.
-        userProfile.setWinRatio();
     }
 
     // this resets the game pager with a new set of elements. This is called whenever a game is removed from the view pager.
@@ -194,6 +180,7 @@ public class HomescreenActivity extends AppCompatActivity
         gamePagerAdapter.notifyDataSetChanged(); // update the number of games in the list view pretty important!
         gamePager.addOnPageChangeListener(gpcl);
         gamePager.invalidate();
+        switchToGameAt(0); // the UI switches back to the first game, tell the DBIOcore to do the same.
     }
 
     // this method sets up our game pager.

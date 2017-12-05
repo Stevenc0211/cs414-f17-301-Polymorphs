@@ -118,10 +118,10 @@ public final class BoardUI extends View implements GameSnapshotObserver {
     // display the winner text if someone wins a game.
     public void displayWinnerCaption()
     {
-        String p1 = getBlackPlayer();
-        String p2 = getWhiteplayer();
-        GameRecord record = new GameRecord(p1, p2, driver.getGameState());
-        getHomescreenActivity().addGameRecord(record); // add to the game record.
+//        String p1 = getBlackPlayer();
+//        String p2 = getWhiteplayer();
+//        GameRecord record = new GameRecord(p1, p2, driver.getGameState());
+//        getHomescreenActivity().addGameRecord(record); // add to the game record.
 
         String display = driver.getCurrentPlayerNickname() + " Wins!";
         RemoveGameListener rmGameListener = new RemoveGameListener(getHomescreenActivity()); // send in a copy of the homescreen activity for this listener
@@ -134,10 +134,10 @@ public final class BoardUI extends View implements GameSnapshotObserver {
     // display the tie text if the game is a tie.
     public void displayTieCaption()
     {
-        String p1 = getBlackPlayer();
-        String p2 = getWhiteplayer();
-        GameRecord record = new GameRecord(p1, p2, driver.getGameState());
-        getHomescreenActivity().addGameRecord(record); // add to the game record.
+//        String p1 = getBlackPlayer();
+//        String p2 = getWhiteplayer();
+//        GameRecord record = new GameRecord(p1, p2, driver.getGameState());
+//        getHomescreenActivity().addGameRecord(record); // add to the game record.
 
         String display = "This Game is a Tie!";
         RemoveGameListener rmGameListener = new RemoveGameListener(getHomescreenActivity()); // send in a copy of the homescreen activity for this listener
