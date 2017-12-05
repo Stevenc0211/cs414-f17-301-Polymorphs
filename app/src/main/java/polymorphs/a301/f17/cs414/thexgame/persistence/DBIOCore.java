@@ -215,6 +215,11 @@ public class DBIOCore {
         return key;
     }
 
+    public void removeGameSnapshot(GameSnapshot snapshot) {
+        baseReference.child("gamesnapshotList").child(snapshot.getNicknameWhite()).child(snapshot.getDbKey()).removeValue();
+        baseReference.child("gamesnapshotList").child(snapshot.getNicknameBlack()).child(snapshot.getDbKey()).removeValue();;
+    }
+
     public String addProfileSnapshot(ProfileSnapshot snapshot){
         String key = baseReference.child("profilesnapshotList").child(userNickname).push().getKey();
         baseReference.child("profilesnapshotList").child(userNickname).child(key).setValue(snapshot);
