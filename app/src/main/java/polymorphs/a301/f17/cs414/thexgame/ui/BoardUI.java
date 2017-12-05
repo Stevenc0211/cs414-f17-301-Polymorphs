@@ -28,6 +28,7 @@ import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.persistence.GameSnapshotObserver;
 import polymorphs.a301.f17.cs414.thexgame.ui.activities.HomescreenActivity;
+import polymorphs.a301.f17.cs414.thexgame.ui.listeners.RemoveGameListener;
 
 
 public final class BoardUI extends View implements GameSnapshotObserver {
@@ -123,7 +124,10 @@ public final class BoardUI extends View implements GameSnapshotObserver {
         getHomescreenActivity().addGameRecord(record); // add to the game record.
 
         String display = driver.getCurrentPlayerNickname() + " Wins!";
-        Snackbar.make(this, display, Snackbar.LENGTH_INDEFINITE).show(); // show the snackbar of the player!
+        RemoveGameListener rmGameListener = new RemoveGameListener(getHomescreenActivity()); // send in a copy of the homescreen activity for this listener
+        Snackbar endBar = Snackbar.make(this, display, Snackbar.LENGTH_INDEFINITE); // show the snackbar of the player!
+        endBar.setAction("REMOVE GAME", rmGameListener); // set an action to remove the game from the view pager.
+        endBar.show(); // show the snackbar
 
     }
 
@@ -136,7 +140,10 @@ public final class BoardUI extends View implements GameSnapshotObserver {
         getHomescreenActivity().addGameRecord(record); // add to the game record.
 
         String display = "This Game is a Tie!";
-        Snackbar.make(this, display, Snackbar.LENGTH_INDEFINITE).show(); // show the snackbar to alert the user.
+        RemoveGameListener rmGameListener = new RemoveGameListener(getHomescreenActivity()); // send in a copy of the homescreen activity for this listener
+        Snackbar endBar = Snackbar.make(this, display, Snackbar.LENGTH_INDEFINITE); // show the snackbar of the player!
+        endBar.setAction("REMOVE GAME", rmGameListener); // set an action to remove the game from the view pager.
+        endBar.show(); // show the snackbar
     }
 
     public void displayInProgressCaption()

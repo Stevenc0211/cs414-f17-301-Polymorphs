@@ -127,6 +127,25 @@ public class HomescreenActivity extends AppCompatActivity
         gamePager.invalidate();
     }
 
+    // When this is called it will remove the game at whatever position the view pager is on
+    public void removeCurrentGame()
+    {
+        int currPos = gamePager.getCurrentItem(); // get the item for the view of teh position
+
+        games.remove(currPos); // remove the game from the list of games.
+        resetGamePager();  // resets the game game pager with the new information.
+        //setupGamePager();
+
+
+//        gamePagerAdapter = new GamePagerAdapter(games, inGameUI, getBaseContext()); // send in the games that we want to work with that will allow us to send our games to the adapter to update the ViewPager (to swipe horizontally)
+//        GamePageChangeListener gpcl = new GamePageChangeListener(this); // holds the game as well as a copy of the InGameUI that will allow us to see a snack bar for the users to be able to see their game number.
+//
+//        gamePager.setAdapter(gamePagerAdapter);
+//        gamePagerAdapter.notifyDataSetChanged(); // update the number of games in the list view pretty important!
+//        gamePager.addOnPageChangeListener(gpcl);
+//        gamePager.invalidate();
+    }
+
     // creates a new game for us to be able to work with.
     public BoardUI createNewGame(String whitePlayerNickname, String blackPlayerNickname)
     {
@@ -163,6 +182,18 @@ public class HomescreenActivity extends AppCompatActivity
     {
         DBIOCore.getInstance().addGameRecord(record); // add this to the game record.
         userProfile.setWinRatio();
+    }
+
+    // this resets the game pager with a new set of elements. This is called whenever a game is removed from the view pager.
+    private void resetGamePager()
+    {
+        gamePagerAdapter = new GamePagerAdapter(games, inGameUI, getBaseContext()); // send in the games that we want to work with that will allow us to send our games to the adapter to update the ViewPager (to swipe horizontally)
+        GamePageChangeListener gpcl = new GamePageChangeListener(this); // holds the game as well as a copy of the InGameUI that will allow us to see a snack bar for the users to be able to see their game number.
+
+        gamePager.setAdapter(gamePagerAdapter);
+        gamePagerAdapter.notifyDataSetChanged(); // update the number of games in the list view pretty important!
+        gamePager.addOnPageChangeListener(gpcl);
+        gamePager.invalidate();
     }
 
     // this method sets up our game pager.
