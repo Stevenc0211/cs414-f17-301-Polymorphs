@@ -58,7 +58,6 @@ public class Profile implements GameRecordListObserver {
 
     public void setWinRatio()
     {
-
         int totalWins=0;
         int totalGames= gamesHistory.size();
         for (GameRecord record : gamesHistory.values()) {
@@ -68,7 +67,15 @@ public class Profile implements GameRecordListObserver {
                 totalGames--; // discount ties
             }
         }
-        winRatio = totalWins/totalGames;
+
+        if(totalGames == 0) // the player has no wins, therefore has no win percentage.
+        {
+            winRatio = 0;
+        }
+        else {
+            winRatio = totalWins/totalGames; // calculate win percentage.
+        }
+
 
 
     }

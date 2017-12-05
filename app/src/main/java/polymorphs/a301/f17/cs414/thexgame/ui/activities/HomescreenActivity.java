@@ -120,6 +120,7 @@ public class HomescreenActivity extends AppCompatActivity
         return currentUser;
     }
 
+
     // Simply updates the view pager that we are working with.
     public void updateViewPager()
     {
@@ -161,6 +162,7 @@ public class HomescreenActivity extends AppCompatActivity
     public void addGameRecord(GameRecord record)
     {
         DBIOCore.getInstance().addGameRecord(record); // add this to the game record.
+        userProfile.setWinRatio();
     }
 
     // this method sets up our game pager.
@@ -415,9 +417,6 @@ public class HomescreenActivity extends AppCompatActivity
         driver.setCurrentGameKey(addedSnapshot.getDbKey());
         games.add(newGame);
         gamePagerAdapter.notifyDataSetChanged();
-        //updateViewPager(); this was causing problems
-
-
     }
 
     @Override
@@ -445,14 +444,17 @@ public class HomescreenActivity extends AppCompatActivity
     // for profile snapshot
     @Override
     public void snapshotUpdated(ProfileSnapshot u) {
+
         if (userProfile == null) {
             this.userProfile = new Profile(DBIOCore.getInstance().getCurrentUserUsername());
+            userProfile.setWinRatio();
         }
         this.userProfile.updateFromSnapshot(u);
         if (!userProfile.getPicString().equals("")) {
             byte[] picDecod = Base64.decode(userProfile.getPicString(), Base64.DEFAULT);
             userProfilePic = BitmapFactory.decodeByteArray(picDecod,0,picDecod.length);
             setupHeader();
+            userProfile.setWinRatio();
         }
     }
 
@@ -606,6 +608,8 @@ public class HomescreenActivity extends AppCompatActivity
 
         CurrentUserProfileFragment currUserProfile = new CurrentUserProfileFragment(); // a copy of the CurrentUserProfileFragment
         currUserProfile.setHomescreenActivity(this); // set the homescreen activity for the fragment to use.
+        currUserProfile.setCurrUserProfilePic(userProfilePic); // set the profile picture for the fragment.
+        currUserProfile.setCurrUserProfile(userProfile); // set the profile for the fragment.
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.animator.slide_up_in, R.animator.slide_up_out); // set custom animations for this fragment
         fragmentTransaction.replace(R.id.mainContentScreen, currUserProfile); // replace the homescreenActivity with the CurrentUserProfile
