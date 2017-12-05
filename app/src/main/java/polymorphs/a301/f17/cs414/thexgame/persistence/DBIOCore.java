@@ -216,8 +216,9 @@ public class DBIOCore {
     }
 
     public void removeGameSnapshot(GameSnapshot snapshot) {
-        baseReference.child("gamesnapshotList").child(snapshot.getNicknameWhite()).child(snapshot.getDbKey()).removeValue();
-        baseReference.child("gamesnapshotList").child(snapshot.getNicknameBlack()).child(snapshot.getDbKey()).removeValue();;
+        if (userNickname.equals(snapshot.getNicknameWhite()) || userNickname.equals(snapshot.getNicknameBlack())) {
+            baseReference.child("gamesnapshotList").child(userNickname).child(snapshot.getDbKey()).removeValue();
+        }
     }
 
     public String addProfileSnapshot(ProfileSnapshot snapshot){
