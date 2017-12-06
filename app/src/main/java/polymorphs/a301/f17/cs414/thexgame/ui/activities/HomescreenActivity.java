@@ -544,11 +544,9 @@ public class HomescreenActivity extends AppCompatActivity
         int id = item.getItemId();
         item.setIcon(R.drawable.quit);
 
-
-        if (id == R.id.quit)
+        if (id == R.id.quit) // if user presses the quit button.
         {
-            // todo: when this button is pushed the current user should quit this game generating a win for the other player.
-
+            driver.quitGame(currentUser.getNickname()); // call quit on this game. Have this user quit.
             RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
             Snackbar.make(homescreenLayout, "This feature isn't available yet ¯\\_(ツ)_/¯ ", Snackbar.LENGTH_LONG).show();
             return true;
