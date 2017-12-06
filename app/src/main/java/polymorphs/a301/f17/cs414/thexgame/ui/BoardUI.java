@@ -24,14 +24,17 @@ import java.util.HashMap;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameRecord;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameSnapshot;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Profile;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.ProfileSnapshot;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.persistence.GameSnapshotObserver;
+import polymorphs.a301.f17.cs414.thexgame.persistence.ProfileSnapshotObserver;
 import polymorphs.a301.f17.cs414.thexgame.ui.activities.HomescreenActivity;
 import polymorphs.a301.f17.cs414.thexgame.ui.listeners.RemoveGameListener;
 
 
-public final class BoardUI extends View implements GameSnapshotObserver {
+public final class BoardUI extends View implements GameSnapshotObserver, ProfileSnapshotObserver {
     private static final String TAG = BoardUI.class.getSimpleName();
 
     private static final int ROWS = 12;
@@ -55,6 +58,8 @@ public final class BoardUI extends View implements GameSnapshotObserver {
     private String whitePlayer = ""; // holds the name of the white player
     private String blackPlayer = ""; // holds the name of the black player.
 
+    private Profile nonUserProfile;
+
     public BoardUI(final Context context, final AttributeSet attrs ) {
         super(context, attrs);
 
@@ -76,11 +81,17 @@ public final class BoardUI extends View implements GameSnapshotObserver {
     public void setWhitePlayer(String name)
     {
         whitePlayer = name;
+        if (!whitePlayer.equals(DBIOCore.getInstance().getCurrentUserUsername())) {
+            DBIOCore.getInstance().registerToProfileSnapshot(this, whitePlayer);
+        }
     }
 
     public void setBlackPlayer(String name)
     {
         blackPlayer = name;
+        if (!blackPlayer.equals(DBIOCore.getInstance().getCurrentUserUsername())) {
+            DBIOCore.getInstance().registerToProfileSnapshot(this, blackPlayer);
+        }
     }
 
     public String getWhiteplayer()
@@ -438,5 +449,12 @@ public final class BoardUI extends View implements GameSnapshotObserver {
             }
         }
         invalidate();
+    }
+
+    @Override
+    public void snapshotUpdated(ProfileSnapshot u) {
+        nonUserProfile = new Profile("tmp");
+        nonUserProfile.updateFromSnapshot(u);
+        // TODO: Roger if you need to update the pic from the default or save the decoded pic do so here
     }
 }
