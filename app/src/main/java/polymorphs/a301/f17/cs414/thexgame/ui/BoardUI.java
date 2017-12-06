@@ -457,6 +457,7 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
             }
         }
 
+
         if(getHomescreenActivity().getCurrentUserProfile() != null) // ensure that both profile's are not null
         {
             Profile currUserProfile = getHomescreenActivity().getCurrentUserProfile(); // gets the current user's profile.
