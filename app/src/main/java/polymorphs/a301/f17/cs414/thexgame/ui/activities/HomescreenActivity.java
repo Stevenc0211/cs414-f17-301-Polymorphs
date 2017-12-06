@@ -257,7 +257,7 @@ public class HomescreenActivity extends AppCompatActivity
         DBIOCore.getInstance().registerToUsernameList(this);
         DBIOCore.getInstance().registerToCurrentUser(this);
         DBIOCore.getInstance().registerToGameRecordList(this);
-        DBIOCore.getInstance().registerToProfileSnapshot(this); // this doesn't work I cannot get it to work like I wanted it to.
+        DBIOCore.getInstance().registerCurrentUserProfileSnapshot(this); // this doesn't work I cannot get it to work like I wanted it to.
 
 
     }

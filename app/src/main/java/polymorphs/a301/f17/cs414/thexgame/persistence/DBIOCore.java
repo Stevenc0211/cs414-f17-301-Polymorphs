@@ -181,7 +181,15 @@ public class DBIOCore {
         baseReference.child("gamesnapshotList").child(userNickname).child(snapshotKey).addValueEventListener(new GameSnapshotListener(observer));
     }
 
-    public void registerToProfileSnapshot(ProfileSnapshotObserver observer){
+    /**
+     * WARNING: unchecked reference user is responsible for ensuring the passed nickname is valid and
+     * handling any null snapshots if the nickname is invalid
+     */
+    public void registerToProfileSnapshot(ProfileSnapshotObserver observer, String userNickname){
+        baseReference.child("profilesnapshotList").child(userNickname).addValueEventListener(new ProfileSnapshotListener(observer));
+    }
+
+    public void registerCurrentUserProfileSnapshot(ProfileSnapshotObserver observer){
         baseReference.child("profilesnapshotList").child(userNickname).addValueEventListener(new ProfileSnapshotListener(observer));
     }
 
