@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -135,12 +136,16 @@ public class HomescreenActivity extends AppCompatActivity
         return userProfile;
     }
 
+    public void showToastInvite()
+    {
+        Toast.makeText(getApplicationContext(), "You have received an Invite!", Toast.LENGTH_SHORT).show();
+    }
+
     // Simply updates the view pager that we are working with.
     public void updateViewPager()
     {
         gamePager.invalidate();
     }
-
 
     // When this is called it will remove the game at whatever position the view pager is on
     public void removeCurrentGame()

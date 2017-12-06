@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,6 +91,7 @@ public class NotificationsFragment extends Fragment implements InviteListObserve
         invitationsData.put(precedingInviteKey, addedInvite);
         invitationsListAdapter.notifyDataSetChanged();
 
+        homescreenActivity.showToastInvite();
         writeNotificationsCountToMainMemory(invitationsListAdapter.getCount()); // write notification count to main memory.
         System.out.println("Notification count = " + invitationsListAdapter.getCount());
     }
