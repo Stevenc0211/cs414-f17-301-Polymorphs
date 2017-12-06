@@ -80,6 +80,7 @@ public class CurrentUserProfileFragment extends Fragment {
         super.onCreate(savedInstanceState);
         System.out.println("is currUserProfile null? " + currUserProfile);
         NumberFormat nf = NumberFormat.getInstance();
+        currUserProfile.setWinRatio();
         winPercentage = String.valueOf(currUserProfile.getWinRatio());
 
         username = currUserProfile.getNickname();
