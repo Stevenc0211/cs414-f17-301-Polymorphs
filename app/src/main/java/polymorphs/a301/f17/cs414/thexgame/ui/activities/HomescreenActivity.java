@@ -87,7 +87,7 @@ public class HomescreenActivity extends AppCompatActivity
     private NavigationView navigationView; // a copy of the navigation view to populate our board layout.
 
     // decodes a base64string into a bitmap to allow for the user to get their own profile.
-    private Bitmap decodeBase64String(Profile profile)
+    public Bitmap decodeBase64String(Profile profile)
     {
         Bitmap pic = null; // returns the bitmap of the picture that we want to be using.
         byte[] picDecod = Base64.decode(profile.getPicString(), Base64.DEFAULT);
@@ -251,7 +251,7 @@ public class HomescreenActivity extends AppCompatActivity
     }
 
     // displays the profile picture and the text of the person's turn
-    public void changeTurnIndicator(Profile playerTurnProfile)
+    public void changeTurnIndicator(Profile playerTurnProfile, Bitmap profilePic)
     {
 
         if(currentUser.getNickname().equals(playerTurnProfile.getNickname())) // if its the user's turn tell them its their turn.
@@ -262,19 +262,19 @@ public class HomescreenActivity extends AppCompatActivity
         }
         else // it's not their turn tell them that it's the other player's turn.
         {
-            if(playerTurnProfile.getPicString().isEmpty() || playerTurnProfile.getPicString() == null) // set default image.
-            {
-                playerTurnText.setText("It's " + playerTurnProfile.getNickname() + "'s" + " turn!"); // tell the player that it's the other player's turn!
+            playerTurnText.setText("It's " + playerTurnProfile.getNickname() + "'s" + " turn!");
+            if (profilePic != null) {
+                playerTurnProfPic.setImageBitmap(profilePic); // set the default pic for the other player.
+            }
+        }
+    }
 
-                Bitmap defaultPic = decodeSampledBitmapFromResource(getResources(), R.drawable.blank_profile_image, 100, 100); // decodes the empty profile picture for the player's to look at.
-                playerTurnProfPic.setImageBitmap(defaultPic); // set the default pic for the other player.
-            }
-            else // set their profile picture.
-            {
-                playerTurnText.setText("It's " + playerTurnProfile.getNickname() + "'s" + " turn!");
-                Bitmap nonUserProfilePic = decodeBase64String(playerTurnProfile);
-                playerTurnProfPic.setImageBitmap(nonUserProfilePic); // set the default pic for the other player.
-            }
+    public void changeTurnIndicator(String nickname)
+    {
+        if(currentUser.getNickname().equals(nickname)) {
+            playerTurnText.setText("It's YOUR turn!");
+        } else {
+            playerTurnText.setText("It's " + nickname + "'s" + " turn!");
         }
     }
 
