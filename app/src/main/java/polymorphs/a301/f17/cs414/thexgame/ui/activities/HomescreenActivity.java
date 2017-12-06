@@ -145,7 +145,9 @@ public class HomescreenActivity extends AppCompatActivity
     // When this is called it will remove the game at whatever position the view pager is on
     public void removeCurrentGame()
     {
+        int p = gamePager.getCurrentItem();
         driver.removeCurrentGame(); // This triggers snapshotRemoved below
+        //games.get(p).invalidate(); // invalidate the board.
     }
 
     // creates a new game for us to be able to work with.
@@ -161,11 +163,32 @@ public class HomescreenActivity extends AppCompatActivity
         return newGame; // send back the board UI to work with something.
     }
 
+    public void showIndicators()
+    {
+        playerTurnText.setVisibility(View.VISIBLE);
+        playerTurnProfPic.setVisibility(View.VISIBLE);
+    }
+
+    public void removeIndicators()
+    {
+        playerTurnText.setVisibility(View.GONE); // make the player turn text gone.
+        playerTurnProfPic.setVisibility(View.GONE); // make the profile picture gone.
+    }
+
     // sets the game that was switched within the view pager.
     public void switchToGameAt(int position) {
 
-        Driver.getInstance().setCurrentGameKey( games.get(position).getGameID() );
-        games.get(position).setTurnIndicator();
+        try { // attempt to remove the game.
+
+            Driver.getInstance().setCurrentGameKey( games.get(position).getGameID() );
+            games.get(position).setTurnIndicator();
+
+        }catch (IllegalArgumentException ex) { // if this exception occurs. We need to not do anything and just remove the games.
+
+            removeIndicators(); // removes all of the indicators hiding them from the view.
+
+        }
+
     }
 
     // gets a game a specific position
@@ -475,6 +498,7 @@ public class HomescreenActivity extends AppCompatActivity
 
         driver.setCurrentGameKey(addedSnapshot.getDbKey());
         games.add(newGame);
+        showIndicators(); // display the indicators on the application
         gamePagerAdapter.notifyDataSetChanged();
     }
 
@@ -573,10 +597,11 @@ public class HomescreenActivity extends AppCompatActivity
 
         if (id == R.id.quit) // if user presses the quit button.
         {
-            driver.quitGame(currentUser.getNickname()); // call quit on this game. Have this user quit.
-            //removeCurrentGame(); // remove the current game from the ui
-            //RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
-           // Snackbar.make(homescreenLayout, "This feature isn't available yet ¯\\_(ツ)_/¯ ", Snackbar.LENGTH_LONG).show();
+            // TODO: the code to have the game quit is just below. It is removed because we couldn't get it working properly before the presentation.
+            //driver.quitGame(currentUser.getNickname()); // call quit on this game. Have this user quit.
+
+            RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
+            Snackbar.make(homescreenLayout, "This feature isn't available yet ¯\\_(ツ)_/¯ ", Snackbar.LENGTH_LONG).show();
             return true;
         }
 
