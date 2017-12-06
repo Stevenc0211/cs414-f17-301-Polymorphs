@@ -413,14 +413,16 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
     }
 
     // Updates the game based on the snapshot of the game sent in, used when a game is updated.
-    @Override
     public void snapshotUpdated(GameSnapshot gs) {
         if (gs == null) return; // If it is we don't want to do anything
         System.out.println("Is the gamesnapshot null? " + gs);
 
         newlyStarted = false;
         String tempGame = gs.getGameString();
-        String [] playerPieces = tempGame.split("-")[1].split("\\|");
+
+        String [] part = tempGame.split("-");
+        String currPlayer = part[0];
+        String [] playerPieces = part[1].split("\\|");
         String [] pieces;
         String [] pieceParts;
         HashMap<String, String[]> piecePartsByLocation = new HashMap<>();
@@ -458,19 +460,6 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
         }
 
 
-        Profile currUserProfile = getHomescreenActivity().getCurrentUserProfile(); // gets the current user's profile.
-        Profile otherUserProfile = getNonUserProfile(); // gets the other user's profile.
-
-        if(DBIOCore.getInstance().getCurrentUserUsername().equals(driver.getCurrentPlayerNickname()))
-        {
-           // System.out.println("its the current user's turn " + getHomescreenActivity().getCurrentUser().getNickname());
-        }
-        else
-        {
-            //System.out.println("its the other user's turn " + otherUserProfile.getNickname());
-        }
-
-        /*
         if(getHomescreenActivity().getCurrentUserProfile() != null && getNonUserProfile() != null) // ensure that both profile's are not null
         {
             Profile currUserProfile = getHomescreenActivity().getCurrentUserProfile(); // gets the current user's profile.
@@ -479,28 +468,17 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
             System.out.println("Current user nickname according to driver: " + getDriver().getCurrentPlayerNickname());
             System.out.println("Current user nickname for the actual user: " + getHomescreenActivity().getCurrentUserProfile().getNickname());
 
-            if(getBlackPlayer().equals(getHomescreenActivity().getCurrentUser().getNickname()) && getDriver().getCurrentPlayerNickname().equals(getBlackPlayer()))
-            {
-                System.out.println("its the current user's turn " + getHomescreenActivity().getCurrentUser().getNickname());
-            }
-            else
-            {
-                System.out.println("its the other user's turn " + otherUserProfile.getNickname());
-            }
-
-            if(getDriver().getCurrentPlayerNickname().equals(getHomescreenActivity().getCurrentUser().getNickname())) // it is the current user's turn, send in that profile.
+            if(DBIOCore.getInstance().getCurrentUserUsername().equals(currPlayer))
             {
                 System.out.println("its the current player's turn");
                 getHomescreenActivity().changeTurnIndicator(currUserProfile); // change the turn for the current user's turn.
             }
-            else // it is the other player's turn.
+            else
             {
-
                 System.out.println("It's the other player's turn");
                 getHomescreenActivity().changeTurnIndicator(otherUserProfile); // change the turn indicator for the current user's turn.
             }
         }
-        */
 
 
         invalidate();
