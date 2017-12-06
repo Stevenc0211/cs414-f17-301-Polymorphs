@@ -458,6 +458,19 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
         }
 
 
+        Profile currUserProfile = getHomescreenActivity().getCurrentUserProfile(); // gets the current user's profile.
+        Profile otherUserProfile = getNonUserProfile(); // gets the other user's profile.
+
+        if(DBIOCore.getInstance().getCurrentUserUsername().equals(driver.getCurrentPlayerNickname()))
+        {
+           // System.out.println("its the current user's turn " + getHomescreenActivity().getCurrentUser().getNickname());
+        }
+        else
+        {
+            //System.out.println("its the other user's turn " + otherUserProfile.getNickname());
+        }
+
+        /*
         if(getHomescreenActivity().getCurrentUserProfile() != null && getNonUserProfile() != null) // ensure that both profile's are not null
         {
             Profile currUserProfile = getHomescreenActivity().getCurrentUserProfile(); // gets the current user's profile.
@@ -487,6 +500,7 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
                 getHomescreenActivity().changeTurnIndicator(otherUserProfile); // change the turn indicator for the current user's turn.
             }
         }
+        */
 
 
         invalidate();

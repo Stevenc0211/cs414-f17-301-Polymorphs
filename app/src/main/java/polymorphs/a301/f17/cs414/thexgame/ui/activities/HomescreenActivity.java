@@ -487,6 +487,56 @@ public class HomescreenActivity extends AppCompatActivity
     @Override
     public void snapshotChanged(GameSnapshot changedSnapshot, String precedingSnapshotKey)
     {
+        /* This was my solution, but it was not perfect.
+        String whitePlayerNickname = changedSnapshot.getNicknameWhite();
+        String blackPlayerNickname = changedSnapshot.getNicknameBlack();
+
+        System.out.println("white player's nickname " + whitePlayerNickname);
+        System.out.println("current player's nickname "  + driver.getCurrentPlayerNickname());
+
+        if(whitePlayerNickname.equals(driver.getCurrentPlayerNickname())) // if the current players turn is white we know that it is the current user.
+        {
+            if(whitePlayerNickname.equals(currentUser.getNickname())) // say that its the current users turn.
+            {
+                System.out.println("It's the current player's turn");
+                changeTurnIndicator(userProfile); // change the player to the white player's turn.
+            }
+            else // say that is the other persons turn
+            {
+                System.out.println("its the other players turn!");
+                Profile profile = games.get(gamePager.getCurrentItem()).getNonUserProfile(); // get the non user's profile.
+                changeTurnIndicator(profile); // change the other persons thingymabobber
+            }
+            return;
+        }
+        else // player must be black.
+        {
+            Profile profile = games.get(gamePager.getCurrentItem()).getNonUserProfile(); // get the non user's profile.
+            changeTurnIndicator(profile); // change the other persons thingymabobber
+
+            System.out.println("current player according to this if block: " + driver.getCurrentPlayerNickname());
+            // do nothing
+        }
+
+        if(blackPlayerNickname.equals(currentUser.getNickname()))
+        {
+            if(blackPlayerNickname.equals(currentUser.getNickname()))
+            {
+                changeTurnIndicator(userProfile);
+            }
+            else
+            {
+                Profile profile = games.get(gamePager.getCurrentItem()).getNonUserProfile();
+                changeTurnIndicator(profile);
+            }
+        }
+        else
+        {
+            Profile profile = games.get(gamePager.getCurrentItem()).getNonUserProfile(); // get the non user's profile.
+            changeTurnIndicator(profile); // change the other persons thingymabobber
+        }
+        */
+
         System.out.println("There was a change in the gamesnapshot with players" + changedSnapshot.getNicknameWhite() + " and " + changedSnapshot.getNicknameBlack());
 
     }
