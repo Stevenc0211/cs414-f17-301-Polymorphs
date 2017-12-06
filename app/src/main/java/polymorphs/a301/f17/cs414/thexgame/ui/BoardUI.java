@@ -57,8 +57,9 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
     private HomescreenActivity activity; // a copy of the homescreen activity so that we can display the proper winning screen for this game if a player sees it in real time.
     private String whitePlayer = ""; // holds the name of the white player
     private String blackPlayer = ""; // holds the name of the black player.
+    private Profile nonUserProfile; // the profile of the non user.
 
-    private Profile nonUserProfile;
+    private String nextTurnNickname; // holds the nickname of the player who's turn is next.
 
     public BoardUI(final Context context, final AttributeSet attrs ) {
         super(context, attrs);
@@ -76,6 +77,18 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
 
         DBIOCore.getInstance().registerToGameSnapshot(this, snapshotKey);
         gameID = snapshotKey;
+    }
+
+    // returns the nickname of the player who's turn is next.
+    public String getNextTurnNickname()
+    {
+        return nextTurnNickname;
+    }
+
+    // gets the profile of the non user.
+    public Profile getNonUserProfile()
+    {
+        return nonUserProfile;
     }
 
     public void setWhitePlayer(String name)
@@ -150,7 +163,7 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
     public void displayInProgressCaption()
     {
         String vsTitle = getWhiteplayer() +  " vs " + getBlackPlayer(); // the title of the snackbar itself.
-        Snackbar.make(this, vsTitle, Snackbar.LENGTH_LONG).show(); // show the snackbar plus the game for the users to see, this is actually pretty cool!!! You'll see
+        Snackbar.make(this, vsTitle, Snackbar.LENGTH_SHORT).show(); // show the snackbar plus the game for the users to see.
     }
 
 
@@ -181,11 +194,6 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
         }
     }
 
-    // forces the UI to update.
-    public void forceUIToRefresh()
-    {
-        invalidate();
-    }
 
     // replace a tile with an updated tile.
     public void replaceAndUpdateTile(TileUI updatedTile, int row, int col, String pieceName)
@@ -234,7 +242,7 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
         }
     }
 
-    // Makes calls to tileUIs and tells it to draw the pieces and will eventually tell it what to do in terms of what to build and what not.
+    // Makes calls to tileUIs and tells it to draw the pieces
     @Override
     protected void onDraw(final Canvas canvas) {
         final int width = getWidth();
@@ -448,9 +456,42 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
                 displayTieCaption();
             }
         }
+
+        if(getHomescreenActivity().getCurrentUserProfile() != null) // ensure that both profile's are not null
+        {
+            Profile currUserProfile = getHomescreenActivity().getCurrentUserProfile(); // gets the current user's profile.
+            Profile otherUserProfile = getNonUserProfile(); // gets the other user's profile.
+
+            System.out.println("Current user nickname according to driver: " + getDriver().getCurrentPlayerNickname());
+            System.out.println("Current user nickname for the actual user: " + getHomescreenActivity().getCurrentUserProfile().getNickname());
+
+            if(getBlackPlayer().equals(getHomescreenActivity().getCurrentUser().getNickname()) && getDriver().getCurrentPlayerNickname().equals(getBlackPlayer()))
+            {
+                System.out.println("its the current user's turn " + getHomescreenActivity().getCurrentUser().getNickname());
+            }
+            else
+            {
+                System.out.println("its the other user's turn " + otherUserProfile.getNickname());
+            }
+
+            if(getDriver().getCurrentPlayerNickname().equals(getHomescreenActivity().getCurrentUser().getNickname())) // it is the current user's turn, send in that profile.
+            {
+                System.out.println("its the current player's turn");
+                getHomescreenActivity().changeTurnIndicator(currUserProfile); // change the turn for the current user's turn.
+            }
+            else // it is the other player's turn.
+            {
+
+                System.out.println("It's the other player's turn");
+                getHomescreenActivity().changeTurnIndicator(otherUserProfile); // change the turn indicator for the current user's turn.
+            }
+        }
+
+
         invalidate();
     }
 
+    // Updates the profile snapshot whenever a change occurs from within the board itself.
     @Override
     public void snapshotUpdated(ProfileSnapshot u) {
         nonUserProfile = new Profile("tmp");

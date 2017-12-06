@@ -44,8 +44,8 @@
     <!-- This shows us the profile picture of the person who's turn it is. -->
     <ImageView
         android:id="@+id/turnProfilePic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="12dp"
         android:layout_marginBottom="50dp"
@@ -60,6 +60,7 @@
         android:layout_toRightOf="@id/turnProfilePic"
         android:layout_marginLeft="12dp"
         android:layout_alignParentBottom="true"
+        android:layout_marginBottom="90dp"
         android:textColor="@color/black"
         />
 

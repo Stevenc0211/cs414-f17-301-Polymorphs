@@ -8,6 +8,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Profile;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.User;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
@@ -116,9 +117,9 @@ public class MovePieceActionListener {
                 }
             }
 
-            // remove the highlights
-            unhighlightSquares(availableMoves);
-            boardUI.invalidate();
+
+            unhighlightSquares(availableMoves); // remove the highlights
+            boardUI.invalidate(); // updates the boardUI
             reset(); // reset the click action listener to allow for the rest of the board to behave in the way that it should
         }
     }

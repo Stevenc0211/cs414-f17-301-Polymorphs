@@ -86,6 +86,15 @@ public class HomescreenActivity extends AppCompatActivity
 
     private NavigationView navigationView; // a copy of the navigation view to populate our board layout.
 
+    // decodes a base64string into a bitmap to allow for the user to get their own profile.
+    private Bitmap decodeBase64String(Profile profile)
+    {
+        Bitmap pic = null; // returns the bitmap of the picture that we want to be using.
+        byte[] picDecod = Base64.decode(profile.getPicString(), Base64.DEFAULT);
+        pic = BitmapFactory.decodeByteArray(picDecod,0,picDecod.length); // convert the base64 into a string.
+        return pic; // return the bitmap to the calling function.
+    }
+
     public void saveAndChangeProfilePic(Bitmap newProfilePic)
     {
         userProfilePic = newProfilePic; // set the new profile picture for the user.
@@ -120,6 +129,11 @@ public class HomescreenActivity extends AppCompatActivity
         return currentUser;
     }
 
+    // returns the user's profile.
+    public Profile getCurrentUserProfile()
+    {
+        return userProfile;
+    }
 
     // Simply updates the view pager that we are working with.
     public void updateViewPager()
@@ -237,9 +251,31 @@ public class HomescreenActivity extends AppCompatActivity
     }
 
     // displays the profile picture and the text of the person's turn
-    public void changeTurnIndicator()
+    public void changeTurnIndicator(Profile playerTurnProfile)
     {
 
+        if(currentUser.getNickname().equals(playerTurnProfile.getNickname())) // if its the user's turn tell them its their turn.
+        {
+            // tell them its their turn.
+            playerTurnText.setText("It's YOUR turn!");
+            playerTurnProfPic.setImageBitmap(userProfilePic); // the current user's profile picture.
+        }
+        else // it's not their turn tell them that it's the other player's turn.
+        {
+            if(playerTurnProfile.getPicString().isEmpty() || playerTurnProfile.getPicString() == null) // set default image.
+            {
+                playerTurnText.setText("It's " + playerTurnProfile.getNickname() + "'s" + " turn!"); // tell the player that it's the other player's turn!
+
+                Bitmap defaultPic = decodeSampledBitmapFromResource(getResources(), R.drawable.blank_profile_image, 100, 100); // decodes the empty profile picture for the player's to look at.
+                playerTurnProfPic.setImageBitmap(defaultPic); // set the default pic for the other player.
+            }
+            else // set their profile picture.
+            {
+                playerTurnText.setText("It's " + playerTurnProfile.getNickname() + "'s" + " turn!");
+                Bitmap nonUserProfilePic = decodeBase64String(playerTurnProfile);
+                playerTurnProfPic.setImageBitmap(nonUserProfilePic); // set the default pic for the other player.
+            }
+        }
     }
 
     @Override
@@ -255,14 +291,12 @@ public class HomescreenActivity extends AppCompatActivity
 
         displayHomescreen(); // setup the familiar homescreen layout that we are used to seeing.
 
-
         // add items into the database.
         DBIOCore.getInstance().registerToGameSnapshotList(this);
         DBIOCore.getInstance().registerToUsernameList(this);
         DBIOCore.getInstance().registerToCurrentUser(this);
         DBIOCore.getInstance().registerToGameRecordList(this);
         DBIOCore.getInstance().registerCurrentUserProfileSnapshot(this); // this doesn't work I cannot get it to work like I wanted it to.
-
 
     }
 
