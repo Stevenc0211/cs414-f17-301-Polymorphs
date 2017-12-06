@@ -581,8 +581,9 @@ public class HomescreenActivity extends AppCompatActivity
         if (id == R.id.quit) // if user presses the quit button.
         {
             driver.quitGame(currentUser.getNickname()); // call quit on this game. Have this user quit.
-            RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
-            Snackbar.make(homescreenLayout, "This feature isn't available yet ¯\\_(ツ)_/¯ ", Snackbar.LENGTH_LONG).show();
+            removeCurrentGame(); // remove the current game from the ui
+            //RelativeLayout homescreenLayout = (RelativeLayout) findViewById(R.id.mainContentScreen); // get the relative layout of the homescreen.
+           // Snackbar.make(homescreenLayout, "This feature isn't available yet ¯\\_(ツ)_/¯ ", Snackbar.LENGTH_LONG).show();
             return true;
         }
 
