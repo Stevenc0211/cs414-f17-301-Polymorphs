@@ -195,6 +195,7 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
 
         currentGame.setGameWon(opponent);
         GameSnapshot gs = new GameSnapshot(currentGame);
+        gs.setDbKey(currentGameKey);
         DBIOCore.getInstance().updateGameSnapshot(gs);
 
         //todo:  need to send in the game snapshot to both players for the quit
