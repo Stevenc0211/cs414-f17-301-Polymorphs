@@ -58,7 +58,7 @@ class Game {
      * @param winnerNickname
      * @return false if winnerNickname is not a player nickname
      */
-    public boolean setGameWon(String winnerNickname)
+    boolean setGameWon(String winnerNickname)
     {
 
         if (winnerNickname.equals(getP1Nickname())) {
