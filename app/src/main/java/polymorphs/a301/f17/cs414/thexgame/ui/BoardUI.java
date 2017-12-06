@@ -254,7 +254,7 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
                 final int yCoord = getYCoord(rows);
 
                 final Rect tileRect = new Rect(
-                        xCoord,               // left hhtgh
+                        xCoord,               // left hhtgh,hj
                         yCoord,               // top
                         xCoord + squareSize,  // right
                         yCoord + squareSize   // bottom
