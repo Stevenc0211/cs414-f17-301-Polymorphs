@@ -219,7 +219,7 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
                 break;
             }
         }
-        if (rmKey != "") {
+        if (!rmKey.equals("")) {
             usernames.remove(rmKey);
         }
     }
