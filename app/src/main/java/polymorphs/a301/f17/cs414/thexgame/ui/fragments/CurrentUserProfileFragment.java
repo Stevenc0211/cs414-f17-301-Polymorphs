@@ -22,8 +22,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.NumberFormat;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Profile;
 import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.ui.activities.HomescreenActivity;
 
@@ -43,7 +45,8 @@ public class CurrentUserProfileFragment extends Fragment {
     private String username = ""; // username of the current user.
     private String currGamesCount = ""; // holds the number of current games this user has.
     private String winPercentage = ""; // holds the win percentage that this user has.
-    // TODO: create a global variable that will hold the user's profile picture, likely we will set this using a setter call from homescreenActivity.
+    private Profile currUserProfile; // holds the profile for the user.
+
 
     // Create setters here if we choose to go this route.
 
@@ -59,6 +62,10 @@ public class CurrentUserProfileFragment extends Fragment {
         this.currUserProfilePic = pic;
     }
 
+    // sets teh user's current profile picture.
+    public void setCurrUserProfile(Profile userProfile) {
+        this.currUserProfile = userProfile;
+    }
 
     // this method will change the user's profile picture after they have chosen a picture they want their profile picture to be.
     private void changeProfilePic(Bitmap newProfilePic)
@@ -71,17 +78,11 @@ public class CurrentUserProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        System.out.println("is currUserProfile null? " + currUserProfile);
+        NumberFormat nf = NumberFormat.getInstance();
+        winPercentage = String.valueOf(currUserProfile.getWinRatio());
 
-        /*
-            We need to populate the globals above, we can do this a couple of ways:
-                    1.) Create setters here in CurrentUserProfileFragment and have homescreenActivity call this setters before the fragment is opened
-                    2.) Send in the information to the Fragment using Bundle arguments like I've done in the past (this is Android Standard so we should do this way, but I don't care)
-         */
-
-        // Grab bundle args here if we choose to go this route
-
-        // TODO: need to somehow send in the user's profile picture so that we can change it when the user chooses the change his/her profile pic. This is very important.
-            // this will likely be done by sending in that profile picture from the HomescreenActivity after homescreen activity pulls it from the database...
+        username = currUserProfile.getNickname();
     }
 
     // calculates the size of the optimum image
@@ -139,11 +140,11 @@ public class CurrentUserProfileFragment extends Fragment {
         currNumOfGames.setText("Current games: " + numOfGames); // set the number of games for this user.
 
         TextView winLossPercentage = (TextView) profileUI.findViewById(R.id.winLossPercentage); // gets the user's win loss percentage.
-        // todo: set the user's win loss percentage.
+        winLossPercentage.setText(winPercentage + "%"); // set the win percentage for the user
 
         if(!winPercentage.isEmpty()) // make sure that the win loss percentage is not empty.
         {
-            int percentage = Integer.parseInt(winPercentage); // convert the percentage to an integer.
+            double percentage = Double.parseDouble(winPercentage); // convert the percentage to an integer.
 
             if(percentage < 40) // user's percentage is bad, display the percentage as red.
             {
@@ -160,11 +161,14 @@ public class CurrentUserProfileFragment extends Fragment {
         }
 
 
+        profilePic = (CircleImageView) profileUI.findViewById(R.id.profilePicture); // gets the user's profile picture.
         if(currUserProfilePic == null) // if user doesn't have a current profile picture then we need to resize the default image.
         {
-            profilePic = (CircleImageView) profileUI.findViewById(R.id.profilePicture); // gets the user's profile picture.
             Bitmap resizedImg = decodeSampledBitmapFromResource(getResources(), R.drawable.blank_profile_image, 200,200); // resize the default image to be 200 by 200
             profilePic.setImageBitmap(resizedImg); // set the default image to be resized.
+        }
+        else {
+            profilePic.setImageBitmap(currUserProfilePic); // set the picture of the current user
         }
 
 
@@ -221,9 +225,6 @@ public class CurrentUserProfileFragment extends Fragment {
             }
 
             Uri selectedImageUri = resultIntent.getData(); // gets the Uri that the Intent returns after a picture is selected.
-
-            // TODO: the app breaks when user's try to select a photo that is outside the domain of the first file picker.
-            // TODO: add some additional checks to allow for photos to be selected and be sure to reject those that are not approved image files.
 
             try // attempt to get the user's picture from the stream and decode it.
             {

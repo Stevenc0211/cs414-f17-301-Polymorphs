@@ -25,6 +25,19 @@
         android:layout_marginLeft="35dp"
         />
 
+    <!-- displays just the text "Winner: " -->
+    <TextView
+        android:id="@+id/gameWinnerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gameDate"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="35dp"
+        android:textColor="@color/Black"
+        android:textSize="20dp"
+        android:text="Winner: "
+        />
+
     <!-- This shows the winner of the game. -->
     <TextView
         android:id="@+id/gameWinner"
@@ -32,22 +45,47 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/gameDate"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="35dp"
         android:textColor="@color/Green"
         android:textSize="20dp"
-        android:text="Winner: Andy"
+        android:text="Andy"
+        android:layout_toRightOf="@id/gameWinnerText"
+        />
+
+    <!-- This shows the loser of the game. -->
+    <TextView
+        android:id="@+id/gameLoserText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gameWinner"
+        android:layout_marginLeft="35dp"
+        android:textColor="@color/Black"
+        android:textSize="20dp"
+        android:text="Loser: "
         />
 
     <!-- This shows the loser of the game. -->
     <TextView
         android:id="@+id/gameLoser"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/gameWinner"
-        android:layout_marginLeft="35dp"
+        android:layout_toRightOf="@id/gameLoserText"
         android:textColor="@color/Red"
         android:textSize="20dp"
-        android:text="Loser: thenotoriousrog"
+        android:text="thenotoriousrog"
+        />
+
+    <!-- Displays TIE when a tie game occurs -->
+    <TextView
+        android:id="@+id/tie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/gameDate"
+        android:textSize="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="35dp"
+        android:text="TIE"
+        android:textColor="@color/MediumBlue"
         />
 
 </RelativeLayout>

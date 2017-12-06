@@ -120,10 +120,19 @@ public class HomescreenActivity extends AppCompatActivity
         return currentUser;
     }
 
+
     // Simply updates the view pager that we are working with.
     public void updateViewPager()
     {
         gamePager.invalidate();
+    }
+
+
+    // TODO: right here in the method is how I remove the game from the pager as well as the DB.
+    // When this is called it will remove the game at whatever position the view pager is on
+    public void removeCurrentGame()
+    {
+        driver.removeCurrentGame(); // This triggers snapshotRemoved below
     }
 
     // creates a new game for us to be able to work with.
@@ -151,21 +160,39 @@ public class HomescreenActivity extends AppCompatActivity
         return games.get(position);
     }
 
-
     // returns the number of games.
     public int getNumOfGames()
     {
         return games.size();
     }
 
-    public void addGameRecord(GameRecord record)
+    // this resets the game pager with a new set of elements. This is called whenever a game is removed from the view pager.
+    private void resetGamePager()
     {
-        DBIOCore.getInstance().addGameRecord(record); // add this to the game record.
+        gamePagerAdapter = new GamePagerAdapter(games, inGameUI, getBaseContext()); // send in the games that we want to work with that will allow us to send our games to the adapter to update the ViewPager (to swipe horizontally)
+        GamePageChangeListener gpcl = new GamePageChangeListener(this); // holds the game as well as a copy of the InGameUI that will allow us to see a snack bar for the users to be able to see their game number.
+
+        gamePager.setAdapter(gamePagerAdapter);
+        gamePagerAdapter.notifyDataSetChanged(); // update the number of games in the list view pretty important!
+        gamePager.addOnPageChangeListener(gpcl);
+        gamePager.invalidate();
+        // TODO: below is how I fix the positioning of the data in the DB
+        if (games.size() > 0) {
+            switchToGameAt(0); // the UI switches back to the first game, tell the DBIOcore to do the same.
+        } else {
+            RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.mainContentScreen);
+            TextView noGame = relativeLayout.findViewById(R.id.noGamesText);
+            noGame.setVisibility(View.VISIBLE); // make the text field appear
+            gamePager.setVisibility(View.GONE); // have the games disappear.
+            gamePager.invalidate();
+        }
+
     }
 
     // this method sets up our game pager.
     protected void setupGamePager()
     {
+//        createNewGame("razor", "black");
         gamePager = (ViewPager) findViewById(R.id.gamesListPager); // get the game pager that will basically fill out the games!
         boardUI = (BoardUI) findViewById(R.id.chessboard);
         boardUI.setHomescreenActivity(this); // send a copy of the homescreen activity to allow for certain displaying of certain UI elements.
@@ -215,9 +242,6 @@ public class HomescreenActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        // Molto Importante: This needs to be displayed at the very beginning before we do any work on the app otherwise our UI elements will not be displayed properly this is very important!
-        // (cont): we need to display this first and then update it the app loads, putting this at the end caused the app to break which is not good!
         setContentView(R.layout.homescreen);
         usernames = new HashMap<>();
 
@@ -415,9 +439,6 @@ public class HomescreenActivity extends AppCompatActivity
         driver.setCurrentGameKey(addedSnapshot.getDbKey());
         games.add(newGame);
         gamePagerAdapter.notifyDataSetChanged();
-        //updateViewPager(); this was causing problems
-
-
     }
 
     @Override
@@ -428,7 +449,11 @@ public class HomescreenActivity extends AppCompatActivity
     }
 
     @Override
-    public void snapshotRemoved(GameSnapshot removedSnapshot) {}
+    public void snapshotRemoved(GameSnapshot removedSnapshot) {
+        int currPos = gamePager.getCurrentItem(); // get the item for the view of the position
+        games.remove(currPos); // remove the game from the list of games.
+        resetGamePager();  // resets the game game pager with the new information.
+    }
 
     @Override
     public void recordAdded(GameRecord addedRecord, String precedingRecordKey) {
@@ -445,14 +470,17 @@ public class HomescreenActivity extends AppCompatActivity
     // for profile snapshot
     @Override
     public void snapshotUpdated(ProfileSnapshot u) {
+
         if (userProfile == null) {
             this.userProfile = new Profile(DBIOCore.getInstance().getCurrentUserUsername());
+            userProfile.setWinRatio();
         }
         this.userProfile.updateFromSnapshot(u);
         if (!userProfile.getPicString().equals("")) {
             byte[] picDecod = Base64.decode(userProfile.getPicString(), Base64.DEFAULT);
             userProfilePic = BitmapFactory.decodeByteArray(picDecod,0,picDecod.length);
             setupHeader();
+            userProfile.setWinRatio();
         }
     }
 
@@ -606,6 +634,8 @@ public class HomescreenActivity extends AppCompatActivity
 
         CurrentUserProfileFragment currUserProfile = new CurrentUserProfileFragment(); // a copy of the CurrentUserProfileFragment
         currUserProfile.setHomescreenActivity(this); // set the homescreen activity for the fragment to use.
+        currUserProfile.setCurrUserProfilePic(userProfilePic); // set the profile picture for the fragment.
+        currUserProfile.setCurrUserProfile(userProfile); // set the profile for the fragment.
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.animator.slide_up_in, R.animator.slide_up_out); // set custom animations for this fragment
         fragmentTransaction.replace(R.id.mainContentScreen, currUserProfile); // replace the homescreenActivity with the CurrentUserProfile

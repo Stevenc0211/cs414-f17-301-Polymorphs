@@ -28,6 +28,7 @@ import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.persistence.GameSnapshotObserver;
 import polymorphs.a301.f17.cs414.thexgame.ui.activities.HomescreenActivity;
+import polymorphs.a301.f17.cs414.thexgame.ui.listeners.RemoveGameListener;
 
 
 public final class BoardUI extends View implements GameSnapshotObserver {
@@ -117,19 +118,22 @@ public final class BoardUI extends View implements GameSnapshotObserver {
     // display the winner text if someone wins a game.
     public void displayWinnerCaption()
     {
-        String display = driver.getCurrentPlayerNickname() + " Wins!";
-        Snackbar.make(this, display, Snackbar.LENGTH_INDEFINITE).show(); // show the snackbar of the player!
+        Snackbar endBar = makeEndBar(driver.getCurrentPlayerNickname() + " Wins!");
+        endBar.show(); // show the snackbar
     }
 
     // display the tie text if the game is a tie.
     public void displayTieCaption()
     {
-        String p1 = getBlackPlayer();
-        String p2 = getWhiteplayer();
-        GameRecord record = new GameRecord(p1, p2, driver.getGameState());
+        Snackbar endBar = makeEndBar("This Game is a Tie!");
+        endBar.show(); // show the snackbar
+    }
 
-        String display = "This Game is a Tie!";
-        Snackbar.make(this, display, Snackbar.LENGTH_INDEFINITE).show(); // show the snackbar to alert the user.
+    private Snackbar makeEndBar(String displayText) {
+        Snackbar endBar = Snackbar.make(this, displayText, Snackbar.LENGTH_INDEFINITE); // show the snackbar of the player!
+        RemoveGameListener rmGameListener = new RemoveGameListener(getHomescreenActivity()); // send in a copy of the homescreen activity for this listener
+        endBar.setAction("REMOVE GAME", rmGameListener); // set an action to remove the game from the view pager.
+        return endBar;
     }
 
     public void displayInProgressCaption()
@@ -392,7 +396,7 @@ public final class BoardUI extends View implements GameSnapshotObserver {
     // Updates the game based on the snapshot of the game sent in, used when a game is updated.
     @Override
     public void snapshotUpdated(GameSnapshot gs) {
-
+        if (gs == null) return; // If it is we don't want to do anything
         System.out.println("Is the gamesnapshot null? " + gs);
 
         newlyStarted = false;

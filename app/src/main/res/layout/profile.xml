@@ -30,6 +30,19 @@
         />
 
 
+    <!-- Displays the text "win percentage" -->
+    <TextView
+        android:id="@+id/winPercentText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:text="Win Percentage: "
+        android:layout_below="@id/profilePicture"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        />
+
     <!-- Displays the user's win percentage -->
     <TextView
         android:id="@+id/winLossPercentage"
@@ -37,10 +50,11 @@
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:textSize="15sp"
-        android:text="Win Percentage: ##% "
+        android:text="##% "
         android:layout_below="@id/profilePicture"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/winPercentText"
         />
 
     <!-- displays the number of games that this user has -->
