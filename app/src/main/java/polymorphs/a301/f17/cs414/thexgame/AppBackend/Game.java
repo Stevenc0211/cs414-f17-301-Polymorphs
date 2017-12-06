@@ -64,9 +64,12 @@ class Game {
         if (winnerNickname.equals(getP1Nickname())) {
             winner = getP1Nickname();
             loser = getP2Nickname();
+            currentPlayer = p1;
+
         } else if (winnerNickname.equals(getP2Nickname())) {
             winner = getP2Nickname();
             loser = getP1Nickname();
+            currentPlayer = p2;
         } else {
             return false;
         }
