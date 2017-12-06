@@ -2,6 +2,7 @@ package polymorphs.a301.f17.cs414.thexgame.AppBackend;
 
 import java.util.HashMap;
 
+import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.persistence.GameRecordListObserver;
 
 /**
@@ -22,6 +23,7 @@ public class Profile implements GameRecordListObserver {
     public Profile(String nickname){
         this.nickname = nickname;
         gamesHistory = new HashMap<>();
+        DBIOCore.getInstance().registerToGameRecordList(this);
     }
 
     public void setPicString(String pic) {
@@ -45,20 +47,12 @@ public class Profile implements GameRecordListObserver {
         return winRatio;
     }
 
-    public String getWinRatioUI()
-    {
-        return " "+winRatio+" ";
-    }
 
-    public HashMap<String, GameRecord> getGamesHistory()
+    HashMap<String, GameRecord> getGamesHistory()
     {
         return gamesHistory;
     }
 
-    public HashMap<String,GameRecord> getGamesHistoryUI()
-    {
-       return gamesHistory;
-    }
 
     public void setWinRatio()
     {
@@ -106,11 +100,6 @@ public class Profile implements GameRecordListObserver {
         if (rmKey != "") {
             gamesHistory.remove(rmKey);
         }
-    }
-
-    public void setGamesHistory(HashMap<String,GameRecord> history)
-    {
-        gamesHistory.putAll(history);
     }
 
 
