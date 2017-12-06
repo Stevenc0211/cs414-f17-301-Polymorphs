@@ -92,12 +92,12 @@ public class Profile implements GameRecordListObserver {
     public void recordRemoved(GameRecord removedRecord) {
         String rmKey = "";
         for (String key : gamesHistory.keySet()) {
-            if (gamesHistory.get(key).equals(gamesHistory)) {
+            if (gamesHistory.get(key).equals(removedRecord)) {
                 rmKey = key;
                 break;
             }
         }
-        if (rmKey != "") {
+        if (!rmKey.equals("")) {
             gamesHistory.remove(rmKey);
         }
     }
