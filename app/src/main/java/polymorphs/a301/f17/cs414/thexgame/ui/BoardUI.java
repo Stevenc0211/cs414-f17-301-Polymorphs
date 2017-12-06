@@ -9,10 +9,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -160,8 +162,21 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
 
     private Snackbar makeEndBar(String displayText) {
         Snackbar endBar = Snackbar.make(this, displayText, Snackbar.LENGTH_INDEFINITE); // show the snackbar of the player!
+
+
+        // This makes the snackbar unswipable and forces the scackbar to stay
+        final View endBarView = endBar.getView();
+        endBarView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                endBarView.getViewTreeObserver().removeOnPreDrawListener(this);
+                ((CoordinatorLayout.LayoutParams) endBarView.getLayoutParams()).setBehavior(null);
+                return true;
+            }
+        });
+
         RemoveGameListener rmGameListener = new RemoveGameListener(getHomescreenActivity()); // send in a copy of the homescreen activity for this listener
-        endBar.setAction("REMOVE GAME", rmGameListener); // set an action to remove the game from the view pager.
+       // endBar.setAction("REMOVE GAME", rmGameListener); // set an action to remove the game from the view pager.
         return endBar;
     }
 
