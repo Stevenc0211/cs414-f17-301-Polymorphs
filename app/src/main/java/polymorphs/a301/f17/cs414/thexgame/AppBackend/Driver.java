@@ -207,6 +207,7 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
             DBIOCore.getInstance().addGameSnapshot(gs);
         }
 
+
         //todo:  need to send in the game snapshot to both players for the quit
         GameRecord record1 = new GameRecord(nickname,opponent,-1); // current player loses
         GameRecord record2 = new GameRecord(opponent,nickname,1); // opponent wins
