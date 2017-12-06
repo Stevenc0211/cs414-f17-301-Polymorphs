@@ -53,12 +53,25 @@ class Game {
         return gameState;
     }
 
-    // sets the game state for when a user quits.
-    public void setGameState(int state, String loserNickname, String winnerNickname)
+    /**
+     * Sets the game as won by the winnerNickname.
+     * @param winnerNickname
+     * @return false if winnerNickname is not a player nickname
+     */
+    public boolean setGameWon(String winnerNickname)
     {
-        gameState = state;
-        winner = winnerNickname;
-        loser = loserNickname;
+
+        if (winnerNickname.equals(getP1Nickname())) {
+            winner = getP1Nickname();
+            loser = getP2Nickname();
+        } else if (winnerNickname.equals(getP2Nickname())) {
+            winner = getP2Nickname();
+            loser = getP1Nickname();
+        } else {
+            return false;
+        }
+        gameState = 1;
+        return true;
     }
 
     public Board getBoard(){

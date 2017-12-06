@@ -184,29 +184,18 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
      */
     public boolean quitGame(String nickname) {
         String opponent;
-        if (games.get(currentGameKey).getP1Nickname().equals(nickname)) {
-            opponent = games.get(currentGameKey).getP2Nickname();
-        } else if (games.get(currentGameKey).getP2Nickname().equals(nickname)) {
-            opponent = games.get(currentGameKey).getP1Nickname();
+        Game currentGame = games.get(currentGameKey);
+        if (currentGame.getP1Nickname().equals(nickname)) {
+            opponent = currentGame.getP2Nickname();
+        } else if (currentGame.getP2Nickname().equals(nickname)) {
+            opponent = currentGame.getP1Nickname();
         } else {
             return false;
         }
 
-        if(opponent.equals(nickname)) // opponent quit
-        {
-            games.get(currentGameKey).setGameState(1, opponent, getCurrentPlayerNickname()); // opponent is the loser, current player is the winner.
-            Game game = games.get(currentGameKey);
-            GameSnapshot gs = new GameSnapshot(game);
-            DBIOCore.getInstance().addGameSnapshot(gs);
-        }
-        else
-        {
-            games.get(currentGameKey).setGameState(1, getCurrentPlayerNickname(), opponent); // opponent is the winner, current player is the loser.
-            Game game = games.get(currentGameKey);
-            GameSnapshot gs = new GameSnapshot(game);
-            DBIOCore.getInstance().addGameSnapshot(gs);
-        }
-
+        currentGame.setGameWon(opponent);
+        GameSnapshot gs = new GameSnapshot(currentGame);
+        DBIOCore.getInstance().updateGameSnapshot(gs);
 
         //todo:  need to send in the game snapshot to both players for the quit
         GameRecord record1 = new GameRecord(nickname,opponent,-1); // current player loses
