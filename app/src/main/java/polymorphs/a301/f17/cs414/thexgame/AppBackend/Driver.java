@@ -183,11 +183,19 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
      * @return - true if the user is part of the current game and the quit operation was successful, false if otherwise
      */
     public boolean quitGame(String nickname) {
-        if (games.get(currentGameKey).getP1Nickname().equals(nickname) || games.get(currentGameKey).getP2Nickname().equals(nickname)) {
-            // preform quit operation, will need to wait until DB is caught up
-            return true;
+        String opponent;
+        if (games.get(currentGameKey).getP1Nickname().equals(nickname)) {
+            opponent = games.get(currentGameKey).getP2Nickname();
+        } else if (games.get(currentGameKey).getP2Nickname().equals(nickname)) {
+            opponent = games.get(currentGameKey).getP1Nickname();
+        } else {
+            return false;
         }
-        return false;
+        GameRecord record1 = new GameRecord(nickname,opponent,-1); // current player loses
+        GameRecord record2 = new GameRecord(opponent,nickname,1); // opponent wins
+        DBIOCore.getInstance().addGameRecord(record1);
+        DBIOCore.getInstance().addGameRecord(record2);
+        return true;
     }
 
     // --------------- Data retrieval/Observer methods --------------- //
