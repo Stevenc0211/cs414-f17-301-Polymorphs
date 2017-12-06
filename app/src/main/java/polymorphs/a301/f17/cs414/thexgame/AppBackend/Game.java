@@ -53,6 +53,14 @@ class Game {
         return gameState;
     }
 
+    // sets the game state for when a user quits.
+    public void setGameState(int state, String loserNickname, String winnerNickname)
+    {
+        gameState = state;
+        winner = winnerNickname;
+        loser = loserNickname;
+    }
+
     public Board getBoard(){
         return board;
     }

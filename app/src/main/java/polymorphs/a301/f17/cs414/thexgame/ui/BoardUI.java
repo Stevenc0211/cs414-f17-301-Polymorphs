@@ -153,6 +153,13 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
         endBar.show(); // show the snackbar
     }
 
+    // displays the quit text.
+    public void displayQuitCaption()
+    {
+        Snackbar endBar = makeEndBar(getDriver().getCurrentPlayerNickname() + " Quit!");
+        endBar.show();
+    }
+
     private Snackbar makeEndBar(String displayText) {
         Snackbar endBar = Snackbar.make(this, displayText, Snackbar.LENGTH_INDEFINITE); // show the snackbar of the player!
         RemoveGameListener rmGameListener = new RemoveGameListener(getHomescreenActivity()); // send in a copy of the homescreen activity for this listener

@@ -191,6 +191,23 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
         } else {
             return false;
         }
+
+        if(opponent.equals(nickname)) // opponent quit
+        {
+            games.get(currentGameKey).setGameState(1, opponent, getCurrentPlayerNickname()); // opponent is the loser, current player is the winner.
+            Game game = games.get(currentGameKey);
+            GameSnapshot gs = new GameSnapshot(game);
+            DBIOCore.getInstance().addGameSnapshot(gs);
+        }
+        else
+        {
+            games.get(currentGameKey).setGameState(1, getCurrentPlayerNickname(), opponent); // opponent is the winner, current player is the loser.
+            Game game = games.get(currentGameKey);
+            GameSnapshot gs = new GameSnapshot(game);
+            DBIOCore.getInstance().addGameSnapshot(gs);
+        }
+
+        //todo:  need to send in the game snapshot to both players for the quit
         GameRecord record1 = new GameRecord(nickname,opponent,-1); // current player loses
         GameRecord record2 = new GameRecord(opponent,nickname,1); // opponent wins
         DBIOCore.getInstance().addGameRecord(record1);
