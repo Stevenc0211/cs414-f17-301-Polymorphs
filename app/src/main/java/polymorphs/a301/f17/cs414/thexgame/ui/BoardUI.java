@@ -8,41 +8,57 @@ package polymorphs.a301.f17.cs414.thexgame.ui;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.service.quicksettings.Tile;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameRecord;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameSnapshot;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.Profile;
+import polymorphs.a301.f17.cs414.thexgame.AppBackend.ProfileSnapshot;
+import polymorphs.a301.f17.cs414.thexgame.R;
 import polymorphs.a301.f17.cs414.thexgame.persistence.DBIOCore;
 import polymorphs.a301.f17.cs414.thexgame.persistence.GameSnapshotObserver;
+import polymorphs.a301.f17.cs414.thexgame.persistence.ProfileSnapshotObserver;
 import polymorphs.a301.f17.cs414.thexgame.ui.activities.HomescreenActivity;
 import polymorphs.a301.f17.cs414.thexgame.ui.listeners.RemoveGameListener;
 
 
-public final class BoardUI extends View implements GameSnapshotObserver {
+public final class BoardUI extends View implements GameSnapshotObserver, ProfileSnapshotObserver {
     private static final String TAG = BoardUI.class.getSimpleName();
 
     private static final int ROWS = 12;
     private static final int COLS = 12;
     private Canvas canvas; // holds the canvas for this class in charge of drawing everything, very important that it is done correctly.
+
     private boolean newlyStarted = true; // tells the board UI that this game is newly started and needs to generate the castle walls and what not.
     private final TileUI[][] tileUIs;
     private MovePieceActionListener movePieceActionListener; // the move piece action listener that starts the moving of pieces.
     private ArrayList<int[]> highlightedSquares = new ArrayList<>(); // these are the squares that need to be highlighted. Very, very important.
+
     private int x0 = 0;
     private int y0 = 0;
     private int squareSize = 0;
+
     private int gameState = 0; // 0 = in progress, 1 = game won, 2 = game tied
+
     private String gameID = ""; // holds the gameID for this game, needed in order to keep track of the game and what it can do.
     private Driver driver; // the driver object that we are going to be using to communicate with the UI (this)
     private HomescreenActivity activity; // a copy of the homescreen activity so that we can display the proper winning screen for this game if a player sees it in real time.
     private String whitePlayer = ""; // holds the name of the white player
     private String blackPlayer = ""; // holds the name of the black player.
+
+    private Profile nonUserProfile;
 
     public BoardUI(final Context context, final AttributeSet attrs ) {
         super(context, attrs);
@@ -65,11 +81,17 @@ public final class BoardUI extends View implements GameSnapshotObserver {
     public void setWhitePlayer(String name)
     {
         whitePlayer = name;
+        if (!whitePlayer.equals(DBIOCore.getInstance().getCurrentUserUsername())) {
+            DBIOCore.getInstance().registerToProfileSnapshot(this, whitePlayer);
+        }
     }
 
     public void setBlackPlayer(String name)
     {
         blackPlayer = name;
+        if (!blackPlayer.equals(DBIOCore.getInstance().getCurrentUserUsername())) {
+            DBIOCore.getInstance().registerToProfileSnapshot(this, blackPlayer);
+        }
     }
 
     public String getWhiteplayer()
@@ -427,5 +449,12 @@ public final class BoardUI extends View implements GameSnapshotObserver {
             }
         }
         invalidate();
+    }
+
+    @Override
+    public void snapshotUpdated(ProfileSnapshot u) {
+        nonUserProfile = new Profile("tmp");
+        nonUserProfile.updateFromSnapshot(u);
+        // TODO: Roger if you need to update the pic from the default or save the decoded pic do so here
     }
 }
