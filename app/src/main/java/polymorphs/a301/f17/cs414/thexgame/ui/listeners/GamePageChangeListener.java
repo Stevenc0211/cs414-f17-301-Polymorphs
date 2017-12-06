@@ -38,7 +38,6 @@ public class GamePageChangeListener implements ViewPager.OnPageChangeListener {
     {
         // removed this as it is causing issues on the phone for Andy, need to find a new way to inform users that are being used by Roger, pretty important!
         BoardUI currentBoard = homescreenActivity.getGameAt(position);
-        currentBoard.setTurnIndicator();
         if (currentBoard.getGameState() == 0) {
            currentBoard.displayInProgressCaption();
         } else if (currentBoard.getGameState() == 1) {

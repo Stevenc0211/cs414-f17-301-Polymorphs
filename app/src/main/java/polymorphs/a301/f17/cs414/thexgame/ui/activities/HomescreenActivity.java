@@ -165,6 +165,7 @@ public class HomescreenActivity extends AppCompatActivity
     public void switchToGameAt(int position) {
 
         Driver.getInstance().setCurrentGameKey( games.get(position).getGameID() );
+        games.get(position).setTurnIndicator();
     }
 
     // gets a game a specific position

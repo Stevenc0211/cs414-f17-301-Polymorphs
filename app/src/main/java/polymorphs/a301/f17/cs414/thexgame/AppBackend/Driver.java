@@ -184,17 +184,16 @@ public final class Driver implements UsernameListObserver,GameSnapshotListObserv
      */
     public boolean quitGame(String nickname) {
         String opponent;
-        Game currentGame = games.get(currentGameKey);
-        if (currentGame.getP1Nickname().equals(nickname)) {
-            opponent = currentGame.getP2Nickname();
-        } else if (currentGame.getP2Nickname().equals(nickname)) {
-            opponent = currentGame.getP1Nickname();
+        if (games.get(currentGameKey).getP1Nickname().equals(nickname)) {
+            opponent = games.get(currentGameKey).getP2Nickname();
+        } else if (games.get(currentGameKey).getP2Nickname().equals(nickname)) {
+            opponent = games.get(currentGameKey).getP1Nickname();
         } else {
             return false;
         }
 
-        currentGame.setGameWon(opponent);
-        GameSnapshot gs = new GameSnapshot(currentGame);
+        games.get(currentGameKey).setGameWon(opponent);
+        GameSnapshot gs = new GameSnapshot(games.get(currentGameKey));
         gs.setDbKey(currentGameKey);
         DBIOCore.getInstance().updateGameSnapshot(gs);
 
