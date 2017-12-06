@@ -28,10 +28,8 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/gamesListPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true">
-
-
 
         <!-- set the visibility to be gone for now to allow for the no games list to show up! -->
         <polymorphs.a301.f17.cs414.thexgame.ui.BoardUI
@@ -41,8 +39,29 @@
 
         </polymorphs.a301.f17.cs414.thexgame.ui.BoardUI>
 
-
     </android.support.v4.view.ViewPager>
+
+    <!-- This shows us the profile picture of the person who's turn it is. -->
+    <ImageView
+        android:id="@+id/turnProfilePic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="12dp"
+        android:layout_marginBottom="50dp"
+        />
+
+    <!-- This shows us the text version of the player that is up next -->
+    <TextView
+        android:id="@+id/playerTurnText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:layout_toRightOf="@id/turnProfilePic"
+        android:layout_marginLeft="12dp"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/black"
+        />
 
 
 </RelativeLayout>

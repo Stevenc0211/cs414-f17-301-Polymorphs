@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -71,13 +72,14 @@ public class HomescreenActivity extends AppCompatActivity
     private boolean fragmentOpen = false; // tells the app if a fragment is open, if it is, then we need to ensure that we are fixing things
     private Fragment currentFragment; // holds the current fragment thats open.
     private FloatingActionButton createNewGameButton; // a copy of the create new game button that will allow us to
+    private TextView playerTurnText; // holds the text of the current player's turn.
+    private ImageView playerTurnProfPic; // holds the profile picture of the turn of the current player.
 
-    // These will be populated by the shared preferences.
     private String email; // email of the user.
     private String name; // name of the user.
     private String username; // username of the user
     private Bitmap userProfilePic; // holds a copy of a user's profile picture.
-    private Profile userProfile;
+    private Profile userProfile; // the profile of the current user.
 
     HashMap<String, String> usernames; // holds the list of people to invite keyed by the previous usernames database key
     polymorphs.a301.f17.cs414.thexgame.AppBackend.User currentUser;
@@ -86,8 +88,6 @@ public class HomescreenActivity extends AppCompatActivity
 
     public void saveAndChangeProfilePic(Bitmap newProfilePic)
     {
-       // DBIOCore.getInstance().registerToProfileSnapshot(this, currentUser.getNickname());
-
         userProfilePic = newProfilePic; // set the new profile picture for the user.
         setupHeader(); // have the header refresh with the new profile picture now set.
 
@@ -128,7 +128,6 @@ public class HomescreenActivity extends AppCompatActivity
     }
 
 
-    // TODO: right here in the method is how I remove the game from the pager as well as the DB.
     // When this is called it will remove the game at whatever position the view pager is on
     public void removeCurrentGame()
     {
@@ -176,7 +175,6 @@ public class HomescreenActivity extends AppCompatActivity
         gamePagerAdapter.notifyDataSetChanged(); // update the number of games in the list view pretty important!
         gamePager.addOnPageChangeListener(gpcl);
         gamePager.invalidate();
-        // TODO: below is how I fix the positioning of the data in the DB
         if (games.size() > 0) {
             switchToGameAt(0); // the UI switches back to the first game, tell the DBIOcore to do the same.
         } else {
@@ -236,6 +234,12 @@ public class HomescreenActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(playerTurn);
         setSupportActionBar(toolbar);
+    }
+
+    // displays the profile picture and the text of the person's turn
+    public void changeTurnIndicator()
+    {
+
     }
 
     @Override
@@ -367,11 +371,16 @@ public class HomescreenActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        createNewGameButton = (FloatingActionButton) findViewById(R.id.createNewGameButton);
+        // setup the text views for the games.
+        playerTurnText = (TextView) findViewById(R.id.playerTurnText); // textview for displaying the user's current turn.
+        playerTurnProfPic = (ImageView) findViewById(R.id.turnProfilePic); // the imageview for the player's current turn.
 
+        // setup floating action button.
+        createNewGameButton = (FloatingActionButton) findViewById(R.id.createNewGameButton);
         CreateNewGameButtonListener newGameButtonListener = new CreateNewGameButtonListener(HomescreenActivity.this);
         createNewGameButton.setOnClickListener(newGameButtonListener);
 
+        // setup the drawer layout.
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -518,8 +527,6 @@ public class HomescreenActivity extends AppCompatActivity
             updateNotificationsCount();
             super.onBackPressed();
         }
-
-        // TODO: add the code that will simply close our fragments instead of causing the app to restart each time which is a huge pain.
     }
 
     @Override
