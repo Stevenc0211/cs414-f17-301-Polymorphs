@@ -6,23 +6,18 @@ package polymorphs.a301.f17.cs414.thexgame.ui;
  */
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.service.quicksettings.Tile;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.Driver;
-import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameRecord;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.GameSnapshot;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.Profile;
 import polymorphs.a301.f17.cs414.thexgame.AppBackend.ProfileSnapshot;
@@ -57,7 +52,9 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
     private HomescreenActivity activity; // a copy of the homescreen activity so that we can display the proper winning screen for this game if a player sees it in real time.
     private String whitePlayer = ""; // holds the name of the white player
     private String blackPlayer = ""; // holds the name of the black player.
+    private String currentPlayer = whitePlayer;
     private Profile nonUserProfile; // the profile of the non user.
+    private Bitmap nonUserProfileBitmap;
 
     private String nextTurnNickname; // holds the nickname of the player who's turn is next.
 
@@ -94,6 +91,7 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
     public void setWhitePlayer(String name)
     {
         whitePlayer = name;
+        currentPlayer = name;
         if (!whitePlayer.equals(DBIOCore.getInstance().getCurrentUserUsername())) {
             DBIOCore.getInstance().registerToProfileSnapshot(this, whitePlayer);
         }
@@ -428,7 +426,7 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
         String tempGame = gs.getGameString();
 
         String [] part = tempGame.split("-");
-        String currPlayer = part[0];
+        currentPlayer = part[0];
         String [] playerPieces = part[1].split("\\|");
         String [] pieces;
         String [] pieceParts;
@@ -466,7 +464,12 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
             }
         }
 
+        setTurnIndicator();
 
+        invalidate();
+    }
+
+    public void setTurnIndicator() {
         if(getHomescreenActivity().getCurrentUserProfile() != null && getNonUserProfile() != null) // ensure that both profile's are not null
         {
             Profile currUserProfile = getHomescreenActivity().getCurrentUserProfile(); // gets the current user's profile.
@@ -475,20 +478,19 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
             System.out.println("Current user nickname according to driver: " + getDriver().getCurrentPlayerNickname());
             System.out.println("Current user nickname for the actual user: " + getHomescreenActivity().getCurrentUserProfile().getNickname());
 
-            if(DBIOCore.getInstance().getCurrentUserUsername().equals(currPlayer))
+            if(DBIOCore.getInstance().getCurrentUserUsername().equals(currentPlayer))
             {
                 System.out.println("its the current player's turn");
-                getHomescreenActivity().changeTurnIndicator(currUserProfile); // change the turn for the current user's turn.
+                getHomescreenActivity().changeTurnIndicator(currUserProfile, null); // change the turn for the current user's turn.
             }
             else
             {
                 System.out.println("It's the other player's turn");
-                getHomescreenActivity().changeTurnIndicator(otherUserProfile); // change the turn indicator for the current user's turn.
+                getHomescreenActivity().changeTurnIndicator(otherUserProfile, nonUserProfileBitmap); // change the turn indicator for the current user's turn.
             }
+        } else {
+            getHomescreenActivity().changeTurnIndicator(currentPlayer);
         }
-
-
-        invalidate();
     }
 
     // Updates the profile snapshot whenever a change occurs from within the board itself.
@@ -496,6 +498,14 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
     public void snapshotUpdated(ProfileSnapshot u) {
         nonUserProfile = new Profile("tmp");
         nonUserProfile.updateFromSnapshot(u);
-        // TODO: Roger if you need to update the pic from the default or save the decoded pic do so here
+        if(nonUserProfile.getPicString().isEmpty() || nonUserProfile.getPicString() == null) // set default image.
+        {
+
+            nonUserProfileBitmap = HomescreenActivity.decodeSampledBitmapFromResource(getResources(), R.drawable.blank_profile_image, 100, 100); // decodes the empty profile picture for the player's to look at.
+        }
+        else // set their profile picture.
+        {
+            nonUserProfileBitmap = getHomescreenActivity().decodeBase64String(nonUserProfile);
+        }
     }
 }
