@@ -190,12 +190,8 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
     // replace a tile with an updated tile.
     public void replaceAndUpdateTile(TileUI updatedTile, int row, int col, String pieceName)
     {
-        Rect tileRect = new Rect(
-                row,
-                col,
-                row + squareSize,
-                col + squareSize
-        );
+
+        Rect tileRect = new Rect(row, col, row + squareSize, col + squareSize);
 
         updatedTile.setTileRect(tileRect);
         updatedTile.setPieceName(pieceName);
@@ -253,26 +249,23 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
                 final int xCoord = getXCoord(cols);
                 final int yCoord = getYCoord(rows);
 
-                final Rect tileRect = new Rect(
-                        xCoord,               // left gdgdh
-                        yCoord,               // top dhgdjh
-                        xCoord + squareSize,  // right 3rd att
-                        yCoord + squareSize   // bottom
+                //  @xCoord ->left
+                //  @yCoord ->top
+                //  @xCoord + squareSize -> right
+                //  @yCoord + squareSize -> bottom
+                final Rect tileRect = new Rect(xCoord, yCoord, xCoord + squareSize, yCoord + squareSize
                 );
+                //  @xCoord ->left
+                //  @yCoord ->top
+                //  @xCoord + squareSize -> right
+                //  @yCoord + squareSize -> bottom
+                final Rect highlightRect = new Rect(xCoord, yCoord, xCoord + squareSize, yCoord + squareSize);
 
-                final Rect highlightRect = new Rect(
-                        xCoord,               // left
-                        yCoord,               // top
-                        xCoord + squareSize,  // right
-                        yCoord + squareSize   // bottom
-                );
-
-                final Rect kingHightlightRect = new Rect(
-                        xCoord,               // left
-                        yCoord,               // top
-                        xCoord + squareSize,  // right
-                        yCoord + squareSize   // bottom
-                );
+                //  @xCoord ->left
+                //  @yCoord ->top
+                //  @xCoord + squareSize -> right
+                //  @yCoord + squareSize -> bottom
+                final Rect kingHightlightRect = new Rect(xCoord, yCoord, xCoord + squareSize,yCoord + squareSize);
 
 
                 tileUIs[rows][cols].setTileRect(tileRect); // set the tileRect which controls coloring of the tiles.
@@ -297,65 +290,62 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
                     tileUIs[rows][cols].setKingHighlightRect(null); // we are not using the king highlight rect here.
                 }
 
-
                 if(newlyStarted == true) // generate the castle walls.
                 {
-                    // look for all of the pieces and ensure that the pieces have a place to end up on the castle wall.
-                    if(tileUIs[rows][cols].isOpponentKingLoc()) {
-                        tileUIs[rows][cols].draw(canvas, "bking", getContext()); // set black king inside opponent's castle.
-                    }
-                    else if(tileUIs[rows][cols].isOpponentCastle()) {
-                        tileUIs[rows][cols].draw(canvas, "brook", getContext()); // set black rooks on opponent's castle.
-                    }
-                    else if(tileUIs[rows][cols].isPlayerKingLoc()) {
-                        tileUIs[rows][cols].draw(canvas, "wking", getContext()); // set white king inside opponent's castle.
-                    }
-                    else if(tileUIs[rows][cols].isPlayerCastle()){
-                        tileUIs[rows][cols].draw(canvas, "wrook", getContext()); // set white rook inside opponent's castle.
-                    }
-                    else {
-                        tileUIs[rows][cols].draw(canvas, " ", getContext()); // set no pieces replace with a space to tell the tile to just draw the board.
-                    }
+                    onDrawHelper(rows,cols);
                 }
-
                 // construct all of the pieces according to the tile that they are on.
-                if(tileUIs[rows][cols].getPieceName().equals("wrook")) // if the tile has a white rook, draw it!
-                {
-                    tileUIs[rows][cols].draw(canvas, "wrook", getContext()); // set the rook, very important!
-                }
-                else if(tileUIs[rows][cols].getPieceName().equals("wqueen")) // if the tile has a white rook, draw it!
-                {
-                    tileUIs[rows][cols].draw(canvas, "wqueen", getContext()); // set the rook, very important!
-                }
-                else if(tileUIs[rows][cols].getPieceName().equals("wking")) // if the tile has a white rook, draw it!
-                {
-                    tileUIs[rows][cols].draw(canvas, "wking", getContext()); // set the rook, very important!
-                }
-                else if(tileUIs[rows][cols].getPieceName().equals("brook")) // if the tile has a white rook, draw it!
-                {
-                    tileUIs[rows][cols].draw(canvas, "brook", getContext()); // set the rook, very important!
-                }
-                else if(tileUIs[rows][cols].getPieceName().equals("bqueen")) // if the tile has a white rook, draw it!
-                {
-                    tileUIs[rows][cols].draw(canvas, "bqueen", getContext()); // set the rook, very important!
-                }
-                else if(tileUIs[rows][cols].getPieceName().equals("bking")) // if the tile has a white rook, draw it!
-                {
-                    tileUIs[rows][cols].draw(canvas, "bking", getContext()); // set the rook, very important!
-                }
-                else // nothing to highlight, we need to write the green squares.
-                {
-                    tileUIs[rows][cols].draw(canvas, " ", getContext()); // set no pieces replace with a space to tell the tile to just draw the board.
-                }
-
+                onDrawHelperConstructPieces(rows,cols);
                 // check for the board to be apart of the highlighting of the squares! Very important!
-
-
             }
         }
         newlyStarted = false; // tell the board that the game has been started and do not reset the castle borders.
     }
 
+     public void onDrawHelper(int rows, int cols) {   // look for all of the pieces and ensure that the pieces have a place to end up on the castle wall.
+         if (tileUIs[rows][cols].isOpponentKingLoc()) {
+             tileUIs[rows][cols].draw(canvas, "bking", getContext()); // set black king inside opponent's castle.
+         } else if (tileUIs[rows][cols].isOpponentCastle()) {
+             tileUIs[rows][cols].draw(canvas, "brook", getContext()); // set black rooks on opponent's castle.
+         } else if (tileUIs[rows][cols].isPlayerKingLoc()) {
+             tileUIs[rows][cols].draw(canvas, "wking", getContext()); // set white king inside opponent's castle.
+         } else if (tileUIs[rows][cols].isPlayerCastle()) {
+             tileUIs[rows][cols].draw(canvas, "wrook", getContext()); // set white rook inside opponent's castle.
+         } else {
+             tileUIs[rows][cols].draw(canvas, " ", getContext()); // set no pieces replace with a space to tell the tile to just draw the board.
+         }
+     }
+    // construct all of the pieces according to the tile that they are on, helper function for onDraw
+     public void onDrawHelperConstructPieces(int rows , int cols){
+         if(tileUIs[rows][cols].getPieceName().equals("wrook")) // if the tile has a white rook, draw it!
+         {
+             tileUIs[rows][cols].draw(canvas, "wrook", getContext()); // set the rook, very important!
+         }
+         else if(tileUIs[rows][cols].getPieceName().equals("wqueen")) // if the tile has a white rook, draw it!
+         {
+             tileUIs[rows][cols].draw(canvas, "wqueen", getContext()); // set the rook, very important!
+         }
+         else if(tileUIs[rows][cols].getPieceName().equals("wking")) // if the tile has a white rook, draw it!
+         {
+             tileUIs[rows][cols].draw(canvas, "wking", getContext()); // set the rook, very important!
+         }
+         else if(tileUIs[rows][cols].getPieceName().equals("brook")) // if the tile has a white rook, draw it!
+         {
+             tileUIs[rows][cols].draw(canvas, "brook", getContext()); // set the rook, very important!
+         }
+         else if(tileUIs[rows][cols].getPieceName().equals("bqueen")) // if the tile has a white rook, draw it!
+         {
+             tileUIs[rows][cols].draw(canvas, "bqueen", getContext()); // set the rook, very important!
+         }
+         else if(tileUIs[rows][cols].getPieceName().equals("bking")) // if the tile has a white rook, draw it!
+         {
+             tileUIs[rows][cols].draw(canvas, "bking", getContext()); // set the rook, very important!
+         }
+         else // nothing to highlight, we need to write the green squares.
+         {
+             tileUIs[rows][cols].draw(canvas, " ", getContext()); // set no pieces replace with a space to tell the tile to just draw the board.
+         }
+     }
     // Listens for touches on the board, once x and y are satisfied, we want to trigger the click listener on the TileUI if it is a valid tild.
     @Override
     public boolean onTouchEvent(final MotionEvent event) {
@@ -424,6 +414,14 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
                 piecePartsByLocation.put(pieceParts[1] + "," + pieceParts[2], new String[]{pieceParts[0],pieceParts[4]});
             }
         }
+        snapshotUpdatedHelper(piecePartsByLocation);
+
+        snapshotUpdatedHelperGameState(gs);
+
+        invalidate();
+    }
+
+    public void snapshotUpdatedHelper(HashMap<String, String[]> piecePartsByLocation){
         String pieceName;
         for (int row = 0; row < tileUIs.length; row++) {
             for (int col = 0; col < tileUIs[row].length; col++) {
@@ -440,6 +438,10 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
                 }
             }
         }
+
+    }
+
+    public void  snapshotUpdatedHelperGameState(GameSnapshot gs){
         gameState = gs.getGameState();
         if (canvas != null) {
             if (gameState == 1) {
@@ -448,7 +450,6 @@ public final class BoardUI extends View implements GameSnapshotObserver, Profile
                 displayTieCaption();
             }
         }
-        invalidate();
     }
 
     @Override
