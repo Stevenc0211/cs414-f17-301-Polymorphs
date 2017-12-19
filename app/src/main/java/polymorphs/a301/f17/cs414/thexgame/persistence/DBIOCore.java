@@ -63,7 +63,8 @@ public class DBIOCore {
                 User testUser = dataSnapshot.getValue(User.class);
                 if (testUser == null) {
                     System.out.println("We are adding the user now!");
-                    getUserReference().setValue(new User(currentUser, userEmail, ""));
+                    DatabaseReference ref = getUserReference();
+                    ref.setValue(new User(currentUser, userEmail, ""));
                     userNickname = "";
                 }
                 else
